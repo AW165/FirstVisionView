@@ -22,10 +22,6 @@ namespace FirstVisionView
         }
 
         // ============================== 1. 核心数据与状态字段 ===========================
-
-        // [数据] 存储当前画布上所有的卡片实例
-        private List<ToolCard> AllCards = new List<ToolCard>();
-
         // [数据] 存储当前被选中的卡片实例（用于批量移动、删除）
         private List<ToolCard> SelectionCards = new List<ToolCard>();
 
@@ -385,12 +381,8 @@ namespace FirstVisionView
             _hasMoved = false;
 
             // 记录起点坐标
-            var cardModel = card.DataContext as FirstVisionView.DataModel.CardDataModel;
-            if (cardModel != null)
-            {
-                _DragStartMousePoint.X = cardModel.X;
-                _DragStartMousePoint.Y = cardModel.Y;
-            }
+
+            _DragStartMousePoint = e.GetPosition(card);
             // 备份所有选中卡片坐标，以实现相对位移计算
             RecordDragStartPositions();
 
@@ -454,7 +446,7 @@ namespace FirstVisionView
                     var cardModel = card.DataContext as FirstVisionView.DataModel.CardDataModel;
                     if (cardModel != null)
                     {
-                        Point originPos = _DragStartPositions[card];
+                        Point originPos = _DragStartPositions[card]; 
                         cardModel.X = originPos.X + dx;
                         cardModel.Y = originPos.Y + dy;
                     }

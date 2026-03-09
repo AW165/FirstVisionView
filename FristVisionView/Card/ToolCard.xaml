@@ -21,7 +21,7 @@
                     <RowDefinition Height="auto"/>
 
                 </Grid.RowDefinitions>
-                <Label Content="{Binding Title}" FontSize="14"/>
+                <Label Content="{Binding CardName}" FontSize="14"/>
                 
             </Grid>
         </Border>
