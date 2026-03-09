@@ -13,7 +13,26 @@
                 BorderThickness="2" 
                 IsHitTestVisible="True"
                 BorderBrush="Transparent" 
-                Style="{StaticResource BorderStyle}" >
+                 >
+            <Border.Style>
+                <Style TargetType="Border" BasedOn="{StaticResource BorderStyle}">
+
+                    <Style.Triggers>
+
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="10" Color="DodgerBlue" Opacity="0.8" ShadowDepth="0"/>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Setter Property="BorderBrush" Value="CornflowerBlue"/>
+
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>

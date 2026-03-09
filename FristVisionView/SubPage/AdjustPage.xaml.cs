@@ -293,9 +293,10 @@ namespace FirstVisionView
 
             // 构造几何矩形用于碰撞计算
             Rect selectionRect = new Rect(boxX, boxY, width, height);
+            var cards = this.DataContext as FirstVisionView.ViewModels.AdjustViewModel;
 
             // 遍历所有卡片
-            foreach (var card in AllCards)
+            foreach (var card in cards.AllCards)
             {
                 double cardLeft = Canvas.GetLeft(card);
                 double cardTop = Canvas.GetTop(card);
@@ -360,7 +361,7 @@ namespace FirstVisionView
             if (isCtrlPressed)
             {
                 // Ctrl + 点：追加选中
-                AddSelectionCard(card);
+               
                 HighlightSingleCard(card);
             }
             else if (SelectionCards.Contains(card))
@@ -370,7 +371,7 @@ namespace FirstVisionView
             else
             {
                 // 没按 Ctrl 点了新卡片：清场单选
-                ClearAllSelection();
+                
                 AddSelectionCard(card);
                 HighlightSingleCard(card);
             }
@@ -379,6 +380,7 @@ namespace FirstVisionView
             _CurrentClickCard = card;
             _isDraggingCard = true;
             _hasMoved = false;
+            
 
             // 记录起点坐标
 
@@ -544,17 +546,12 @@ namespace FirstVisionView
         /// </summary>
         private void DeleCard(object sender, RoutedEventArgs e)
         {
-            if (SelectionCards.Count == 0) return;
-
-            // 【异常防范】遍历副本 ToList()，原集合随便删
-            foreach (var card in SelectionCards.ToList())
+            var vm = this.DataContext as FirstVisionView.ViewModels.AdjustViewModel;
+            if (vm != null)
             {
-                ParamentCanvas.Children.Remove(card);
-                AllCards.Remove(card);
+                vm.DelateCardsCommand.Execute(null);
+                
             }
-
-            // 打扫战场
-            ClearAllSelection();
             DeleteCard.IsOpen = false;
         }
 

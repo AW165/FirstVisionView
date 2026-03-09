@@ -29,6 +29,19 @@ namespace FirstVisionView.ViewModels
             AllCards.Add(newCardData);
       
         }
+        [RelayCommand]
+        private void DelateCards()
+        {
+            //把符合选中条件的选出并生成一个列表，防止直接操作原列表导致崩溃
+            var deletecard = AllCards.Where(s => s.IsSelected).ToList();
+            if (deletecard.Count == 0) return;
+            foreach (var card in deletecard)
+            {
+                    AllCards.Remove(card);
+                
+            }
+
+        }
 
     }
 }
