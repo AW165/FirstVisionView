@@ -42,6 +42,31 @@ namespace FirstVisionView.ViewModels
             }
 
         }
+        [RelayCommand]
+        private void ClearSeletionStatus(CardDataModel? card = null)
+
+        {
+            if (card == null)//如果未指定卡片，则清除所有选择状态的卡片，否则清除传入卡片的状态
+            {
+                    foreach (var SetCard in AllCards.Where(c=> c.IsSelected))
+                    {
+                       SetCard.IsSelected = false;
+                    } 
+            }
+            else
+            {
+                card.IsSelected = false;
+            }
+            return;
+        }
+        [RelayCommand]
+        private void AddSeletionStatus(CardDataModel? card = null)
+
+        {
+            if (card == null) return;//如果未指定卡片，返回，否则设置传入卡片的状态
+            card.IsSelected = true;
+        }
+
 
     }
 }

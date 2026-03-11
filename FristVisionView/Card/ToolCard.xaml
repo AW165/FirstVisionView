@@ -28,7 +28,7 @@
                             </Setter>
 
                             <Setter Property="BorderBrush" Value="CornflowerBlue"/>
-
+                            
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
