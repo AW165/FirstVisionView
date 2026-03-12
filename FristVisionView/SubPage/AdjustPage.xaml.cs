@@ -48,6 +48,8 @@ namespace FirstVisionView
         private Point _CardStartPoint;
         //记录鼠标点击Card时的当前坐标
         private Point _CardMousePoint;
+        //记录鼠标点击Card
+        private ToolCard _CurrentCard;
         //记录卡片与坐标点
         private Dictionary<CardDataModel,Point> _DragStartPoint;
         // 标记在右键按下期间，是否真正发生了拖拽动作（用于区分“右键呼出菜单”和“右键拖动画布”）。
@@ -66,7 +68,7 @@ namespace FirstVisionView
 
         //============================Canvas事件区域======================
         //Canvas上左键点击
-        private void CanvasLefetDown(object sender, MouseButtonEventArgs e)
+        private void CanvasLeftDown(object sender, MouseButtonEventArgs e)
         {
             _IsCanvasLeftDown = true;//设置左键点击状态
             if (vm == null) return;//如果没持有vm则直接退出
@@ -74,11 +76,11 @@ namespace FirstVisionView
             _CanvasStartPoint = e.GetPosition(ParamentCanvas); 
         }
         //Canvas上左键松开
-        private void CanvasLefetUp(object sender, MouseButtonEventArgs e)
+        private void CanvasLeftUp(object sender, MouseButtonEventArgs e)
         {
             _IsCanvasLeftDown = false;//设置左键松开
             _IsDragging = false;//设置拖拽状态结束
-            
+            ParamentCanvas.ReleaseMouseCapture();
         }
         //Canvas上右键点击
         private void CanvasRightDown(object sender, MouseButtonEventArgs e)
@@ -86,7 +88,7 @@ namespace FirstVisionView
             _IsRightDown = true;//设置右键按下状态
         }
         //Canvas上右键松开
-        private void CanvasRightUp(object sender, MouseButtonEventArgs e)
+        private void RightUp(object sender, MouseButtonEventArgs e)
         {
             _IsRightDown=false;//取消右键按下状态
             _IsDragging = false;//取消拖拽状态
@@ -111,7 +113,7 @@ namespace FirstVisionView
         //Canvas上鼠标移动
         private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
-            
+            ParamentCanvas.CaptureMouse();
             if (_IsCanvasLeftDown != true) return;
             var currentPoint = e.GetPosition(ParamentCanvas);
             var  disX = Math.Abs(currentPoint.X - _CanvasStartPoint.X);
@@ -154,33 +156,39 @@ namespace FirstVisionView
         //========================Card事件区域====================
         
         //Card上左键点击
-        private void CardLefetDown(object sender, MouseButtonEventArgs e)
+        private void CardLeftDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;//打断冒泡
+            var currentCard = sender as ToolCard;
+            if (currentCard == null) return;
+            _CurrentCard = currentCard;
             _IsCardLeftDown = true;//设置在卡片按下状态
             _CardStartPoint = e.GetPosition(ParamentCanvas);//记录鼠标位于画布上的位置
             _CardMousePoint = e.GetPosition(ParamentCanvas);//记录鼠标位于卡片内部的位置
-            if (vm == null) return;
             var card = sender as CardDataModel;//转换类型
-            if (card == null) return;
+            if (card == null || vm == null) return;
+            _DragStartPoint[card] = _CardMousePoint;
             if ((Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.Control)
             {
                 vm.ClearSeletionStatusCommand.Execute(null);//没按下control时清除之前的卡片状态
+                _DragStartPoint.Clear();//清除记录的卡片坐标
             }
             vm.AddSeletionStatusCommand.Execute(card);//设置状态
                 //按下control时旧的状态不清且追加 
 
         }
         //Card上左键松开
-        private void CardLefetUp(object sender, MouseButtonEventArgs e)
+        private void CardLeftUp(object sender, MouseButtonEventArgs e)
         {
             _IsCardLeftDown = false;//设置松开状态
             _IsDragging = false;//设置拖拽状态结束
-
+            _CurrentCard.ReleaseMouseCapture();
         }
         //Card上鼠标移动
         private void CardMouseMove(object sender, MouseButtonEventArgs e)
         {
+            
+            _CurrentCard.CaptureMouse();//捕获鼠标
             if (_IsCardLeftDown != true) return;
             var currentPoint = e.GetPosition(ParamentCanvas);
             var disX = Math.Abs(currentPoint.X - _CardStartPoint.X);
@@ -191,23 +199,45 @@ namespace FirstVisionView
             }
             if (_hasPanned == false) return;
             //此处添加移动卡片逻辑
+            foreach (var card in _DragStartPoint)
+            {
+                var cardKey = card.Key;
+                var cardPoint = card.Value;
+                cardKey.X = currentPoint.X -  _CardMousePoint.X;
+                cardKey.Y = currentPoint.Y -  _CardMousePoint.Y;
+            }
 
         }
-        //Card上右键点击
-        private void CardRightDown(object sender, MouseButtonEventArgs e)
+
+        private void LeftScrollViewer_PreviewMouseMove(object sender, MouseEventArgs e)
         {
 
         }
-        //Card上右键松开
-        private void CardRightUp(object sender, MouseButtonEventArgs e)
+
+        private void LeftScrollViewer_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void LeftScrollViewer_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
 
         }
-       
+
+        private void LeftScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+        }
+
+        private void DeleCard(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
         //==============================菜单/公共事件=======================
 
-        
+
     }
 
 }

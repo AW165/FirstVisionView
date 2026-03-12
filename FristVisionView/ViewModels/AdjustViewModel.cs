@@ -67,6 +67,9 @@ namespace FirstVisionView.ViewModels
             card.IsSelected = true;
         }
 
+       
+
+        
 
     }
 }

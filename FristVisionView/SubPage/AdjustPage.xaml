@@ -53,10 +53,10 @@
                         <Canvas x:Name="ParamentCanvas" 
                                 IsHitTestVisible="True"
                                 Background="Transparent"
-                                MouseLeftButtonDown="Canvas_MouseLeftButtonDown" 
-                                MouseLeftButtonUp="Canvas_MouseLeftButtonUp" 
-                                MouseMove="Canvas_MouseMove"  
-                                MouseRightButtonUp="Canvas_MouseRightButtonUp">
+                                MouseLeftButtonDown="CanvasLeftDown" 
+                                MouseLeftButtonUp="CanvasLeftUp" 
+                                MouseMove="CanvasMouseMove"  
+                                MouseRightButtonUp="RightUp">
                             <ItemsControl ItemsSource="{Binding AllCards}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -66,11 +66,11 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <toolcard:ToolCard
-                                            MouseLeftButtonDown="Card_MouseLeftButtonDown"
-                                            MouseLeftButtonUp="Card_MouseLeftButtonUp"
-                                            MouseRightButtonDown="Card_MouseRightButtonDown"
-                                            MouseMove="Card_MouseMove"
-                                            MouseRightButtonUp="Card_MouseRightButtonUp"/>
+                                            MouseLeftButtonDown="CardLefetDown"
+                                            MouseLeftButtonUp="CardLeftUp"
+                                            MouseRightButtonDown="RightDown"
+                                            MouseMove="CardMouseMove"
+                                            MouseRightButtonUp="RightUp"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                                 <ItemsControl.ItemContainerStyle>
