@@ -30,7 +30,7 @@ namespace FirstVisionView.ViewModels
       
         }
         [RelayCommand]
-        private void DelateCards()
+        private void DeleteCards()
         {
             //把符合选中条件的选出并生成一个列表，防止直接操作原列表导致崩溃
             var deletecard = AllCards.Where(s => s.IsSelected).ToList();

@@ -131,6 +131,7 @@ namespace FirstVisionView
                 var rectangleWidth = Math.Abs(currentPoint.X - _CanvasStartPoint.X);
                 var rectangleHeight = Math.Abs(currentPoint.Y - _CanvasStartPoint.Y);
                 Rect rect1 = new Rect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+                SelectionBox.Visibility=Visibility.Visible;
                 foreach (var card in vm.AllCards)
                 {
                     Rect rect2 = new Rect(card.X,card.Y,150,80);
@@ -185,11 +186,12 @@ namespace FirstVisionView
             _CurrentCard.ReleaseMouseCapture();
         }
         //Card上鼠标移动
-        private void CardMouseMove(object sender, MouseButtonEventArgs e)
+        private void CardMouseMove(object sender, MouseEventArgs e)
         {
             
-            _CurrentCard.CaptureMouse();//捕获鼠标
+            
             if (_IsCardLeftDown != true) return;
+            _CurrentCard.CaptureMouse();//捕获鼠标
             var currentPoint = e.GetPosition(ParamentCanvas);
             var disX = Math.Abs(currentPoint.X - _CardStartPoint.X);
             var disY = Math.Abs(currentPoint.Y - _CardStartPoint.Y);
