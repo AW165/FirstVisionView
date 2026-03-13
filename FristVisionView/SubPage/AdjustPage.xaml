@@ -110,7 +110,7 @@
 
                 <!-- Popup 必须放在 ScrollViewer 外层，否则缩放时菜单会跟着变大变小 -->
                 <!-- 右键添加Card -->
-                <Popup x:Name="AddCard" AllowsTransparency="True"  Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
+                <Popup x:Name="AddCard" AllowsTransparency="True"  Panel.ZIndex="10" IsOpen="{Binding AddCardPopup, Mode=TwoWay}" StaysOpen="False" Placement="Mouse">
                     <Border Padding="15">
                         <Border Width="Auto" MinHeight="150" MinWidth="100" CornerRadius="18" Background="White" Style="{StaticResource BorderStyle}">
                             <StackPanel>
@@ -121,7 +121,7 @@
                 </Popup>
 
                 <!-- 右键删除Card -->
-                <Popup x:Name="DeleteCard" AllowsTransparency="True" Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
+                <Popup x:Name="DeleteCard" AllowsTransparency="True" IsOpen="{Binding DeletePopup, Mode=TwoWay}" Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
                     <Border Padding="15">
                         <Border Width="100" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}">
                             <StackPanel>

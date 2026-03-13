@@ -73,14 +73,17 @@ namespace FirstVisionView
             _IsCanvasLeftDown = true;//设置左键点击状态
             if (vm == null) return;//如果没持有vm则直接退出
             vm.ClearSeletionStatusCommand.Execute(null);//清除卡片高亮状态
-            _CanvasStartPoint = e.GetPosition(ParamentCanvas); 
+            _CanvasStartPoint = e.GetPosition(ParamentCanvas);
+            ParamentCanvas.CaptureMouse();
         }
         //Canvas上左键松开
         private void CanvasLeftUp(object sender, MouseButtonEventArgs e)
         {
             _IsCanvasLeftDown = false;//设置左键松开
             _IsDragging = false;//设置拖拽状态结束
-            ParamentCanvas.ReleaseMouseCapture();
+            SelectionBox.Visibility = Visibility.Collapsed;//矩形框关闭
+            ParamentCanvas.ReleaseMouseCapture();//释放鼠标
+
         }
         //Canvas上右键点击
         private void CanvasRightDown(object sender, MouseButtonEventArgs e)
@@ -96,16 +99,17 @@ namespace FirstVisionView
             {
                 _hasPanned = false;
                 return;//刚才在拖拽,不弹出菜单
-            }   
+            }
+            if (vm == null) return;
             var cardList = vm.AllCards.Where(c => c.IsSelected).ToList();//判断有无卡片被选中，有则弹出删除菜单，否则弹出添加菜单
             if (cardList.Count == 0)
             {
-                AddCard.IsOpen = true;
+                AddCardPopup();
 
                 return;
 
             }
-            else DeleteCard.IsOpen = true;
+            else DeletePopup();
 
 
 
@@ -113,8 +117,9 @@ namespace FirstVisionView
         //Canvas上鼠标移动
         private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
-            ParamentCanvas.CaptureMouse();
             if (_IsCanvasLeftDown != true) return;
+            
+
             var currentPoint = e.GetPosition(ParamentCanvas);
             var  disX = Math.Abs(currentPoint.X - _CanvasStartPoint.X);
             var  disY = Math.Abs(currentPoint.Y - _CanvasStartPoint.Y);
@@ -131,6 +136,10 @@ namespace FirstVisionView
                 var rectangleWidth = Math.Abs(currentPoint.X - _CanvasStartPoint.X);
                 var rectangleHeight = Math.Abs(currentPoint.Y - _CanvasStartPoint.Y);
                 Rect rect1 = new Rect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+                SelectionBox.Width = rectangleWidth;
+                SelectionBox.Height = rectangleHeight;
+                Canvas.SetLeft(SelectionBox,rectangleX);
+                Canvas.SetTop(SelectionBox,rectangleY);
                 SelectionBox.Visibility=Visibility.Visible;
                 foreach (var card in vm.AllCards)
                 {
@@ -176,6 +185,7 @@ namespace FirstVisionView
             }
             vm.AddSeletionStatusCommand.Execute(card);//设置状态
                 //按下control时旧的状态不清且追加 
+            _CurrentCard.CaptureMouse();//捕获鼠标
 
         }
         //Card上左键松开
@@ -191,7 +201,6 @@ namespace FirstVisionView
             
             
             if (_IsCardLeftDown != true) return;
-            _CurrentCard.CaptureMouse();//捕获鼠标
             var currentPoint = e.GetPosition(ParamentCanvas);
             var disX = Math.Abs(currentPoint.X - _CardStartPoint.X);
             var disY = Math.Abs(currentPoint.Y - _CardStartPoint.Y);
@@ -239,7 +248,14 @@ namespace FirstVisionView
 
         //==============================菜单/公共事件=======================
 
-
+        private void DeletePopup()
+        {
+            DeleteCard.IsOpen = true;
+        }
+        private void AddCardPopup()
+        {
+            AddCard.IsOpen = true;
+        }
     }
 
 }
