@@ -14,8 +14,10 @@ namespace FirstVisionView.ViewModels
 {
   public partial class AdjustViewModel :ObservableObject
     {
-        [ObservableProperty]
-        private ObservableCollection<CardDataModel> _allCards = new();
+
+        [ObservableProperty] private ObservableCollection<CardDataModel> _allCards = new();
+        [ObservableProperty] private bool _delePopup = false;
+        [ObservableProperty] private bool _addPopup = false;
 
         [RelayCommand]
         private void AddCard(string? cardName = null)
@@ -27,6 +29,7 @@ namespace FirstVisionView.ViewModels
                 CardName = "MVVM 新卡片"
             };
             AllCards.Add(newCardData);
+            AddPopup = false;//关闭添加菜单
       
         }
         [RelayCommand]
@@ -40,7 +43,7 @@ namespace FirstVisionView.ViewModels
                     AllCards.Remove(card);
                 
             }
-
+            DelePopup = false;//关闭删除菜单
         }
         [RelayCommand]
         private void ClearSeletionStatus(CardDataModel? card = null)
@@ -66,10 +69,9 @@ namespace FirstVisionView.ViewModels
             if (card == null) return;//如果未指定卡片，返回，否则设置传入卡片的状态
             card.IsSelected = true;
         }
-
        
 
-        
+
 
     }
 }

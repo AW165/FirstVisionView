@@ -51,7 +51,7 @@ namespace FirstVisionView
         //记录鼠标点击Card
         private ToolCard _CurrentCard;
         //记录卡片与坐标点
-        private Dictionary<CardDataModel,Point> _DragStartPoint;
+        private Dictionary<CardDataModel,Point> _DragStartPoint = new();
         // 标记在右键按下期间，是否真正发生了拖拽动作（用于区分“右键呼出菜单”和“右键拖动画布”）。
         private bool _hasPanned;
         // 记录开始平移画布时，鼠标在屏幕上的物理初始坐标点。
@@ -71,9 +71,11 @@ namespace FirstVisionView
         private void CanvasLeftDown(object sender, MouseButtonEventArgs e)
         {
             _IsCanvasLeftDown = true;//设置左键点击状态
+            _DragStartPoint.Clear();//清空所有的选择卡片
             if (vm == null) return;//如果没持有vm则直接退出
             vm.ClearSeletionStatusCommand.Execute(null);//清除卡片高亮状态
             _CanvasStartPoint = e.GetPosition(ParamentCanvas);
+
             ParamentCanvas.CaptureMouse();
         }
         //Canvas上左键松开
@@ -104,12 +106,12 @@ namespace FirstVisionView
             var cardList = vm.AllCards.Where(c => c.IsSelected).ToList();//判断有无卡片被选中，有则弹出删除菜单，否则弹出添加菜单
             if (cardList.Count == 0)
             {
-                AddCardPopup();
+                vm.AddPopup = true;
 
                 return;
 
             }
-            else DeletePopup();
+            else vm.DelePopup = true;
 
 
 
@@ -174,32 +176,47 @@ namespace FirstVisionView
             _CurrentCard = currentCard;
             _IsCardLeftDown = true;//设置在卡片按下状态
             _CardStartPoint = e.GetPosition(ParamentCanvas);//记录鼠标位于画布上的位置
-            _CardMousePoint = e.GetPosition(ParamentCanvas);//记录鼠标位于卡片内部的位置
-            var card = sender as CardDataModel;//转换类型
+            var card = currentCard.DataContext as CardDataModel;
             if (card == null || vm == null) return;
-            _DragStartPoint[card] = _CardMousePoint;
-            if ((Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.Control)
-            {
-                vm.ClearSeletionStatusCommand.Execute(null);//没按下control时清除之前的卡片状态
-                _DragStartPoint.Clear();//清除记录的卡片坐标
-            }
             vm.AddSeletionStatusCommand.Execute(card);//设置状态
-                //按下control时旧的状态不清且追加 
+            var list = vm.AllCards.Where(c => c.IsSelected);
+            foreach (var discard in list)
+            {
+
+                Point currentPoint = new Point(discard.X,discard.Y);
+                _DragStartPoint[discard] = currentPoint;//按下control/准备拖拽时旧的状态不清且追加
+            }
+            
+            
             _CurrentCard.CaptureMouse();//捕获鼠标
 
         }
         //Card上左键松开
         private void CardLeftUp(object sender, MouseButtonEventArgs e)
         {
+            var currentCard = sender as ToolCard;
+            if (currentCard == null) return;
             _IsCardLeftDown = false;//设置松开状态
+
+            if ((Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.Control)
+            {
+                if (_IsDragging == false)
+                {
+                    vm.ClearSeletionStatusCommand.Execute(null);//没按下control且不在拖拽时清除之前的卡片状态
+                    _DragStartPoint.Clear();//清除记录的卡片坐标
+                }
+
+            }
+            var card = currentCard.DataContext as CardDataModel;
+            if (card == null || vm == null) return;
             _IsDragging = false;//设置拖拽状态结束
+            vm.AddSeletionStatusCommand.Execute(card);//设置状态
+
             _CurrentCard.ReleaseMouseCapture();
         }
         //Card上鼠标移动
         private void CardMouseMove(object sender, MouseEventArgs e)
         {
-            
-            
             if (_IsCardLeftDown != true) return;
             var currentPoint = e.GetPosition(ParamentCanvas);
             var disX = Math.Abs(currentPoint.X - _CardStartPoint.X);
@@ -214,8 +231,11 @@ namespace FirstVisionView
             {
                 var cardKey = card.Key;
                 var cardPoint = card.Value;
-                cardKey.X = currentPoint.X -  _CardMousePoint.X;
-                cardKey.Y = currentPoint.Y -  _CardMousePoint.Y;
+                var newX = currentPoint.X - _CardStartPoint.X;
+                var newY = currentPoint.Y - _CardStartPoint.Y;
+                cardKey.X = card.Value.X + newX;
+                cardKey.Y = card.Value.Y + newY;
+                
             }
 
         }
@@ -248,14 +268,7 @@ namespace FirstVisionView
 
         //==============================菜单/公共事件=======================
 
-        private void DeletePopup()
-        {
-            DeleteCard.IsOpen = true;
-        }
-        private void AddCardPopup()
-        {
-            AddCard.IsOpen = true;
-        }
+        
     }
 
 }
