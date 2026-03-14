@@ -23,115 +23,77 @@
             <!-- 右侧：图像显示区域 -->
             <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+            Background="#EAEAEA" ClipToBounds="True"
+            MouseLeftButtonDown="CanvasLeftDown" 
+            MouseLeftButtonUp="CanvasLeftUp" 
+            MouseMove="CanvasMouseMove"  
+            MouseRightButtonUp="RightUp"
+            PreviewMouseWheel="Canvas_PreviewMouseWheel"
+            PreviewMouseRightButtonDown="Canvas_PreviewMouseRightButtonDown"
+            PreviewMouseMove="Canvas_PreviewMouseMove"
+            PreviewMouseRightButtonUp="Canvas_PreviewMouseRightButtonUp">
+                <Canvas x:Name="ParamentCanvas" 
+                IsHitTestVisible="True"
+                Background="Transparent">
+                    <Canvas.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform x:Name="CanvasScale" ScaleX="1" ScaleY="1"/>
+                            <TranslateTransform x:Name="CanvasTranslate" X="0" Y="0"/>
+                        </TransformGroup>
+                    </Canvas.RenderTransform>
 
-        <!-- ======================= 左侧：参数卡片区域 (无限画布) ======================= -->
-        <Border Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#EAEAEA" ClipToBounds="True">
-            <Grid>
-                <!-- 1. 引入 ScrollViewer，提供滚动条和视口支撑 -->
-                <!-- 事件绑定用于：滚轮缩放、右键平移 -->
-                <ScrollViewer x:Name="LeftScrollViewer"
-                              HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Auto"
-                              CanContentScroll="True"
-                              PreviewMouseWheel="LeftScrollViewer_PreviewMouseWheel"
-                              PreviewMouseRightButtonDown="LeftScrollViewer_PreviewMouseRightButtonDown"
-                              PreviewMouseMove="LeftScrollViewer_PreviewMouseMove"
-                              PreviewMouseRightButtonUp="LeftScrollViewer_PreviewMouseRightButtonUp">
+                    <ItemsControl ItemsSource="{Binding AllCards}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas Background="Transparent"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <toolcard:ToolCard MouseLeftButtonDown="CardLeftDown"
+                                           MouseLeftButtonUp="CardLeftUp"
+                                           MouseMove="CardMouseMove"
+                                           MouseRightButtonUp="RightUp"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                <Setter Property="Panel.ZIndex" Value="{Binding TopZIndex}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
 
-                    <!-- 2. 缩放载体 Grid -->
-                    <Grid x:Name="LeftTransformGrid" Background="Transparent"
-                          Width="3000" Height="3000">
-                        <!-- 给一个足够大的初始空间 -->
+                    <Rectangle x:Name="SelectionBox" Panel.ZIndex="999" Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="4 2" Fill="#330078D7" IsHitTestVisible="False" Visibility="Collapsed"/>
+                </Canvas>
+            </Border>
 
-                        <!-- 使用 LayoutTransform 实现缩放，自带滚动条联动 -->
-                        <Grid.LayoutTransform>
-                            <ScaleTransform x:Name="LeftCanvasScale" ScaleX="1" ScaleY="1"/>
-                        </Grid.LayoutTransform>
-                       
+            <TextBlock x:Name="LeftZoomLevelText" Text="100%" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,20,10,25" Foreground="Gray" IsHitTestVisible="False"/>
 
-                                <!-- 画布 -->
-                        <Canvas x:Name="ParamentCanvas" 
-                                IsHitTestVisible="True"
-                                Background="Transparent"
-                                MouseLeftButtonDown="CanvasLeftDown" 
-                                MouseLeftButtonUp="CanvasLeftUp" 
-                                MouseMove="CanvasMouseMove"  
-                                MouseRightButtonUp="RightUp">
-                            <ItemsControl ItemsSource="{Binding AllCards}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <Canvas Background="Transparent"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <toolcard:ToolCard
-                                            MouseLeftButtonDown="CardLeftDown"
-                                            MouseLeftButtonUp="CardLeftUp"
-                                            MouseMove="CardMouseMove"
-                                            MouseRightButtonUp="RightUp"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemContainerStyle>
-                                    <Style TargetType="ContentPresenter">
-                                        <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                                        <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                                    </Style>
-                                </ItemsControl.ItemContainerStyle>
-                            </ItemsControl>
-
-
-
-
-
-
-
-
-
-
-
-
-                            <!-- 选项框放最后渲染 防止被遮盖，注意鼠标命中-->
-                            <Rectangle x:Name="SelectionBox"
-                                       Panel.ZIndex="999"
-                                       Stroke="DodgerBlue"
-                                       StrokeThickness="1"
-                                       StrokeDashArray="4 2"
-                                       Fill="#330078D7"
-                                       IsHitTestVisible="False"
-                                       Visibility="Collapsed"/>
-                        </Canvas>
-                            
-                    </Grid>
-                </ScrollViewer>
-
-                <!-- 左下角显示缩放比例 -->
-                <TextBlock x:Name="LeftZoomLevelText" Text="100%" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,20,10,25" Foreground="Gray" IsHitTestVisible="False"/>
-
-                <!-- Popup 必须放在 ScrollViewer 外层，否则缩放时菜单会跟着变大变小 -->
-                <!-- 右键添加Card -->
-                <Popup x:Name="AddCard" AllowsTransparency="True"  Panel.ZIndex="10" IsOpen="{Binding AddPopup, Mode=TwoWay}" StaysOpen="False" Placement="Mouse">
-                    <Border Padding="15">
-                        <Border Width="Auto" MinHeight="150" MinWidth="100" CornerRadius="18" Background="White" Style="{StaticResource BorderStyle}">
-                            <StackPanel>
-                                <Button Content="添加Card"  Command="{Binding AddCardCommand}" Background="Transparent" Style="{StaticResource MenuButtonStyle}"/>
-                            </StackPanel>
-                        </Border>
+            <Popup x:Name="AddCard" AllowsTransparency="True"  Panel.ZIndex="10" IsOpen="{Binding AddPopup, Mode=TwoWay}" StaysOpen="False" Placement="Mouse">
+                <Border Padding="15">
+                    <Border Width="Auto" MinHeight="150" MinWidth="100" CornerRadius="18" Background="White" Style="{StaticResource BorderStyle}">
+                        <StackPanel>
+                            <Button Content="添加Card"  Command="{Binding AddCardCommand}" Background="Transparent" Style="{StaticResource MenuButtonStyle}"/>
+                        </StackPanel>
                     </Border>
-                </Popup>
+                </Border>
+            </Popup>
 
-                <!-- 右键删除Card -->
-                <Popup x:Name="DeleteCard" AllowsTransparency="True" IsOpen="{Binding DelePopup, Mode=TwoWay}" Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
-                    <Border Padding="15">
-                        <Border Width="100" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}">
-                            <StackPanel>
-                                <Button Content="删除Card" Command="{Binding DeleteCardsCommand}" Foreground="Red" Background="Transparent" Style="{StaticResource MenuButtonStyle}"/>
-                            </StackPanel>
-                        </Border>
+            <Popup x:Name="DeleteCard" AllowsTransparency="True"  IsOpen="{Binding DelePopup, Mode=TwoWay}" Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
+                <Border Padding="15">
+                    <Border Width="100" MinHeight="27" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}">
+                        <StackPanel>
+                            <Button Content="删除Card"  Command="{Binding DeleteCardsCommand}" Foreground="Red" Background="Transparent" Style="{StaticResource MenuButtonStyle}"/>
+                        </StackPanel>
                     </Border>
-                </Popup>
-            </Grid>
-        </Border>
+                </Border>
+            </Popup>
+
+        </Grid>
 
         <!-- ======================= 右侧：图像显示与工具区域 ======================= -->
         <Grid Grid.Column="1">
