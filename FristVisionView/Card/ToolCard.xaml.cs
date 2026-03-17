@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FirstVisionView.DataModel;
 
 namespace FirstVisionView.Card
 {
@@ -24,9 +25,36 @@ namespace FirstVisionView.Card
         {
             InitializeComponent();
         }
-        public void SetSelected(bool selected)
+        
+
+        private void EditText_LostFocus(object sender, RoutedEventArgs e)
         {
-            ToolBorder.BorderBrush = selected ? Brushes.CornflowerBlue: Brushes.Transparent;
+            LockCard();
+        }
+
+        private void EditText_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                LockCard();
+            }
+        }
+
+        private void EditText_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (EditText.Visibility == Visibility.Visible)
+            {
+                EditText.Focus();
+                EditText.SelectAll();
+            }
+        }
+        private void LockCard()
+        {
+            var card = this.DataContext as CardDataModel;
+            if ( card != null)
+            {
+                card.IsRenaming = false;
+            }
         }
     }
 }

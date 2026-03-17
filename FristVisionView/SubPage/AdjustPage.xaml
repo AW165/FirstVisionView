@@ -11,6 +11,17 @@
              d:DataContext="{d:DesignData Type=vm:AdjustViewModel}"
              DataContext="{Binding AdjustVM}"
              Background="#F5F5F5">
+    <UserControl.Resources>
+        <DrawingBrush x:Key="GridBrush" TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
+            <DrawingBrush.Drawing>
+                <GeometryDrawing Geometry="M 10 0 L 0 0 0 10">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#E0E0E0" Thickness="1" DashStyle="{x:Static DashStyles.Dot}"/>
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Resources>
              
     <!-- 给一个底色区分 -->
     
@@ -35,8 +46,9 @@
             PreviewMouseMove="Canvas_PreviewMouseMove"
             PreviewMouseRightButtonUp="Canvas_PreviewMouseRightButtonUp">
                 <Canvas x:Name="ParamentCanvas" 
-                IsHitTestVisible="True"
-                Background="Transparent">
+                        IsHitTestVisible="True"
+                        Focusable="True"
+                        Background="Transparent">
                     <Canvas.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform x:Name="CanvasScale" ScaleX="1" ScaleY="1"/>

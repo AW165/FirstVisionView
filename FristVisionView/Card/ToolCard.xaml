@@ -7,6 +7,7 @@
              mc:Ignorable="d" 
              xmlns:vm ="clr-namespace:FirstVisionView.ViewModels"
              Height="80" Width="150">
+    
     <Grid >
         <Border x:Name="ToolBorder" 
                 Background="#FFFFFF"  
@@ -17,11 +18,8 @@
                  >
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource BorderStyle}">
-
                     <Style.Triggers>
-
                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
-
                             <Setter Property="Effect">
                                 <Setter.Value>
                                     <DropShadowEffect BlurRadius="10" Color="DodgerBlue" Opacity="0.8" ShadowDepth="0"/>
@@ -39,20 +37,33 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
-
                 </Grid.RowDefinitions>
-                <TextBox Text="{Binding CardName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding vm.CanRename}" BorderBrush="Transparent" Padding="0,3,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBox x:Name="EditText" Text="{Binding CardName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  BorderBrush="Transparent" Padding="0,3,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" LostFocus="EditText_LostFocus" KeyDown="EditText_KeyDown" IsVisibleChanged="EditText_IsVisibleChanged">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRenaming}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
                 </TextBox>
-
+                <TextBlock x:Name="DisplayText" Text="{Binding CardName}"   Padding="0,3,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRenaming}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </Grid>
         </Border>
-        <UserControl>
-            <Style TargetType="UserControl">
-                <Style.Triggers>
-                    
-                </Style.Triggers>
-            </Style>
-        </UserControl>
-
     </Grid>
+   
 </UserControl>

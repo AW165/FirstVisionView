@@ -82,6 +82,8 @@ namespace FirstVisionView.ViewModels
             {
                 card.IsSelected = false;
             }
+            OnPropertyChanged(nameof(CanRename));
+
             return;
         }
         [RelayCommand]
@@ -105,11 +107,14 @@ namespace FirstVisionView.ViewModels
                 }
             }
            
-               
+            OnPropertyChanged(nameof(CanRename));
+
         }
         [RelayCommand]
-        private void CardRename(CardDataModel card)
+        private void CardRename()
         {
+            var card = AllCards.FirstOrDefault(c => c.IsSelected);
+            if (card == null) return;
             card.IsRenaming = true;
             DelePopup = false;
         }
