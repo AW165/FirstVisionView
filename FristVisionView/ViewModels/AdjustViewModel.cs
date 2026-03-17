@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FirstVisionView.Card;
 using FirstVisionView.DataModel;
+using OpenTK.Graphics.ES11;
 
 namespace FirstVisionView.ViewModels
 {
@@ -18,6 +19,7 @@ namespace FirstVisionView.ViewModels
         [ObservableProperty] private ObservableCollection<CardDataModel> _allCards = new();
         [ObservableProperty] private bool _delePopup = false;
         [ObservableProperty] private bool _addPopup = false;
+        public bool CanRename => (AllCards.Count(c => c.IsSelected) == 1);
         // 用来记录刚才右键点击的位置
         public System.Drawing.PointF CurrentMousePoint { get; set; }
         private int _topZIndex = 0;
@@ -105,7 +107,12 @@ namespace FirstVisionView.ViewModels
            
                
         }
-       
+        [RelayCommand]
+        private void CardRename(CardDataModel card)
+        {
+            card.IsRenaming = true;
+            DelePopup = false;
+        }
 
 
 

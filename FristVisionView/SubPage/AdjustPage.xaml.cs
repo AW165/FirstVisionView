@@ -177,9 +177,7 @@ namespace FirstVisionView
             _IsDragging = false;//取消拖拽状态
 
             if (vm == null) return;
-
             var cardList = vm.AllCards.Where(c => c.IsSelected).ToList();//判断有无卡片被选中，有则弹出删除菜单，否则弹出添加菜单
-
             if (cardList.Count == 0)
             {
                 Point logicalPos = e.GetPosition(ParamentCanvas);

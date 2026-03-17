@@ -19,5 +19,7 @@ namespace FirstVisionView.DataModel
         private string _cardName = "参数";
         [ObservableProperty]
         private int _topZIndex = 0;
+        [ObservableProperty]
+        private bool _isRenaming = false;
     }
 }

@@ -88,6 +88,7 @@
                     <Border Width="100" MinHeight="27" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}">
                         <StackPanel>
                             <Button Content="删除Card"  Command="{Binding DeleteCardsCommand}" Foreground="Red" Background="Transparent" Style="{StaticResource MenuButtonStyle}"/>
+                            <Button Content="重命名Card" IsEnabled="{Binding CanRename}" Command="{Binding CardRenameCommand}" Foreground="Black" Background="Transparent" Style="{StaticResource MenuButtonStyle}"/>
                         </StackPanel>
                     </Border>
                 </Border>
