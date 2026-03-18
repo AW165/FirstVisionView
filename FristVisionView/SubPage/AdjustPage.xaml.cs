@@ -91,10 +91,6 @@ namespace FirstVisionView
         }
 
         //Canvas上右键点击
-        private void CanvasRightDown(object sender, MouseButtonEventArgs e)
-        {
-            _IsRightDown = true;//设置右键按下状态
-        }
 
         //Canvas上右键松开
 
@@ -204,6 +200,7 @@ namespace FirstVisionView
         //Card上左键松开
         private void CardLeftUp(object sender, MouseButtonEventArgs e)
         {
+            GridBackgroundLayer.Visibility = Visibility.Collapsed;//设置显示网格
             var currentCard = sender as ToolCard;
             if (currentCard == null) return;
             _IsCardLeftDown = false;//设置松开状态
@@ -218,7 +215,6 @@ namespace FirstVisionView
                 }
             }
             _IsDragging = false;//设置拖拽状态结束
-            ParamentCanvas.Background = Brushes.Transparent;//设置网格
             _CurrentCard.ReleaseMouseCapture();
         }
 
@@ -234,7 +230,7 @@ namespace FirstVisionView
                 _IsDragging = true; //超过阈值就设置移动状态
             }
             if (_IsDragging == false) return;
-            ParamentCanvas.Background = FindResource("GridBrush") as Brush; ;//设置网格
+            GridBackgroundLayer.Visibility = Visibility.Visible;//设置显示网格
             //此处添加移动卡片逻辑
             foreach (var card in _DragStartPoint)
             {
@@ -247,7 +243,7 @@ namespace FirstVisionView
             }
         }
         // ================= 画布平移 (右键拖拽) =================
-        private void Canvas_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void CanvasRightDown(object sender, MouseButtonEventArgs e)
         {
             _IsRightDown = true;
             _hasPanned = false;

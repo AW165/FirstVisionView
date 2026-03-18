@@ -11,18 +11,6 @@
              d:DataContext="{d:DesignData Type=vm:AdjustViewModel}"
              DataContext="{Binding AdjustVM}"
              Background="#F5F5F5">
-    <UserControl.Resources>
-        <DrawingBrush x:Key="GridBrush" TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
-            <DrawingBrush.Drawing>
-                <GeometryDrawing Geometry="M 10 0 L 0 0 0 10">
-                    <GeometryDrawing.Pen>
-                        <Pen Brush="#E0E0E0" Thickness="1" DashStyle="{x:Static DashStyles.Dot}"/>
-                    </GeometryDrawing.Pen>
-                </GeometryDrawing>
-            </DrawingBrush.Drawing>
-        </DrawingBrush>
-    </UserControl.Resources>
-             
     <!-- 给一个底色区分 -->
     
 
@@ -36,51 +24,75 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-            Background="#EAEAEA" ClipToBounds="True"
-            MouseLeftButtonDown="CanvasLeftDown" 
-            MouseLeftButtonUp="CanvasLeftUp" 
-            MouseMove="CanvasMouseMove"  
-            MouseRightButtonUp="RightUp"
-            PreviewMouseWheel="Canvas_PreviewMouseWheel"
-            PreviewMouseRightButtonDown="Canvas_PreviewMouseRightButtonDown"
-            PreviewMouseMove="Canvas_PreviewMouseMove"
-            PreviewMouseRightButtonUp="Canvas_PreviewMouseRightButtonUp">
-                <Canvas x:Name="ParamentCanvas" 
+                    ClipToBounds="True"
+                    Background="#F5F5F5"
+                    MouseLeftButtonDown="CanvasLeftDown" 
+                    MouseLeftButtonUp="CanvasLeftUp" 
+                    MouseMove="CanvasMouseMove"  
+                    MouseRightButtonUp="RightUp"
+                    PreviewMouseWheel="Canvas_PreviewMouseWheel"
+                    PreviewMouseRightButtonDown="CanvasRightDown"
+                    PreviewMouseMove="Canvas_PreviewMouseMove"
+                    PreviewMouseRightButtonUp="Canvas_PreviewMouseRightButtonUp">
+                <Grid>
+                    <Border x:Name="GridBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
+                        <Border.Background>
+                        <DrawingBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
+                            <DrawingBrush.Transform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="{Binding ElementName=CanvasScale, Path=ScaleX}"
+                                ScaleY="{Binding ElementName=CanvasScale, Path=ScaleY}"/>
+                                    <TranslateTransform X="{Binding ElementName=CanvasTranslate, Path=X}"
+                                Y="{Binding ElementName=CanvasTranslate, Path=Y}"/>
+                                </TransformGroup>
+                            </DrawingBrush.Transform>
+                            <DrawingBrush.Drawing>
+                                <GeometryDrawing Geometry="M 20 0 L 0 0 0 20">
+                                    <GeometryDrawing.Pen>
+                                        <Pen Brush="#D0D0D0" Thickness="1" DashStyle="{x:Static DashStyles.Dot}"/>
+                                    </GeometryDrawing.Pen>
+                                </GeometryDrawing>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </Border.Background>
+                    </Border>
+                    <Canvas x:Name="ParamentCanvas" 
                         IsHitTestVisible="True"
                         Focusable="True"
                         Background="Transparent">
-                    <Canvas.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform x:Name="CanvasScale" ScaleX="1" ScaleY="1"/>
-                            <TranslateTransform x:Name="CanvasTranslate" X="0" Y="0"/>
-                        </TransformGroup>
-                    </Canvas.RenderTransform>
+                        <Canvas.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform x:Name="CanvasScale" ScaleX="1" ScaleY="1"/>
+                                <TranslateTransform x:Name="CanvasTranslate" X="0" Y="0"/>
+                            </TransformGroup>
+                        </Canvas.RenderTransform>
 
-                    <ItemsControl ItemsSource="{Binding AllCards}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas Background="Transparent"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <toolcard:ToolCard MouseLeftButtonDown="CardLeftDown"
+                        <ItemsControl ItemsSource="{Binding AllCards}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Background="Transparent"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <toolcard:ToolCard MouseLeftButtonDown="CardLeftDown"
                                            MouseLeftButtonUp="CardLeftUp"
                                            MouseMove="CardMouseMove"
                                            MouseRightButtonUp="RightUp"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                                <Setter Property="Panel.ZIndex" Value="{Binding TopZIndex}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                    </ItemsControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                    <Setter Property="Panel.ZIndex" Value="{Binding TopZIndex}"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                        </ItemsControl>
 
-                    <Rectangle x:Name="SelectionBox" Panel.ZIndex="999" Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="4 2" Fill="#330078D7" IsHitTestVisible="False" Visibility="Collapsed"/>
-                </Canvas>
+                        <Rectangle x:Name="SelectionBox" Panel.ZIndex="999" Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="4 2" Fill="#330078D7" IsHitTestVisible="False" Visibility="Collapsed"/>
+                    </Canvas>
+                </Grid>
             </Border>
 
             <TextBlock x:Name="LeftZoomLevelText" Text="100%" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,20,10,25" Foreground="Gray" IsHitTestVisible="False"/>

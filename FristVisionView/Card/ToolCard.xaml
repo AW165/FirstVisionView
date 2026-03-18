@@ -7,6 +7,27 @@
              mc:Ignorable="d" 
              xmlns:vm ="clr-namespace:FirstVisionView.ViewModels"
              Height="80" Width="150">
+    <UserControl.Resources>
+        <Style x:Key="pinStyle" TargetType="Ellipse">
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Fill" Value="White"/>
+            <Setter Property="Stroke" Value="DodgerBlue"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Cross"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Fill" Value="Transparent"/>
+                    <Setter Property="Width" Value="14"/>
+                    <Setter Property="Height" Value="14"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     
     <Grid >
         <Border x:Name="ToolBorder" 
@@ -29,6 +50,7 @@
                             <Setter Property="BorderBrush" Value="CornflowerBlue"/>
 
                         </DataTrigger>
+                        
                     </Style.Triggers>
                 </Style>
             </Border.Style>
@@ -64,6 +86,10 @@
                 </TextBlock>
             </Grid>
         </Border>
+        <Ellipse x:Name="TopPin" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource pinStyle}" Margin="0,-4,0,0" />
+        <Ellipse x:Name="BottomPin" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource pinStyle}" Margin="0,0,0,-4"/>
+        <Ellipse x:Name="LeftPin" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="-4,0,0,0"/>
+        <Ellipse x:Name="RightPin" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="0,0,-4,0"/>
     </Grid>
    
 </UserControl>
