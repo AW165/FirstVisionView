@@ -56,5 +56,19 @@ namespace FirstVisionView.Card
                 card.IsRenaming = false;
             }
         }
+
+        private void PinLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;//打断冒泡，防止触发卡片拖动与选择
+            var PinCheck = sender as Ellipse;
+            if (PinCheck == null) return;
+           
+        }
+        private void PinLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;//打断冒泡，防止触发卡片拖动与选择
+
+
+        }
     }
 }

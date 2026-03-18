@@ -64,10 +64,12 @@ namespace FirstVisionView
         private double _PanStartOffsetY;
         // 记录当前整个大画布的缩放倍率，默认 1.0 代表 100% 原始大小。
         private double _currentZoom = 1.0;
-        // 防手抖的像素阈值：鼠标按下后移动超过 5 个像素，才被正式认定为“拖拽行为”，否则视为原地点击。
-        private const int DistanceThreshold = 5;
-        private Point _PanStartMousePos;
+        private const int DistanceThreshold = 5;// 防手抖的像素阈值：鼠标按下后移动超过 5 个像素，才被正式认定为“拖拽行为”，否则视为原地点击。
+        private Point _PanStartMousePos;// 记录鼠标在屏幕上的物理坐标
         private Point _PanStartTranslate; // 记录按下时，画布原本的偏移量
+        private bool _IsDringGhostLine = false;//记录连线是否在拖动
+        private string _StartPinDirection;//记录从哪个方向出来的线段
+        private Point _LineStartPoint;
         //============================Canvas事件区域======================
         //Canvas上左键点击
         private void CanvasLeftDown(object sender, MouseButtonEventArgs e)

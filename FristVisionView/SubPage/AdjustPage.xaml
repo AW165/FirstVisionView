@@ -89,14 +89,21 @@
                                 </Style>
                             </ItemsControl.ItemContainerStyle>
                         </ItemsControl>
-
                         <Rectangle x:Name="SelectionBox" Panel.ZIndex="999" Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="4 2" Fill="#330078D7" IsHitTestVisible="False" Visibility="Collapsed"/>
+                        <Path x:Name="GhostLine"
+                              Stroke="DodgerBlue"
+                              StrokeThickness="3"
+                              StrokeDashArray="4 2"
+                              IsHitTestVisible="False"
+                              Visibility="Collapsed"
+                              Panel.ZIndex="10000">
+                            
+                        </Path>
                     </Canvas>
                 </Grid>
             </Border>
-
+            <!--缩放百分比-->
             <TextBlock x:Name="LeftZoomLevelText" Text="100%" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,20,10,25" Foreground="Gray" IsHitTestVisible="False"/>
-
             <Popup x:Name="AddCard" AllowsTransparency="True"  Panel.ZIndex="10" IsOpen="{Binding AddPopup, Mode=TwoWay}" StaysOpen="False" Placement="Mouse">
                 <Border Padding="15">
                     <Border Width="Auto" MinHeight="150" MinWidth="100" CornerRadius="18" Background="White" Style="{StaticResource BorderStyle}">

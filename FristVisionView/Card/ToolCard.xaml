@@ -86,10 +86,10 @@
                 </TextBlock>
             </Grid>
         </Border>
-        <Ellipse x:Name="TopPin" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource pinStyle}" Margin="0,-4,0,0" />
-        <Ellipse x:Name="BottomPin" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource pinStyle}" Margin="0,0,0,-4"/>
-        <Ellipse x:Name="LeftPin" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="-4,0,0,0"/>
-        <Ellipse x:Name="RightPin" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="0,0,-4,0"/>
+        <Ellipse x:Name="TopPin" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource pinStyle}" Margin="0,-4,0,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
+        <Ellipse x:Name="BottomPin" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource pinStyle}" Margin="0,0,0,-4" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
+        <Ellipse x:Name="LeftPin" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="-4,0,0,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
+        <Ellipse x:Name="RightPin" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="0,0,-4,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
     </Grid>
    
 </UserControl>
