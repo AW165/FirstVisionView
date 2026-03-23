@@ -72,9 +72,11 @@
                                     <Canvas Background="Transparent"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-                            <DataTemplate>
-                                <Path Stroke="Gray" StrokeThickness="3" Data="{Binding PathData}"/>
-                            </DataTemplate>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Path Stroke="Gray" StrokeThickness="3" Data="{Binding PathData}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         <ItemsControl ItemsSource="{Binding AllCards}">
                             <ItemsControl.ItemsPanel>

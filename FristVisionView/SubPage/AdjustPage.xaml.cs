@@ -138,10 +138,11 @@ namespace FirstVisionView
                     }
                 }
             }
+        }
 
         //Canvas上右键点击
 
-        //Canvas上右键松开
+            //Canvas上右键松开
 
         private void RightUp(object sender, MouseButtonEventArgs e)
         {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Windows;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -10,7 +10,7 @@ using LiveChartsCore.Kernel;
 
 namespace FirstVisionView.DataModel
 {
-   partial class WireDataModel:ObservableObject
+    public  partial class WireDataModel:ObservableObject
     {
 
         [ObservableProperty] private Point _startPoint;
@@ -24,10 +24,10 @@ namespace FirstVisionView.DataModel
             Point cp2 = EndPoint;
 
             // 简单假定：线都是从左往右流动的 (以后可以根据真实孔的方向优化)
-            cp1.X += (int)tension;
-            cp2.X -= (int)tension;
+            cp1.X += tension;
+            cp2.X -= tension;
 
-            // 拼装 SVG 魔法咒语
+            // 拼装 SVG 
             PathData = $"M {StartPoint.X},{StartPoint.Y} C {cp1.X},{cp1.Y} {cp2.X},{cp2.Y} {EndPoint.X},{EndPoint.Y}";
         }
     }
