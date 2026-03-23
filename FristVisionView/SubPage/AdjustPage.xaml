@@ -66,7 +66,16 @@
                                 <TranslateTransform x:Name="CanvasTranslate" X="0" Y="0"/>
                             </TransformGroup>
                         </Canvas.RenderTransform>
-
+                        <ItemsControl ItemsSource="{Binding AllWires}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Background="Transparent"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <DataTemplate>
+                                <Path Stroke="Gray" StrokeThickness="3" Data="{Binding PathData}"/>
+                            </DataTemplate>
+                        </ItemsControl>
                         <ItemsControl ItemsSource="{Binding AllCards}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>

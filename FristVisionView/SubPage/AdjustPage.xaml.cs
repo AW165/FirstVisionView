@@ -11,6 +11,7 @@ using System.Windows.Controls;
 // 引入 WPF 输入控制库，提供鼠标事件（MouseEventArgs）、键盘按键（Key）的监听能力
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using FirstVisionView.Card;
 // 引入自己的数据模型库，拿到 CardDataModel
 using FirstVisionView.DataModel;
@@ -90,7 +91,53 @@ namespace FirstVisionView
             _IsDragging = false;//设置拖拽状态结束
             SelectionBox.Visibility = Visibility.Collapsed;//矩形框关闭
             ParamentCanvas.ReleaseMouseCapture();//释放鼠标
-        }
+            if (_IsDringGhostLine)
+            {
+                // 1. 熄火：立刻停止画线，隐藏幽灵虚线
+                _IsDringGhostLine = false;
+                GhostLine.Visibility = Visibility.Collapsed;
+
+                // 2. 拿到鼠标松开时的绝对位置
+                Point dropPoint = e.GetPosition(ParamentCanvas);
+
+                // 3. 开启雷达，向下穿透刺探：鼠标底下有没有扎到控件？
+                HitTestResult hitResult = VisualTreeHelper.HitTest(ParamentCanvas, dropPoint);
+
+                // 如果扎到了，而且扎到的是一个叫 Ellipse 的圆孔
+                if (hitResult != null && hitResult.VisualHit is Ellipse targetPin)
+                {
+                    string targetPinName = targetPin.Name;
+
+                    // 防呆设计：不能自己连自己，也不能连到没名字的孔上
+                    if (string.IsNullOrEmpty(targetPinName) || dropPoint == _LineStartPoint) return;
+
+                    // 4. 获取目标孔所在的卡片
+                    ToolCard targetCard = FindParent<ToolCard>(targetPin);
+                    if (targetCard != null)
+                    {
+                        // 获取卡片的业务数据
+                        var targetCardData = targetCard.DataContext as CardDataModel;
+
+                        // 5. 获取目标孔的绝对坐标（为了让线精准对准中心）
+                        Point targetPinCenter = new Point(targetPin.Width / 2, targetPin.Height / 2);
+                        Point absoluteEndPoint = targetPin.TransformToAncestor(ParamentCanvas).Transform(targetPinCenter);
+
+                        // 💥 6. 生成一根永久的实体连线数据！
+                        WireDataModel newWire = new WireDataModel()
+                        {
+                            StartPoint = _LineStartPoint,
+                            EndPoint = absoluteEndPoint
+                        };
+                        newWire.UpdatePath(); // 让线自己计算一下贝塞尔曲线形状
+
+                        // 7. 塞进大账本！UI 瞬间渲染出这根实线！
+                        if (vm != null)
+                        {
+                            vm.AllWires.Add(newWire);
+                        }
+                    }
+                }
+            }
 
         //Canvas上右键点击
 
@@ -119,8 +166,39 @@ namespace FirstVisionView
 
         private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
-            if (_IsCanvasLeftDown != true) return;
+            
             var currentPoint = e.GetPosition(ParamentCanvas);
+            if (_IsDringGhostLine)
+            {
+                double tension = 50;
+                Point controlPoint1 = _LineStartPoint;
+                Point controlPoint2 = currentPoint;
+                switch (_StartPinDirection)
+                {
+                    case "Right": controlPoint1.X += tension; break;
+                    case "Left": controlPoint1.X -= tension; break;
+                    case "Top": controlPoint1.Y -= tension; break;
+                    case "Bottom": controlPoint1.Y += tension; break;
+                }
+                // 终点磁铁暂时假定相对水平或垂直扎入
+                if (_StartPinDirection == "Right" || _StartPinDirection == "Left")
+                    controlPoint2.X -= tension;
+                else
+                    controlPoint2.Y -= tension;
+
+                // 💥 拼装 SVG 路径字符串，画出贝塞尔曲线
+                string pathData = $"M {_LineStartPoint.X},{_LineStartPoint.Y} " +
+                                  $"C {controlPoint1.X},{controlPoint1.Y} " +
+                                  $"{controlPoint2.X},{controlPoint2.Y} " +
+                                  $"{currentPoint.X},{currentPoint.Y}";
+
+                // 解析并赋值给 XAML 里的 GhostLine 控件
+                GhostLine.Data = Geometry.Parse(pathData);
+
+                // ⚠️ 极其致命的一步：正在画线，直接强行退出方法！绝不允许执行下面的框选逻辑！
+                return;
+            }
+                if (_IsCanvasLeftDown != true) return;
             var disX = Math.Abs(currentPoint.X - _CanvasStartPoint.X);
             var disY = Math.Abs(currentPoint.Y - _CanvasStartPoint.Y);
             if (disX >= DistanceThreshold || disY >= DistanceThreshold)
@@ -319,7 +397,24 @@ namespace FirstVisionView
                 }
             }
         }
+        public void StartDrawingLine(Point startPoint, string pinName)
+        {
+            _IsDringGhostLine = true;
+            _LineStartPoint = startPoint;
+            _StartPinDirection = pinName.Replace("Pin", "");
+            GhostLine.Visibility = Visibility.Visible;
 
+        }
+        //==============================工具=======================
+
+        private T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if (parentObject == null) return null;
+            T parent = parentObject as T;
+            if (parent != null) return parent;
+            else return FindParent<T>(parentObject);
+        }
         //==============================菜单/公共事件=======================
     }
 }

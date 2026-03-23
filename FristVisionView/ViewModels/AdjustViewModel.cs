@@ -15,7 +15,7 @@ namespace FirstVisionView.ViewModels
 {
   public partial class AdjustViewModel :ObservableObject
     {
-
+        [ObservableProperty] private ObservableCollection<WireDataModel> _allWires = new();
         [ObservableProperty] private ObservableCollection<CardDataModel> _allCards = new();
         [ObservableProperty] private bool _delePopup = false;
         [ObservableProperty] private bool _addPopup = false;
