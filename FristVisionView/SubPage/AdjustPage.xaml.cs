@@ -30,7 +30,7 @@ namespace FirstVisionView
         }
         //引用ViewModel，拿到vm的数据
         private double gridSize = 10;
-        private AdjustViewModel? vm => this.DataContext as AdjustViewModel;
+        private AdjustViewModel? vm => this.DataContext as AdjustViewModel; //vm模型
         //画框状态
         private bool _IsDragging = false;
         //鼠标移动状态
@@ -70,7 +70,9 @@ namespace FirstVisionView
         private Point _PanStartTranslate; // 记录按下时，画布原本的偏移量
         private bool _IsDringGhostLine = false;//记录连线是否在拖动
         private string _StartPinDirection;//记录从哪个方向出来的线段
-        private Point _LineStartPoint;
+        private Point _LineStartPoint;//记录点击的坐标
+        private ToolCard _LineStartCard;//记录是点击的是哪个卡片的pin
+        private string _startPinFullName;//记录点击的pin的名称
         //============================Canvas事件区域======================
         //Canvas上左键点击
         private void CanvasLeftDown(object sender, MouseButtonEventArgs e)
@@ -93,64 +95,74 @@ namespace FirstVisionView
             ParamentCanvas.ReleaseMouseCapture();//释放鼠标
             if (_IsDringGhostLine)
             {
-                // 1. 熄火：立刻停止画线，隐藏幽灵虚线
+                //  停止画线，虚线
                 _IsDringGhostLine = false;
                 GhostLine.Visibility = Visibility.Collapsed;
-
-                // 2. 拿到鼠标松开时的绝对位置
+                //  拿到鼠标松开时的绝对位置
                 Point dropPoint = e.GetPosition(ParamentCanvas);
+                // 向下穿透刺探：鼠标底下有没有扎到控件
+                Ellipse targetPin = null;
+                VisualTreeHelper.HitTest(
+                    ParamentCanvas,
+                    null,
+                    new HitTestResultCallback(result =>
+                    {
+                        if (result.VisualHit is Ellipse pin && pin.Name.EndsWith("Pin"))
+                        {
+                            targetPin = pin;
+                            return HitTestResultBehavior.Stop;
+                        }
+                        return HitTestResultBehavior.Continue;
+                    }),
+                    new GeometryHitTestParameters(new EllipseGeometry(dropPoint, 15, 15))
+                    );
 
-                // 3. 开启雷达，向下穿透刺探：鼠标底下有没有扎到控件？
-                HitTestResult hitResult = VisualTreeHelper.HitTest(ParamentCanvas, dropPoint);
 
                 // 如果扎到了，而且扎到的是一个叫 Ellipse 的圆孔
-                if (hitResult != null && hitResult.VisualHit is Ellipse targetPin)
+                if (targetPin != null)
                 {
                     string targetPinName = targetPin.Name;
-
+                    ToolCard targetCard = FindParent<ToolCard>(targetPin);
                     // 防呆设计：不能自己连自己，也不能连到没名字的孔上
                     if (string.IsNullOrEmpty(targetPinName) || dropPoint == _LineStartPoint) return;
-
                     // 4. 获取目标孔所在的卡片
-                    ToolCard targetCard = FindParent<ToolCard>(targetPin);
-                    if (targetCard != null)
+                    if (targetCard != null && targetCard != _LineStartCard)
                     {
                         // 获取卡片的业务数据
                         var targetCardData = targetCard.DataContext as CardDataModel;
-
+                        if (targetCardData == null) return;
                         // 5. 获取目标孔的绝对坐标（为了让线精准对准中心）
                         Point targetPinCenter = new Point(targetPin.Width / 2, targetPin.Height / 2);
                         Point absoluteEndPoint = targetPin.TransformToAncestor(ParamentCanvas).Transform(targetPinCenter);
-
-                        // 💥 6. 生成一根永久的实体连线数据！
+                        var startCard = _LineStartCard.DataContext as CardDataModel;//转换成M，为创建wireM做准备
+                        if (startCard == null) return;
+                        //  6. 生成一根永久的实体连线数据！
                         WireDataModel newWire = new WireDataModel()
                         {
-                            StartPoint = _LineStartPoint,
-                            EndPoint = absoluteEndPoint
+                            StartPoint = _LineStartPoint,//从哪个点开始的
+                            EndPoint = absoluteEndPoint,//到哪个点结束
+                            SourceCard = startCard,//从哪个卡片开始的
+                            TargetCard = targetCardData,//到哪个卡片结束
+                            SourcePin = _StartPinDirection,
+                            EndPin = targetPinName
                         };
                         newWire.UpdatePath(); // 让线自己计算一下贝塞尔曲线形状
-
                         // 7. 塞进大账本！UI 瞬间渲染出这根实线！
                         if (vm != null)
                         {
                             vm.AllWires.Add(newWire);
                         }
+
                     }
                 }
             }
+            GhostLine.Data = null;//清空虚线
         }
-
-        //Canvas上右键点击
-
-            //Canvas上右键松开
-
+        //Canvas上右键松开
         private void RightUp(object sender, MouseButtonEventArgs e)
         {
-
             _IsRightDown = false;//取消右键按下状态
-
             _IsDragging = false;//取消拖拽状态
-
             if (vm == null) return;
             var cardList = vm.AllCards.Where(c => c.IsSelected).ToList();//判断有无卡片被选中，有则弹出删除菜单，否则弹出添加菜单
             if (cardList.Count == 0)
@@ -162,12 +174,9 @@ namespace FirstVisionView
             }
             else vm.DelePopup = true;
         }
-
         //Canvas上鼠标移动
-
         private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
-            
             var currentPoint = e.GetPosition(ParamentCanvas);
             if (_IsDringGhostLine)
             {
@@ -176,13 +185,13 @@ namespace FirstVisionView
                 Point controlPoint2 = currentPoint;
                 switch (_StartPinDirection)
                 {
-                    case "Right": controlPoint1.X += tension; break;
-                    case "Left": controlPoint1.X -= tension; break;
-                    case "Top": controlPoint1.Y -= tension; break;
-                    case "Bottom": controlPoint1.Y += tension; break;
+                    case "RightPin": controlPoint1.X += tension; break;
+                    case "LeftPin": controlPoint1.X -= tension; break;
+                    case "TopPin": controlPoint1.Y -= tension; break;
+                    case "BottomPin": controlPoint1.Y += tension; break;
                 }
                 // 终点磁铁暂时假定相对水平或垂直扎入
-                if (_StartPinDirection == "Right" || _StartPinDirection == "Left")
+                if (_StartPinDirection == "RightPin" || _StartPinDirection == "LeftPin")
                     controlPoint2.X -= tension;
                 else
                     controlPoint2.Y -= tension;
@@ -195,18 +204,17 @@ namespace FirstVisionView
 
                 // 解析并赋值给 XAML 里的 GhostLine 控件
                 GhostLine.Data = Geometry.Parse(pathData);
-
                 // ⚠️ 极其致命的一步：正在画线，直接强行退出方法！绝不允许执行下面的框选逻辑！
                 return;
-            }
-                if (_IsCanvasLeftDown != true) return;
+            }//画线逻辑
+            if (_IsCanvasLeftDown != true) return;//左键未按下则返回
             var disX = Math.Abs(currentPoint.X - _CanvasStartPoint.X);
             var disY = Math.Abs(currentPoint.Y - _CanvasStartPoint.Y);
             if (disX >= DistanceThreshold || disY >= DistanceThreshold)
             {
                 _hasPanned = true; //超过阈值就设置移动状态
             }
-            if (_hasPanned == false) return;
+            if (_hasPanned == false) return;//没触发拖拽就返回
             else
             {
                 //此处为画框逻辑
@@ -222,7 +230,6 @@ namespace FirstVisionView
                 SelectionBox.Visibility = Visibility.Visible;
                 foreach (var card in vm.AllCards)
                 {
-
                     Rect rect2 = new Rect(card.X, card.Y, 150, 80);
                     if (rect1.IntersectsWith(rect2) == true)
                     {
@@ -233,7 +240,6 @@ namespace FirstVisionView
                         //按下control时旧的状态不清
                     }
                     else
-
                     {
                         vm.ClearSeletionStatusCommand.Execute(card);//没按下control时清除之前的卡片状态
                     }
@@ -241,9 +247,7 @@ namespace FirstVisionView
             }
         }
         //========================Card事件区域====================
-
         //Card上左键点击
-
         private void CardLeftDown(object sender, MouseButtonEventArgs e)
         {
             var currentCard = sender as ToolCard;
@@ -252,7 +256,7 @@ namespace FirstVisionView
             if (card == null || vm == null || card.IsRenaming == true) return;
             e.Handled = true;//打断冒泡
             _DragStartPoint.Clear();
-            _IsDragging = false;    
+            _IsDragging = false;
             _CurrentCard = currentCard;
             _IsCardLeftDown = true;//设置在卡片按下状态
             _CardStartPoint = e.GetPosition(ParamentCanvas);//记录鼠标位于画布上的位置       
@@ -281,6 +285,7 @@ namespace FirstVisionView
         //Card上左键松开
         private void CardLeftUp(object sender, MouseButtonEventArgs e)
         {
+            if (_IsCardLeftDown == false) return;
             GridBackgroundLayer.Visibility = Visibility.Collapsed;//设置显示网格
             var currentCard = sender as ToolCard;
             if (currentCard == null) return;
@@ -298,7 +303,6 @@ namespace FirstVisionView
             _IsDragging = false;//设置拖拽状态结束
             _CurrentCard.ReleaseMouseCapture();
         }
-
         //Card上鼠标移动
         private void CardMouseMove(object sender, MouseEventArgs e)
         {
@@ -319,8 +323,31 @@ namespace FirstVisionView
                 var cardPoint = card.Value;
                 var newX = currentPoint.X - _CardStartPoint.X;
                 var newY = currentPoint.Y - _CardStartPoint.Y;
-                cardKey.X = Math.Round((card.Value.X + newX)/gridSize) * gridSize;
-                cardKey.Y = Math.Round((card.Value.Y + newY) / gridSize) * gridSize;
+                var frameX = Math.Round((card.Value.X + newX) / gridSize) * gridSize;
+                var frameY = Math.Round((card.Value.Y + newY) / gridSize) * gridSize;
+                var differX = frameX - cardKey.X;
+                var differY = frameY - cardKey.Y;
+                cardKey.X = frameX;
+                cardKey.Y = frameY;
+                if (differX != 0 || differY != 0)
+                {
+                    foreach (var wire in vm.AllWires)
+                    {
+                        if (wire.SourceCard == cardKey || wire.TargetCard == cardKey)
+                        {
+                            if (wire.SourceCard == cardKey)
+                            {
+                                wire.StartPoint = new Point(wire.StartPoint.X + differX, wire.StartPoint.Y + differY);
+                            }
+                            if (wire.TargetCard == cardKey)
+                            {
+                                wire.EndPoint = new Point(wire.EndPoint.X + differX, wire.EndPoint.Y + differY);
+                            }
+                            wire.UpdatePath();
+                        }
+
+                    }
+                }
             }
         }
         // ================= 画布平移 (右键拖拽) =================
@@ -328,12 +355,10 @@ namespace FirstVisionView
         {
             _IsRightDown = true;
             _hasPanned = false;
-
             // 记录鼠标在屏幕上的物理坐标
             _PanStartMousePos = e.GetPosition(this);
             // 记录此时画布的 Translate X 和 Y
             _PanStartTranslate = new Point(CanvasTranslate.X, CanvasTranslate.Y);
-
             var border = sender as Border;
             border?.CaptureMouse();
         }
@@ -398,16 +423,46 @@ namespace FirstVisionView
                 }
             }
         }
-        public void StartDrawingLine(Point startPoint, string pinName)
+        //开始画线
+        public void StartDrawingLine(Point startPoint, string pinName, ToolCard card)
         {
-            _IsDringGhostLine = true;
+            _LineStartCard = card;//记录当前点击的卡片，用于
+            _IsDringGhostLine = true;//开启画线状态
             _LineStartPoint = startPoint;
-            _StartPinDirection = pinName.Replace("Pin", "");
-            GhostLine.Visibility = Visibility.Visible;
+            _StartPinDirection = pinName;
+            GhostLine.Data = null;//删除之前的虚线
+            GhostLine.Visibility = Visibility.Visible;//开启虚线可视化
+        }
+        //==============================线段=======================
+        private void WireLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            var wire = sender as WireDataModel;
+            if (wire == null || vm == null) return;
+            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                vm.WireAddStatusCommand.Execute(wire);
+            }
+            else
+            {
+                vm.WireCleanStatusCommand.Execute(null);
+                vm.WireAddStatusCommand.Execute(wire);
+            }
+        }
+        private void WireLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
 
         }
-        //==============================工具=======================
 
+
+
+
+
+
+
+
+        //==============================工具=======================
+        //寻找传入控件的父关系控件
         private T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parentObject = VisualTreeHelper.GetParent(child);

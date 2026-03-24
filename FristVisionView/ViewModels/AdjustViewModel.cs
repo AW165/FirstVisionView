@@ -25,10 +25,10 @@ namespace FirstVisionView.ViewModels
         private int _topZIndex = 0;
         [RelayCommand]
         private void AddCard()
-    {
-        // 1. 获取鼠标点击的初始期待坐标
-        double spawnX = CurrentMousePoint.X;
-        double spawnY = CurrentMousePoint.Y;
+        {
+            // 1. 获取鼠标点击的初始期待坐标
+            double spawnX = CurrentMousePoint.X;
+            double spawnY = CurrentMousePoint.Y;
             
 
         // 🌟 2. 智能防重叠算法 (while 循环检测)
@@ -58,15 +58,23 @@ namespace FirstVisionView.ViewModels
         private void DeleteCards()
         {
             //把符合选中条件的选出并生成一个列表，防止直接操作原列表导致崩溃
-            var deletecard = AllCards.Where(s => s.IsSelected).ToList();
-            if (deletecard.Count == 0) return;
-            foreach (var card in deletecard)
+            var deleteCard = AllCards.Where(s => s.IsSelected).ToList();
+            var deleteWire = AllWires.Where(s => s.IsSelected).ToList();
+            if (deleteCard.Count == 0) return;
+            foreach (var card in deleteCard)//删除卡片
             {
                     AllCards.Remove(card);
                 
             }
+            if (deleteWire.Count == 0) return;
+            foreach (var wire in deleteWire)//删除线
+            {
+                AllWires.Remove(wire);
+
+            }
             DelePopup = false;//关闭删除菜单
         }
+        
         [RelayCommand]
         private void ClearSeletionStatus(CardDataModel? card = null)
 
@@ -119,7 +127,26 @@ namespace FirstVisionView.ViewModels
             DelePopup = false;
         }
 
+        [RelayCommand]
+        private void WireAddStatus(WireDataModel? wire = null)
+        {
+            if (wire == null) return;
+            wire.IsSelected = true;
 
+        }
+        [RelayCommand]
+        private void WireCleanStatus(WireDataModel? wire = null)
+        {
+            if (wire == null)
+            {
+                var WireList = AllWires.Where(s => s.IsSelected).ToList();
+                foreach (var Cleanwire in WireList)
+                {
+                    Cleanwire.IsSelected = false;
+                }
+            }
+            else wire.IsSelected = false;
 
+        }
     }
 }

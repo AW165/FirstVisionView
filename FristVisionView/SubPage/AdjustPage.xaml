@@ -74,9 +74,21 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Path Stroke="Gray" StrokeThickness="3" Data="{Binding PathData}"/>
+                                    <Path StrokeThickness="3" Data="{Binding PathData}" MouseLeftButtonDown="{Binding WireLeftButtonDown}">
+                                        <Path.Style>
+                                            <Style TargetType="Path">
+                                                <Setter Property="Stroke" Value="Gray"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSeleted}" Value="true">
+                                                        <Setter Property="Stroke" Value="DodgerBlue"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Path.Style>
+                                    </Path>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
+                            
                         </ItemsControl>
                         <ItemsControl ItemsSource="{Binding AllCards}">
                             <ItemsControl.ItemsPanel>
@@ -100,7 +112,7 @@
                                 </Style>
                             </ItemsControl.ItemContainerStyle>
                         </ItemsControl>
-                        <Rectangle x:Name="SelectionBox" Panel.ZIndex="999" Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="4 2" Fill="#330078D7" IsHitTestVisible="False" Visibility="Collapsed"/>
+                        <Rectangle x:Name="SelectionBox" Panel.ZIndex="9999" Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="4 2" Fill="#330078D7" IsHitTestVisible="False" Visibility="Collapsed"/>
                         <Path x:Name="GhostLine"
                               Stroke="DodgerBlue"
                               StrokeThickness="3"
