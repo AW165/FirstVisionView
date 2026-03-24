@@ -13,9 +13,14 @@ namespace FirstVisionView.DataModel
     public  partial class WireDataModel:ObservableObject
     {
 
-        [ObservableProperty] private Point _startPoint;
-        [ObservableProperty] private Point _endPoint;
+        [ObservableProperty] private Point _startPoint;//开始点
+        [ObservableProperty] private Point _endPoint;//结束点
         [ObservableProperty] private string _pathData = "";
+        [ObservableProperty] private CardDataModel _sourceCard;//CardDataModel类型可以直接拿到卡片的位置数据，这样线可以实时获取跟踪卡片来移动
+        [ObservableProperty] private CardDataModel _targetCard;
+        [ObservableProperty] private string _sourcePin;//起始连接的端口
+        [ObservableProperty] private string _endPin;//结束连接的端口
+
 
         public void UpdatePath()
         {

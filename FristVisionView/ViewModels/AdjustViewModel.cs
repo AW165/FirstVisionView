@@ -25,10 +25,10 @@ namespace FirstVisionView.ViewModels
         private int _topZIndex = 0;
         [RelayCommand]
         private void AddCard()
-    {
-        // 1. 获取鼠标点击的初始期待坐标
-        double spawnX = CurrentMousePoint.X;
-        double spawnY = CurrentMousePoint.Y;
+        {
+            // 1. 获取鼠标点击的初始期待坐标
+            double spawnX = CurrentMousePoint.X;
+            double spawnY = CurrentMousePoint.Y;
             
 
         // 🌟 2. 智能防重叠算法 (while 循环检测)

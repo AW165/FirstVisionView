@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:FirstVisionView.Card"
              mc:Ignorable="d" 
              xmlns:vm ="clr-namespace:FirstVisionView.ViewModels"
-             Height="80" Width="150">
+             d:Height="80" d:Width="150">
     <UserControl.Resources>
         <Style x:Key="pinStyle" TargetType="Ellipse">
             <Setter Property="Width" Value="12"/>
@@ -31,6 +31,8 @@
     
     <Grid >
         <Border x:Name="ToolBorder" 
+                Height="80" 
+                Width="150"
                 Background="#FFFFFF"  
                 CornerRadius="20" 
                 BorderThickness="2" 

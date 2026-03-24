@@ -10,6 +10,8 @@ namespace FirstVisionView.DataModel
     public partial class CardDataModel : ObservableObject
     {
         [ObservableProperty]
+        private string _cardID = Guid.NewGuid().ToString("N");
+        [ObservableProperty]
         private double _x = 0;
         [ObservableProperty]
         private double _y = 0;

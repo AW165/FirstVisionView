@@ -60,13 +60,14 @@ namespace FirstVisionView.Card
         private void PinLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;//打断冒泡，防止触发卡片拖动与选择
-            var clickedPin = sender as Ellipse;
-            if (clickedPin == null) return;//判断
-            AdjustPage BossPage =  FindParent<AdjustPage>(clickedPin);
-            if (BossPage == null) return;
-            Point pinCenter = new Point(clickedPin.Width / 2, clickedPin.Height / 2);
+            var clickedPin = sender as Ellipse;//尝试转化为椭圆
+            if (clickedPin == null) return;//判断是否转换成功，失败返回
+            AdjustPage BossPage =  FindParent<AdjustPage>(clickedPin);//以此控件往上找到adjustPage类型的控件并返回
+            if (BossPage == null) return;//检擦有无找到，没有则返回
+            Point pinCenter = new Point(clickedPin.Width / 2, clickedPin.Height / 2);//获得椭圆的中心点，生成线段用到
+            //前半段是生成了一个解释器，当前椭圆在adjustPage下的Paramentcanvas的绝对坐标（包含了阴影等），后半段是计算中心点位于paramentCanvas的绝对坐标
             Point absolutePoint = clickedPin.TransformToAncestor(BossPage.ParamentCanvas).Transform(pinCenter);
-            BossPage.StartDrawingLine(absolutePoint,clickedPin.Name);
+            BossPage.StartDrawingLine(absolutePoint,clickedPin.Name,this);//调用adjustPage下的StartDrawingLine方法，开始绘线
         }
         private void PinLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
