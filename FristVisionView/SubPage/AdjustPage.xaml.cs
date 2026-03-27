@@ -82,8 +82,12 @@ namespace FirstVisionView
             _DragStartPoint.Clear();//清空所有的选择卡片
             if (vm == null) return;//如果没持有vm则直接退出
             bool isControl = ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control);//检查有无按下control键
-            if (!isControl) vm.ClearSeletionStatusCommand.Execute(null);//清除卡片高亮状态
-            _CanvasStartPoint = e.GetPosition(ParamentCanvas);
+            if (!isControl)
+            {
+                vm.ClearSeletionStatusCommand.Execute(null);//清除卡片高亮状态
+                vm.WireCleanStatusCommand.Execute(null);//清除线段高亮状态
+            }
+                _CanvasStartPoint = e.GetPosition(ParamentCanvas);
             ParamentCanvas.CaptureMouse();
         }
         //Canvas上左键松开
@@ -165,7 +169,8 @@ namespace FirstVisionView
             _IsDragging = false;//取消拖拽状态
             if (vm == null) return;
             var cardList = vm.AllCards.Where(c => c.IsSelected).ToList();//判断有无卡片被选中，有则弹出删除菜单，否则弹出添加菜单
-            if (cardList.Count == 0)
+            var wiredList = vm.AllWires.Where(c => c.IsSelected).ToList();//判断有无卡片被选中，有则弹出删除菜单，否则弹出添加菜单
+            if (cardList.Count == 0 && wiredList.Count == 0)
             {
                 Point logicalPos = e.GetPosition(ParamentCanvas);
                 vm.CurrentMousePoint = new System.Drawing.PointF((float)logicalPos.X, (float)logicalPos.Y); // 假设你在 ViewModel 里用 PointF 或者 WPF的Point 存它
@@ -250,10 +255,12 @@ namespace FirstVisionView
         //Card上左键点击
         private void CardLeftDown(object sender, MouseButtonEventArgs e)
         {
+            
             var currentCard = sender as ToolCard;
             if (currentCard == null) return;
             var card = currentCard.DataContext as CardDataModel;
             if (card == null || vm == null || card.IsRenaming == true) return;
+            vm.WireCleanStatusCommand.Execute(null);//清除所有线段的选中状态
             e.Handled = true;//打断冒泡
             _DragStartPoint.Clear();
             _IsDragging = false;
@@ -437,8 +444,11 @@ namespace FirstVisionView
         private void WireLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            var wire = sender as WireDataModel;
+            var path = sender as Path;
+            if (path == null) return;
+            var wire = path.DataContext as WireDataModel;
             if (wire == null || vm == null) return;
+            vm.ClearSeletionStatusCommand.Execute(null);
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
                 vm.WireAddStatusCommand.Execute(wire);
@@ -448,10 +458,6 @@ namespace FirstVisionView
                 vm.WireCleanStatusCommand.Execute(null);
                 vm.WireAddStatusCommand.Execute(wire);
             }
-        }
-        private void WireLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-
         }
 
 

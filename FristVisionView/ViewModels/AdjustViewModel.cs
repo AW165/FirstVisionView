@@ -60,17 +60,31 @@ namespace FirstVisionView.ViewModels
             //把符合选中条件的选出并生成一个列表，防止直接操作原列表导致崩溃
             var deleteCard = AllCards.Where(s => s.IsSelected).ToList();
             var deleteWire = AllWires.Where(s => s.IsSelected).ToList();
-            if (deleteCard.Count == 0) return;
-            foreach (var card in deleteCard)//删除卡片
+            if (deleteCard.Count != 0 )
             {
+                foreach (var card in deleteCard)//删除卡片
+                {
                     AllCards.Remove(card);
-                
-            }
-            if (deleteWire.Count == 0) return;
-            foreach (var wire in deleteWire)//删除线
-            {
-                AllWires.Remove(wire);
+                    var WireList = AllWires.ToList();
+                    foreach (var wire in WireList)
+                    {
+                        if (wire.SourceCard.CardID == card.CardID || wire.TargetCard.CardID == card.CardID)
+                        {
+                            AllWires.Remove(wire);
+                        }
+                    }
 
+                }
+            }
+            
+            if (deleteWire.Count != 0)
+            {
+                foreach (var wire in deleteWire)//删除线
+                {
+                    AllWires.Remove(wire);
+
+                }
+                
             }
             DelePopup = false;//关闭删除菜单
         }

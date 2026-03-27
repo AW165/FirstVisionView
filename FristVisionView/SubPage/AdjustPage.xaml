@@ -74,12 +74,12 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Path StrokeThickness="3" Data="{Binding PathData}" MouseLeftButtonDown="{Binding WireLeftButtonDown}">
+                                    <Path StrokeThickness="3" Data="{Binding PathData}" MouseLeftButtonDown="WireLeftButtonDown">
                                         <Path.Style>
                                             <Style TargetType="Path">
                                                 <Setter Property="Stroke" Value="Gray"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSeleted}" Value="true">
+                                                    <DataTrigger Binding="{Binding IsSelected}" Value="true">
                                                         <Setter Property="Stroke" Value="DodgerBlue"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
