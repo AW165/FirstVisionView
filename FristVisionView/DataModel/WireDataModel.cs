@@ -29,9 +29,15 @@ namespace FirstVisionView.DataModel
             Point cp1 = StartPoint;
             Point cp2 = EndPoint;
 
-            // 简单假定：线都是从左往右流动的 (以后可以根据真实孔的方向优化)
-            cp1.X += tension;
-            cp2.X -= tension;
+            if (SourcePin == "RightPin") cp1.X += tension;
+            else if (SourcePin == "LeftPin") cp1.X -= tension;
+            else if (SourcePin == "TopPin") cp1.Y -= tension;
+            else if (SourcePin == "BottomPin") cp1.Y += tension;
+
+            if (EndPin == "RightPin") cp2.X += tension;
+            else if (EndPin == "LeftPin") cp2.X -= tension;
+            else if (EndPin == "TopPin") cp2.Y -= tension;
+            else if (EndPin == "BottomPin") cp2.Y += tension;
 
             // 拼装 SVG 
             PathData = $"M {StartPoint.X},{StartPoint.Y} C {cp1.X},{cp1.Y} {cp2.X},{cp2.Y} {EndPoint.X},{EndPoint.Y}";
