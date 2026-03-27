@@ -139,7 +139,7 @@
 
             <Popup x:Name="DeleteCard" AllowsTransparency="True"  IsOpen="{Binding DelePopup, Mode=TwoWay}" Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
                 <Border Padding="15">
-                    <Border Width="100" MinHeight="27" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}" Clip="">
+                    <Border Width="100" MinHeight="27" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}">
                         <StackPanel>
                             <Button Content="删除Card" Width="70" Command="{Binding DeleteCardsCommand}" Foreground="Red" Style="{StaticResource MenuButtonStyle}"/>
                             <Button Content="重命名Card" Width="70" IsEnabled="{Binding CanRename}" Command="{Binding CardRenameCommand}" Foreground="Black"  Style="{StaticResource MenuButtonStyle}"/>
