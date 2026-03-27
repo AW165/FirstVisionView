@@ -38,9 +38,36 @@ namespace FirstVisionView.DataModel
             else if (EndPin == "LeftPin") cp2.X -= tension;
             else if (EndPin == "TopPin") cp2.Y -= tension;
             else if (EndPin == "BottomPin") cp2.Y += tension;
-
             // 拼装 SVG 
-            PathData = $"M {StartPoint.X},{StartPoint.Y} C {cp1.X},{cp1.Y} {cp2.X},{cp2.Y} {EndPoint.X},{EndPoint.Y}";
+            var curve = $"M {StartPoint.X},{StartPoint.Y} C {cp1.X},{cp1.Y} {cp2.X},{cp2.Y} {EndPoint.X},{EndPoint.Y}";
+            // ==========================================
+            double arrowLen = 12; // 箭头的长度
+            double arrowWid = 6;  // 箭头的半宽（张开的角度）
+            string arrow = "";
+
+            // 终点是 LeftPin -> 线从左往右扎入 -> 箭头朝右 (>)
+            if (EndPin == "LeftPin")
+            {
+                arrow = $" M {EndPoint.X - arrowLen},{EndPoint.Y - arrowWid} L {EndPoint.X},{EndPoint.Y} L {EndPoint.X - arrowLen},{EndPoint.Y + arrowWid}";
+            }
+            // 终点是 RightPin -> 线从右往左扎入 -> 箭头朝左 (<)
+            else if (EndPin == "RightPin")
+            {
+                arrow = $" M {EndPoint.X + arrowLen},{EndPoint.Y - arrowWid} L {EndPoint.X},{EndPoint.Y} L {EndPoint.X + arrowLen},{EndPoint.Y + arrowWid}";
+            }
+            // 终点是 TopPin -> 线从上往下扎入 -> 箭头朝下 (V)
+            else if (EndPin == "TopPin")
+            {
+                arrow = $" M {EndPoint.X - arrowWid},{EndPoint.Y - arrowLen} L {EndPoint.X},{EndPoint.Y} L {EndPoint.X + arrowWid},{EndPoint.Y - arrowLen}";
+            }
+            // 终点是 BottomPin -> 线从下往上扎入 -> 箭头朝上 (Λ)
+            else if (EndPin == "BottomPin")
+            {
+                arrow = $" M {EndPoint.X - arrowWid},{EndPoint.Y + arrowLen} L {EndPoint.X},{EndPoint.Y} L {EndPoint.X + arrowWid},{EndPoint.Y + arrowLen}";
+            }
+
+            // 4. 将曲线和箭头无缝拼接到一起，发给显卡渲染！
+            PathData = curve + arrow;
         }
     }
 }
