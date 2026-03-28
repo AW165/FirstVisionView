@@ -23,5 +23,9 @@ namespace FirstVisionView.DataModel
         private int _topZIndex = 0;
         [ObservableProperty]
         private bool _isRenaming = false;
+        [ObservableProperty]
+        private ObservableObject? _paramentVM = null;
+        [ObservableProperty]
+        private string  _cardType="Default";
     }
 }
