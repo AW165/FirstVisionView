@@ -22,6 +22,7 @@ namespace FirstVisionView.ViewModels
         [ObservableProperty] private bool _delePopup = false;
         [ObservableProperty] private bool _addPopup = false;
         [ObservableProperty] private bool _cap = false;
+        [ObservableProperty] private ObservableObject? _currentEditVM = null;
         public bool CanRename => (AllCards.Count(c => c.IsSelected) == 1);
         // 用来记录刚才右键点击的位置
         public System.Drawing.PointF CurrentMousePoint { get; set; }
@@ -165,7 +166,6 @@ namespace FirstVisionView.ViewModels
         {
             if (wire == null) return;
             wire.IsSelected = true;
-
         }
         [RelayCommand]
         private void WireCleanStatus(WireDataModel? wire = null)
@@ -179,7 +179,6 @@ namespace FirstVisionView.ViewModels
                 }
             }
             else wire.IsSelected = false;
-
         }
         [RelayCommand]
         private void ParameterClick()

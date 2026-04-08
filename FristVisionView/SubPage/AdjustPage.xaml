@@ -147,31 +147,74 @@
                     </Border>
                 </Border>
             </Popup>
-            <Border d:Visibility="Visible" x:Name="CapBorder" Background="Black" Panel.ZIndex="98" Opacity="0.18">
+            <Border d:Visibility="Visible" x:Name="CapBorder" Background="#99FFFFFF" Panel.ZIndex="98">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Opacity" Value="0"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Cap,Mode=TwoWay}" Value="True">
-                                <Setter Property="Visibility"  Value="Visible"/>
+                            <DataTrigger Binding="{Binding Cap}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" >
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <BackEase Amplitude="0.5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <BackEase Amplitude="0.5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+
+                                </DataTrigger.ExitActions>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                
             </Border>
             <Border  d:Visibility="Visible" x:Name="ParameterPage" Panel.ZIndex="99" Background="#ffffff" MaxHeight="600" MaxWidth="600" CornerRadius="70" >
+                <Border.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1" CenterX="200" CenterY="300"/>
+                </Border.RenderTransform>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Visibility" Value="Collapsed"/>
-                        <Setter Property="Effect">
-                            <Setter.Value>
-                                <DropShadowEffect Color="#20000000" Opacity="0.5" ShadowDepth="1"/>
-                            </Setter.Value>
-                        </Setter>
+                        <Setter Property="Opacity" Value="0"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Cap,Mode=TwoWay}" Value="True">
-                                <Setter Property="Visibility"  Value="Visible"/>
+                            <DataTrigger Binding="{Binding Cap}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" >
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <BackEase Amplitude="0.5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <BackEase Amplitude="0.5" EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    
+                                </DataTrigger.ExitActions>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -185,9 +228,10 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <ItemsControl>
-                        
-                    </ItemsControl>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ContentControl Content="{Binding CurrentEditVM}"/>
+                    </ScrollViewer>
+                    
                     <Button Grid.Row="1" Grid.Column="1"  x:Name="Accept" Margin="0,0,0,10" local:ButtonHelp.CornerRadius="13" Content="确认" Command="{Binding ParameterClickCommand}" Height="35" Width="100" Style="{StaticResource ButtonStyle}" />
                     <Button Grid.Row="1" Grid.Column="0" x:Name="Cancel"  Margin="0,0,0,10" local:ButtonHelp.CornerRadius="13" Content="取消" Command="{Binding ParameterClickCommand}" Height="35" Width="100" Style="{StaticResource ButtonStyle}" />
                 </Grid>
