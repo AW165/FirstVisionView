@@ -357,6 +357,10 @@ namespace FirstVisionView
                 }
             }
         }
+        private void CardDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if(vm != null) vm.Cap = true;
+        }
         // ================= 画布平移 (右键拖拽) =================
         private void CanvasRightDown(object sender, MouseButtonEventArgs e)
         {
@@ -459,14 +463,6 @@ namespace FirstVisionView
                 vm.WireAddStatusCommand.Execute(wire);
             }
         }
-
-
-
-
-
-
-
-
         //==============================工具=======================
         //寻找传入控件的父关系控件
         private T FindParent<T>(DependencyObject child) where T : DependencyObject
@@ -477,6 +473,9 @@ namespace FirstVisionView
             if (parent != null) return parent;
             else return FindParent<T>(parentObject);
         }
+
+       
+
         //==============================菜单/公共事件=======================
     }
 }

@@ -24,7 +24,7 @@ namespace FirstVisionView.DataModel
         [ObservableProperty]
         private bool _isRenaming = false;
         [ObservableProperty]
-        private ObservableObject? _paramentVM = null;
+        private ObservableObject? _parameterVM = null;
         [ObservableProperty]
         private string  _cardType="Default";
     }

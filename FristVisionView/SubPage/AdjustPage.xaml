@@ -101,6 +101,7 @@
                                     <toolcard:ToolCard MouseLeftButtonDown="CardLeftDown"
                                            MouseLeftButtonUp="CardLeftUp"
                                            MouseMove="CardMouseMove"
+                                           MouseDoubleClick="CardDoubleClick"
                                            MouseRightButtonUp="RightUp"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -131,12 +132,11 @@
                 <Border Padding="15">
                     <Border Width="Auto" MinHeight="150" MinWidth="100" CornerRadius="18" Background="White" Style="{StaticResource BorderStyle}">
                         <StackPanel>
-                            <Button Content="添加Card" Width="100" Command="{Binding AddCardCommand}" Style="{StaticResource MenuButtonStyle}"/>
+                            <Button Content="二值化" Width="100" CommandParameter="Binaryzation" Command="{Binding AddCardCommand}" Style="{StaticResource MenuButtonStyle}"/>
                         </StackPanel>
                     </Border>
                 </Border>
             </Popup>
-
             <Popup x:Name="DeleteCard" AllowsTransparency="True"  IsOpen="{Binding DelePopup, Mode=TwoWay}" Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
                 <Border Padding="15">
                     <Border Width="100" MinHeight="27" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}">
@@ -147,7 +147,51 @@
                     </Border>
                 </Border>
             </Popup>
-
+            <Border d:Visibility="Visible" x:Name="CapBorder" Background="Black" Panel.ZIndex="98" Opacity="0.18">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cap,Mode=TwoWay}" Value="True">
+                                <Setter Property="Visibility"  Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                
+            </Border>
+            <Border  d:Visibility="Visible" x:Name="ParameterPage" Panel.ZIndex="99" Background="#ffffff" MaxHeight="600" MaxWidth="600" CornerRadius="70" >
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect Color="#20000000" Opacity="0.5" ShadowDepth="1"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cap,Mode=TwoWay}" Value="True">
+                                <Setter Property="Visibility"  Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="11*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <ItemsControl>
+                        
+                    </ItemsControl>
+                    <Button Grid.Row="1" Grid.Column="1"  x:Name="Accept" Margin="0,0,0,10" local:ButtonHelp.CornerRadius="13" Content="确认" Command="{Binding ParameterClickCommand}" Height="35" Width="100" Style="{StaticResource ButtonStyle}" />
+                    <Button Grid.Row="1" Grid.Column="0" x:Name="Cancel"  Margin="0,0,0,10" local:ButtonHelp.CornerRadius="13" Content="取消" Command="{Binding ParameterClickCommand}" Height="35" Width="100" Style="{StaticResource ButtonStyle}" />
+                </Grid>
+            </Border>
         </Grid>
 
         <!-- ======================= 右侧：图像显示与工具区域 ======================= -->
