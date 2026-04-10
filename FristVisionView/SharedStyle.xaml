@@ -57,9 +57,8 @@
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-
-                        <Border x:Name="Board"
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Board"
                                     Background="{TemplateBinding Background}"  
                                     BorderBrush="{TemplateBinding BorderBrush}"  
                                     BorderThickness="{TemplateBinding BorderThickness}"  
@@ -69,16 +68,11 @@
                                     HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                                     Padding="{TemplateBinding Padding}"
                                     VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="-0.5,0,0,2" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                        </Border>
-
-
-
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-
-                                <Setter TargetName="Board" Property="Background" Value="#FF9A9191"/>
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="-0.5,0,0,2" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Board" Property="Background" Value="#FF9A9191"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Board" Property="Background" Value="#FF464343"/>
