@@ -161,14 +161,21 @@
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
                                 <DataTrigger.ExitActions>
-
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" BeginTime="0:0:0.15">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
                                 </DataTrigger.ExitActions>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
             </Border>
-            <Border  d:Visibility="Visible" x:Name="ParameterPage" Panel.ZIndex="100" Background="#9fffff" MaxHeight="600" MaxWidth="600" CornerRadius="70" >
+            <Border  d:Visibility="Visible" d:Opacity="100" x:Name="ParameterCard" Panel.ZIndex="100" Background="#ffffff" MaxHeight="600" MaxWidth="600" CornerRadius="70" >
                 <Border.RenderTransform>
                     <ScaleTransform ScaleX="1" ScaleY="1" CenterX="200" CenterY="300"/>
                 </Border.RenderTransform>
@@ -176,6 +183,11 @@
                     <Style TargetType="Border">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Setter Property="Opacity" Value="0"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect BlurRadius="10" Color="#20000000" Opacity="0.5" ShadowDepth="1" />
+                            </Setter.Value>
+                        </Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Cap}" Value="True">
                                 <DataTrigger.EnterActions>
@@ -199,7 +211,16 @@
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
                                 <DataTrigger.ExitActions>
-                                    
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.8" Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.8" Duration="0:0:0.15"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" BeginTime="0:0:0.15">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
                                 </DataTrigger.ExitActions>
                             </DataTrigger>
                         </Style.Triggers>

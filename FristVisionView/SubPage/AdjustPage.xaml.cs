@@ -73,6 +73,10 @@ namespace FirstVisionView
         private Point _LineStartPoint;//记录点击的坐标
         private ToolCard _LineStartCard;//记录是点击的是哪个卡片的pin
         private string _startPinFullName;//记录点击的pin的名称
+
+
+        private int int1 = 0;
+
         //============================Canvas事件区域======================
         //Canvas上左键点击
         private void CanvasLeftDown(object sender, MouseButtonEventArgs e)
@@ -309,6 +313,7 @@ namespace FirstVisionView
             }
             _IsDragging = false;//设置拖拽状态结束
             _CurrentCard.ReleaseMouseCapture();
+            
         }
         //Card上鼠标移动
         private void CardMouseMove(object sender, MouseEventArgs e)
@@ -359,7 +364,12 @@ namespace FirstVisionView
         }
         private void CardDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if(vm != null) vm.Cap = true;
+            
+            if (e.OriginalSource is Ellipse) return;
+            e.Handled = true;
+            if (_CurrentCard != null) _CurrentCard.ReleaseMouseCapture();
+            if (vm != null) vm.Cap = true;
+
         }
         // ================= 画布平移 (右键拖拽) =================
         private void CanvasRightDown(object sender, MouseButtonEventArgs e)
