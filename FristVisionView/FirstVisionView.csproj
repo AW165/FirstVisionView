@@ -10,16 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Pictrue.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Pictrue.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.306" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc6.1" />

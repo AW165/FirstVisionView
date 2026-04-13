@@ -10,7 +10,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FirstVisionView.Card;
 using FirstVisionView.DataModel;
-using FirstVisionView.ParamentModel;
+using FirstVisionView.ParameterUILibary.Core;
+using FirstVisionView.ParameterUILibary.ParameterModel;
 using OpenTK.Graphics.ES11;
 
 namespace FirstVisionView.ViewModels
@@ -61,7 +62,7 @@ namespace FirstVisionView.ViewModels
         {
             return CardType switch
             {
-                "Binaryzation" => new binaryzationModel(),
+                "Binaryzation" => new BinaryzationModel(),
                 _ => null,
             };   
         }

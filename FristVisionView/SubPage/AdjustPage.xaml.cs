@@ -33,36 +33,22 @@ namespace FirstVisionView
         private AdjustViewModel? vm => this.DataContext as AdjustViewModel; //vm模型
         //画框状态
         private bool _IsDragging = false;
-        //鼠标移动状态
-        private bool _IsMoving = false;
         //鼠标左键在Canvas按下状态
         private bool _IsCanvasLeftDown = false;
         //鼠标左键在Card按下状态
         private bool _IsCardLeftDown = false;
         //鼠标右键按下状态
         private bool _IsRightDown = false;
-        //鼠标滚轮状态
-        private bool _IsWheel = false;
-        //记录鼠标点击在Canvas且拖拽的状态
-        private bool _IsCanvasSeleted = false;
         //记录鼠标点击Canvas时的当前坐标
         private Point _CanvasStartPoint;
         //记录鼠标点击Card时的当前坐标
         private Point _CardStartPoint;
-        //记录鼠标点击Card时的当前坐标
-        private Point _CardMousePoint;
         //记录鼠标点击Card
         private ToolCard _CurrentCard;
         //记录卡片与坐标点
         private Dictionary<CardDataModel, Point> _DragStartPoint = new();
         // 标记在右键按下期间，是否真正发生了拖拽动作（用于区分“右键呼出菜单”和“右键拖动画布”）。
         private bool _hasPanned;
-        // 记录开始平移画布时，鼠标在屏幕上的物理初始坐标点。
-        private Point _PanStartPoint;
-        // 记录开始平移画布时，底部水平滚动条的初始偏移量数值。
-        private double _PanStartOffsetX;
-        // 记录开始平移画布时，右侧垂直滚动条的初始偏移量数值。
-        private double _PanStartOffsetY;
         // 记录当前整个大画布的缩放倍率，默认 1.0 代表 100% 原始大小。
         private double _currentZoom = 1.0;
         private const int DistanceThreshold = 5;// 防手抖的像素阈值：鼠标按下后移动超过 5 个像素，才被正式认定为“拖拽行为”，否则视为原地点击。
@@ -72,7 +58,7 @@ namespace FirstVisionView
         private string _StartPinDirection;//记录从哪个方向出来的线段
         private Point _LineStartPoint;//记录点击的坐标
         private ToolCard _LineStartCard;//记录是点击的是哪个卡片的pin
-        private string _startPinFullName;//记录点击的pin的名称
+
         //============================Canvas事件区域======================
         //Canvas上左键点击
         private void CanvasLeftDown(object sender, MouseButtonEventArgs e)
@@ -309,6 +295,7 @@ namespace FirstVisionView
             }
             _IsDragging = false;//设置拖拽状态结束
             _CurrentCard.ReleaseMouseCapture();
+            
         }
         //Card上鼠标移动
         private void CardMouseMove(object sender, MouseEventArgs e)
@@ -359,7 +346,12 @@ namespace FirstVisionView
         }
         private void CardDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if(vm != null) vm.Cap = true;
+            
+            if (e.OriginalSource is Ellipse) return;
+            e.Handled = true;
+            if (_CurrentCard != null) _CurrentCard.ReleaseMouseCapture();
+            if (vm != null) vm.Cap = true;
+
         }
         // ================= 画布平移 (右键拖拽) =================
         private void CanvasRightDown(object sender, MouseButtonEventArgs e)
