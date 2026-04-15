@@ -28,6 +28,10 @@ namespace FirstVisionView.ViewModels
         // 用来记录刚才右键点击的位置
         public System.Drawing.PointF CurrentMousePoint { get; set; }
         private int _topZIndex = 0;
+        /// <summary>
+        /// 新建卡片，设置卡片的名字，
+        /// </summary>
+        /// <param name="CardType"></param>
         [RelayCommand]
         private void AddCard(string CardType)
         {
@@ -46,10 +50,10 @@ namespace FirstVisionView.ViewModels
             // 3. 找到空位新建卡片并赋坐标
             CardDataModel newCard = new CardDataModel()
             {
-                CardName = ParameterCardName(CardType),
+                CardName = ParameterCardName(CardType) ,
                 X = spawnX,
                 Y = spawnY,
-                ParameterVM = ParameterCardModel(CardType)
+                ParameterVM = ParameterCardModel(CardType)//
                 // ... 其他属性
             };
 
@@ -58,15 +62,20 @@ namespace FirstVisionView.ViewModels
         // 关闭菜单
         AddPopup = false; 
     }
+        /// <summary>
+        /// 算子生成方法，传入字符串，返回new出的算子实例
+        /// </summary>
+        /// <param name="CardType"></param>
+        /// <returns></returns>
         private ObservableObject? ParameterCardModel(string CardType)
         {
             return CardType switch
             {
-                "Binaryzation" => new BinaryzationModel(),
+                "Binaryzation" => new BinaryzationModel(),//创建一个二值化算子
                 _ => null,
             };   
         }
-        private string? ParameterCardName(string CardType)
+        private string ParameterCardName(string CardType)
         {
             var index = (AllCards.Count()+1).ToString();
             return CardType switch

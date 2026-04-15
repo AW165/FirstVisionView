@@ -16,7 +16,13 @@ namespace FirstVisionView.ParameterUILibary.ParameterModel
         public BinaryzationModel()
         {
             // 因为继承了 BaseParamenter，所以可以直接调用 ParameterList
-            this.ParameterList.Add(new SliderParameterItem { Name = "阈值" });
+            this.ParameterList.Add(new SliderParameterItem { 
+                Name = "阈值" ,
+                Max = 255,
+                Min = 0,
+                Step = 1,
+            });
+            this.Title = "二值化";
         }
     }
    

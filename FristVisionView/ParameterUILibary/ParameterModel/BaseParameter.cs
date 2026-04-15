@@ -9,10 +9,9 @@ using FirstVisionView.ParameterUILibary.Core;
 
 namespace FirstVisionView.ParamenterUILibary.ParameterModel
 {
-    [ObservableObject]
-    public partial class BaseParamenter
+    public partial class BaseParamenter : ObservableObject
     {
-        [ObservableProperty] private string _title = "";
+        public string Title { get; protected set; } = "";
         public ObservableCollection<BaseParameterItem> ParameterList { get; } = new();
     }
 }

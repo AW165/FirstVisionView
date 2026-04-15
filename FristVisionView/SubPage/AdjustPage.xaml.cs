@@ -344,13 +344,25 @@ namespace FirstVisionView
                 }
             }
         }
+        /// <summary>
+        /// 双击卡片后，读取点击的卡片Vm，并填充到CurrentEditVm中，打开参数修改卡片
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CardDoubleClick(object sender, MouseButtonEventArgs e)
         {
             
             if (e.OriginalSource is Ellipse) return;
             e.Handled = true;
-            if (_CurrentCard != null) _CurrentCard.ReleaseMouseCapture();
-            if (vm != null) vm.Cap = true;
+            if (_CurrentCard != null)
+            {
+                var ToolCardVM = sender as ToolCard;
+                if (ToolCardVM == null) return;
+                var CardVM = ToolCardVM.DataContext as CardDataModel;
+                if (CardVM == null || vm == null) return;
+                vm.CurrentEditVM = CardVM.ParameterVM;
+                vm.Cap = true;
+            }
 
         }
         // ================= 画布平移 (右键拖拽) =================
