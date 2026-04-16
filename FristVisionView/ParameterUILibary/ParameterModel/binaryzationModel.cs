@@ -22,6 +22,12 @@ namespace FirstVisionView.ParameterUILibary.ParameterModel
                 Min = 0,
                 Step = 1,
             });
+            this.ParameterList.Add(new ComboboxParameterItem
+            {
+                Name = "阈值方式",
+                Options = new ObservableCollection<string> { "单阈值","双阈值" },
+                SelectedValue = "单阈值"
+            });
             this.Title = "二值化";
         }
     }

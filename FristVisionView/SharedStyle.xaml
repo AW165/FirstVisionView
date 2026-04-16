@@ -1,8 +1,35 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:FirstVisionView">
-                    
-        <!--卡片式菜单下的按钮，透明圆角版-->
+    <!--ComboBoxItem-->
+    <Style x:Key="ModernComboBoxItemStyle" TargetType="ComboBoxItem">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="0,8"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="ItemBorder"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ItemBorder" Property="Background" Value="#E0E0E0"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="ItemBorder" Property="Background" Value="#D0D0D0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--卡片式菜单下的按钮，透明圆角版-->
         <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="Black"/>
@@ -104,6 +131,8 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="local:ComboboxHelp.CornerRadius" Value="18"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ModernComboBoxItemStyle}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
@@ -159,8 +188,9 @@
                                           Content="{TemplateBinding SelectionBoxItem}"
                                           ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                           ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
-                                          Margin="10,0,30,0"
-                                          HorizontalAlignment="Left"
+                                          Margin="10,0,20,0"
+                                          
+                                          HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
                         <Popup x:Name="PART_Popup"
                                   IsOpen="{TemplateBinding IsDropDownOpen}"
@@ -169,11 +199,23 @@
                                   AllowsTransparency="True"
                                   VerticalOffset="12" 
                                   Focusable="False">
-                            <Border Style="{StaticResource BorderStyle}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                    MinWidth="{TemplateBinding ActualWidth}">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
-                                </ScrollViewer>
+                            <Border Background="Transparent" Margin="15">
+                                <Border Padding="5" Style="{StaticResource BorderStyle}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                        MinWidth="{TemplateBinding ActualWidth}">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <ScrollViewer.OpacityMask>
+                                            <VisualBrush>
+                                                <VisualBrush.Visual>
+                                                    <Border Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=ScrollViewer} }"
+                                                            Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType=ScrollViewer} }"
+                                                            Background="Black"
+                                                            CornerRadius="{Binding Path=(local:ComboboxHelp.CornerRadius), RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </ScrollViewer.OpacityMask>
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                    </ScrollViewer>
+                                </Border>
                             </Border>
                         </Popup>
                     </Grid>
@@ -197,14 +239,12 @@
         </Style>
         <!--圆角滑块-->
         <Style x:Key="PAPT_Thumb" TargetType="Thumb">
-        <Setter Property="Background" Value="#AAf"/>
+        <Setter Property="Background" Value="White"/>
             <!--不要指定太长，否则计算异常会被裁切-->
-            <Setter Property="MinHeight" Value="6"/>
-            <Setter Property="MinWidth" Value="5"/>
-            <Setter Property="Template">
+        <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                    <Border CornerRadius="5" Background="{TemplateBinding Background}" MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}" Margin="2,1,2,1"/>
+                    <Border CornerRadius="50" Background="{TemplateBinding Background}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -235,7 +275,7 @@
             </Setter>
         </Style>
         <!--圆角ScrollViewer-->
-    <Style x:Key="PART_ScrollViwer" TargetType="ScrollViewer">
+        <Style x:Key="PART_ScrollViwer" TargetType="ScrollViewer">
         <!--不要指定宽度，直接用grid填充满，否则右侧这个滚动条会被放到中间！！！-->
         <!--要指定滑槽宽度，要么去滑槽样式改，要么修改下面滑槽内元素-->
         <Setter Property="Template">
@@ -263,6 +303,43 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+        <!--slider-->
+    <Style x:Key="RoundSlider" TargetType="Slider">
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Border CornerRadius="10" 
+                            Height="{TemplateBinding Height}" 
+                            Width="{TemplateBinding Width}" 
+                            Background="Gray" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Track x:Name="PART_Track">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="{x:Static Slider.DecreaseLarge}"
+                                              Background="Transparent"
+                                              BorderThickness="0"
+                                              Style="{StaticResource TrackButton}"/>
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="{x:Static Slider.IncreaseLarge}"
+                                              Background="Transparent"
+                                              BorderThickness="0"
+                                              Style="{StaticResource TrackButton}"/>
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb >
+                                <Thumb Style="{StaticResource PAPT_Thumb}" 
+                                       Height="{TemplateBinding Height}" 
+                                       Width="{TemplateBinding Height}"/>
+                            </Track.Thumb>
+                        </Track>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
     </Style>
 
 </ResourceDictionary>
