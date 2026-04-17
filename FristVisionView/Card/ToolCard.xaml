@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FirstVisionView.Card"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              xmlns:vm ="clr-namespace:FirstVisionView.ViewModels"
              d:Height="80" d:Width="150">
@@ -28,7 +29,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    
+
     <Grid >
         <Border x:Name="ToolBorder" 
                 Height="80" 
@@ -52,15 +53,15 @@
                             <Setter Property="BorderBrush" Value="CornflowerBlue"/>
 
                         </DataTrigger>
-                        
+
                     </Style.Triggers>
                 </Style>
             </Border.Style>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="2*"/>
                 </Grid.RowDefinitions>
                 <TextBox x:Name="EditText" Text="{Binding CardName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  BorderBrush="Transparent" Padding="0,3,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" LostFocus="EditText_LostFocus" KeyDown="EditText_KeyDown" IsVisibleChanged="EditText_IsVisibleChanged">
                     <TextBox.Style>
@@ -86,12 +87,20 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+
+                    </Grid.ColumnDefinitions>
+                    <ui:ToggleSwitch Grid.Column="1" Height="20" Width="40"/>
+                </Grid>
             </Grid>
         </Border>
-        <Ellipse x:Name="TopPin" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource pinStyle}" Margin="0,-4,0,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
-        <Ellipse x:Name="BottomPin" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource pinStyle}" Margin="0,0,0,-4" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
-        <Ellipse x:Name="LeftPin" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="-4,0,0,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
-        <Ellipse x:Name="RightPin" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="0,0,-4,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
+        <Ellipse d:Visibility="Visible" x:Name="TopPin" HorizontalAlignment="Center" VerticalAlignment="Top" Style="{StaticResource pinStyle}" Margin="0,-4,0,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
+        <Ellipse d:Visibility="Visible" x:Name="BottomPin" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource pinStyle}" Margin="0,0,0,-4" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
+        <Ellipse d:Visibility="Visible" x:Name="LeftPin" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="-4,0,0,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
+        <Ellipse d:Visibility="Visible" x:Name="RightPin" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource pinStyle}" Margin="0,0,-4,0" MouseLeftButtonDown="PinLeftButtonDown" MouseLeftButtonUp="PinLeftButtonUp" />
     </Grid>
-   
+
 </UserControl>

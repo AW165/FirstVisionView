@@ -200,21 +200,17 @@
                                   VerticalOffset="12" 
                                   Focusable="False">
                             <Border Background="Transparent" Margin="15">
-                                <Border Padding="5" Style="{StaticResource BorderStyle}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                        MinWidth="{TemplateBinding ActualWidth}">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                        <ScrollViewer.OpacityMask>
-                                            <VisualBrush>
-                                                <VisualBrush.Visual>
-                                                    <Border Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=ScrollViewer} }"
-                                                            Height="{Binding ActualHeight,RelativeSource={RelativeSource AncestorType=ScrollViewer} }"
-                                                            Background="Black"
-                                                            CornerRadius="{Binding Path=(local:ComboboxHelp.CornerRadius), RelativeSource={RelativeSource TemplatedParent}}"/>
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </ScrollViewer.OpacityMask>
-                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                                    </ScrollViewer>
+                                <Border Style="{StaticResource BorderStyle}" CornerRadius="{Binding Path=(local:ComboboxHelp.CornerRadius),RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                        MinWidth="{TemplateBinding ActualWidth}" >
+                                    <Grid>
+                                        <Border x:Name="MaskBorder" Background="{TemplateBinding Background}" CornerRadius="{Binding Path=(local:ComboboxHelp.CornerRadius), RelativeSource={RelativeSource TemplatedParent}}"/>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto"  x:Name="PART_DropDownScrollViewer">
+                                            <ScrollViewer.OpacityMask>
+                                                <VisualBrush Visual="{Binding ElementName=MaskBorder}"/>
+                                            </ScrollViewer.OpacityMask>
+                                            <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                        </ScrollViewer>
+                                    </Grid>
                                 </Border>
                             </Border>
                         </Popup>
