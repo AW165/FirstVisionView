@@ -27,5 +27,7 @@ namespace FirstVisionView.DataModel
         private ObservableObject? _parameterVM = null;//算子类型
         [ObservableProperty]
         private string  _cardType="Default";
+        [ObservableProperty]
+        private bool _isEnable;
     }
 }

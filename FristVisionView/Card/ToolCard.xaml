@@ -7,6 +7,7 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              xmlns:vm ="clr-namespace:FirstVisionView.ViewModels"
+             
              d:Height="80" d:Width="150">
     <UserControl.Resources>
         <Style x:Key="pinStyle" TargetType="Ellipse">
@@ -93,7 +94,22 @@
                         <ColumnDefinition Width="1*"/>
 
                     </Grid.ColumnDefinitions>
-                    <ui:ToggleSwitch Grid.Column="1" Height="20" Width="40"/>
+                    <TextBlock Text="已启用" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="已启用"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEnable}" Value="True">
+                                        <Setter Property="Text" Value="已启用"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsEnable}" Value="False">
+                                        <Setter Property="Text" Value="未启用"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <ui:ToggleSwitch Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="20" Width="40" IsChecked="{Binding IsEnable,Mode=TwoWay}"/>
                 </Grid>
             </Grid>
         </Border>

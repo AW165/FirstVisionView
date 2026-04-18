@@ -195,6 +195,11 @@ namespace FirstVisionView.ViewModels
         {
             Cap = false;
         }
-       
+       [RelayCommand]
+        private void ChangeStatus(CardDataModel card)
+        {
+            if (card == null) return;
+            card.IsEnable = !card.IsEnable;//反转启用状态
+        }
     }
 }
