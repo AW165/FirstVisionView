@@ -139,13 +139,18 @@
                     <Grid >
                         <Border  Background="{TemplateBinding Background}" CornerRadius="{Binding Path=(local:ComboboxHelp.CornerRadius),RelativeSource={RelativeSource AncestorType=ComboBox}}">
                             <ToggleButton x:Name="ToggleButton" 
-                                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"               
-                                                Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}" >
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Center"
+                                          Padding="0"
+                                          Margin="0"
+                                          MinHeight="0"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"               
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}" >
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton">
-                                        <Grid>
+                                        <Grid Background="Transparent">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="30"/>

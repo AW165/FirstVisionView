@@ -53,6 +53,7 @@ namespace FirstVisionView.ViewModels
                 CardName = ParameterCardName(CardType) ,
                 X = spawnX,
                 Y = spawnY,
+                IsEnable = true,
                 ParameterVM = ParameterCardModel(CardType)//
                 // ... 其他属性
             };
