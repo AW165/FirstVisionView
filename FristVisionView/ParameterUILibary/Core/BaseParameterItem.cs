@@ -31,6 +31,9 @@ namespace FirstVisionView.ParameterUILibary.Core
     }
     public partial class ComboboxParameterItem : BaseParameterItem
     {
+        //存储指定的类型
+        [ObservableProperty] private ParameterDataType _acceptType;
+        //存储Combobox的选项列表
         [ObservableProperty] private ObservableCollection<string> _options = new();
         [ObservableProperty] private string _selectedValue="";
     }

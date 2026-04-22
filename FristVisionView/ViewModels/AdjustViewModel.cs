@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,35 @@ namespace FirstVisionView.ViewModels
         // 用来记录刚才右键点击的位置
         public System.Drawing.PointF CurrentMousePoint { get; set; }
         private int _topZIndex = 0;
+        public AdjustViewModel()
+        {
+            AllCards.CollectionChanged += AllWires_CollectionChanged;
+        }
+        private void AllWires_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (WireDataModel wire in e.NewItems)
+                {
+                    if (!wire.TargetCard.UpstreamCards.Contains(wire.SourceCard))
+                    {
+                        //把连接的卡片存储在当前卡片的来源里
+                        wire.TargetCard.UpstreamCards.Add(wire.SourceCard);
+                    }
+                    //刷新
+                    wire.TargetCard.RefreshInputOptions();
+                }
+            }
+            if (e.OldItems != null)
+            {
+                foreach (WireDataModel wire in e.OldItems)
+                {
+                    // 断开连线时，关系并重新刷新
+                    wire.TargetCard.UpstreamCards.Remove(wire.SourceCard);
+                    wire.TargetCard.RefreshInputOptions();
+                }
+            }
+        }
         /// <summary>
         /// 新建卡片，设置卡片的名字，
         /// </summary>
