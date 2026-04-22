@@ -138,7 +138,9 @@
                 <ControlTemplate TargetType="ComboBox">
                     <Grid >
                         <Border  Background="{TemplateBinding Background}" CornerRadius="{Binding Path=(local:ComboboxHelp.CornerRadius),RelativeSource={RelativeSource AncestorType=ComboBox}}">
-                            <ToggleButton x:Name="ToggleButton" 
+                            <ToggleButton x:Name="ToggleButton"
+                                          Width="{TemplateBinding Width}"
+                                          Height="{TemplateBinding Height}"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Center"
                                           Padding="0"
