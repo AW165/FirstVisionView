@@ -58,4 +58,12 @@
                       ItemsSource="{Binding Options}"/>
         </Grid>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type Core:AddButton}">
+        <Grid>
+            <Button Content="{Binding Name}"
+                    Style="{StaticResource ButtonStyle}"
+                    Command="{Binding BindCommand}">
+            </Button>
+        </Grid>
+    </DataTemplate>
 </ResourceDictionary>

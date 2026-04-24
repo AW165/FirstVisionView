@@ -27,6 +27,7 @@ namespace FirstVisionView.ParameterUILibary.Core
     }
     public partial class CheckBoxParameterItem : BaseParameterItem
     {
+        [ObservableProperty] private ParameterDataType _acceptType;
         [ObservableProperty] private bool _isOpen;
     }
     public partial class ComboboxParameterItem : BaseParameterItem

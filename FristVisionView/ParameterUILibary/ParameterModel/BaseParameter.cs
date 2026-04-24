@@ -9,6 +9,7 @@ using FirstVisionView.ParameterUILibary.Core;
 
 namespace FirstVisionView.ParamenterUILibary.ParameterModel
 {
+    //卡片参数
     public partial class BaseParameter : ObservableObject
     {
         public string Title { get; protected set; } = "";
@@ -16,5 +17,12 @@ namespace FirstVisionView.ParamenterUILibary.ParameterModel
         public Dictionary<string,ParameterDataType> OutParameter { get;} = new();
         public ObservableCollection<BaseParameterItem> ParameterList { get; } = new();
     }
+    //右键菜单参数
+    public partial class AddParameter : ObservableObject
+    {
+        public ObservableCollection<AddBaseMenuParameter> AddParameterList { get; } = new();
+
+    }
+
 }
 

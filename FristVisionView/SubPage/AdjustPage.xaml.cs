@@ -478,7 +478,12 @@ namespace FirstVisionView
             else return FindParent<T>(parentObject);
         }
 
-       
+        private void ItemsControl_SourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
+        {
+
+        }
+
+
 
         //==============================菜单/公共事件=======================
     }

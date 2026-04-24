@@ -34,24 +34,24 @@
                 <Grid>
                     <Border x:Name="GridBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
                         <Border.Background>
-                        <DrawingBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
-                            <DrawingBrush.Transform>
-                                <TransformGroup>
-                                    <ScaleTransform ScaleX="{Binding ElementName=CanvasScale, Path=ScaleX}"
+                            <DrawingBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
+                                <DrawingBrush.Transform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="{Binding ElementName=CanvasScale, Path=ScaleX}"
                                 ScaleY="{Binding ElementName=CanvasScale, Path=ScaleY}"/>
-                                    <TranslateTransform X="{Binding ElementName=CanvasTranslate, Path=X}"
+                                        <TranslateTransform X="{Binding ElementName=CanvasTranslate, Path=X}"
                                 Y="{Binding ElementName=CanvasTranslate, Path=Y}"/>
-                                </TransformGroup>
-                            </DrawingBrush.Transform>
-                            <DrawingBrush.Drawing>
-                                <GeometryDrawing Geometry="M 20 0 L 0 0 0 20">
-                                    <GeometryDrawing.Pen>
-                                        <Pen Brush="#D0D0D0" Thickness="1" DashStyle="{x:Static DashStyles.Dot}"/>
-                                    </GeometryDrawing.Pen>
-                                </GeometryDrawing>
-                            </DrawingBrush.Drawing>
-                        </DrawingBrush>
-                    </Border.Background>
+                                    </TransformGroup>
+                                </DrawingBrush.Transform>
+                                <DrawingBrush.Drawing>
+                                    <GeometryDrawing Geometry="M 20 0 L 0 0 0 20">
+                                        <GeometryDrawing.Pen>
+                                            <Pen Brush="#D0D0D0" Thickness="1" DashStyle="{x:Static DashStyles.Dot}"/>
+                                        </GeometryDrawing.Pen>
+                                    </GeometryDrawing>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                        </Border.Background>
                     </Border>
                     <Canvas x:Name="ParamentCanvas" 
                         IsHitTestVisible="True"
@@ -85,7 +85,7 @@
                                     </Path>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
-                            
+
                         </ItemsControl>
                         <ItemsControl ItemsSource="{Binding AllCards}">
                             <ItemsControl.ItemsPanel>
@@ -118,7 +118,7 @@
                               IsHitTestVisible="False"
                               Visibility="Collapsed"
                               Panel.ZIndex="10000">
-                            
+
                         </Path>
                     </Canvas>
                 </Grid>
@@ -129,11 +129,23 @@
                 <Border Padding="15">
                     <Border Width="Auto" MinHeight="150" MinWidth="100" CornerRadius="18" Background="White" Style="{StaticResource BorderStyle}">
                         <StackPanel>
+                            <ItemsControl ItemsSource="{Binding AddParameterList}"/>
                             <Button Content="二值化" Width="100" CommandParameter="Binaryzation" Command="{Binding AddCardCommand}" Style="{StaticResource MenuButtonStyle}"/>
                         </StackPanel>
                     </Border>
                 </Border>
             </Popup>
+            <Popup x:Name="AddParameter" AllowsTransparency="True"  Panel.ZIndex="10" IsOpen="{Binding AddParameterPopup, Mode=TwoWay}" StaysOpen="False" Placement="Mouse">
+                <Border Padding="15">
+                    <Border Width="Auto" MinHeight="150" MinWidth="100" CornerRadius="18" Background="White" Style="{StaticResource BorderStyle}">
+                        <StackPanel>
+                            <ItemsControl ItemsSource="{Binding AddParameterList}"/>
+                            <Button Content="二值化" Width="100" CommandParameter="Binaryzation" Command="{Binding AddCardCommand}" Style="{StaticResource MenuButtonStyle}"/>
+                        </StackPanel>
+                    </Border>
+                </Border>
+            </Popup>
+
             <Popup x:Name="DeleteCard" AllowsTransparency="True"  IsOpen="{Binding DelePopup, Mode=TwoWay}" Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
                 <Border Padding="15">
                     <Border Width="100" MinHeight="27" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}">
@@ -247,7 +259,6 @@
                 </Grid>
             </Border>
         </Grid>
-
         <!-- ======================= 右侧：图像显示与工具区域 ======================= -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
@@ -256,13 +267,11 @@
                 <RowDefinition Height="*"/>
                 <!-- 图像区域占据剩余全部 -->
             </Grid.RowDefinitions>
-
             <!-- 1. 顶部工具栏 -->
             <Border Grid.Row="0" Background="#EAEAEA" BorderThickness="0" HorizontalAlignment="Stretch" Padding="10,5">
                 <Border.Effect>
                     <DropShadowEffect ShadowDepth="1" BlurRadius="10" Color="#20000000" Opacity="0.3"/>
                 </Border.Effect>
-
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <ComboBox x:Name="LayerSelection" Width="150" MaxHeight="35" Background="#FFFFFF" Style="{StaticResource ComboboxStyle}"/>
                     <ComboBox x:Name="CameraSelection" Margin="30,0,0,0" Width="100" Background="#FFFFFF" MaxHeight="35" Style="{StaticResource ComboboxStyle}"/>
@@ -306,7 +315,6 @@
             <!-- 外层加一个 Grid 并设置 ClipToBounds，防止图像放大后跑出版面 -->
             <Grid Grid.Row="1" ClipToBounds="True" Background="#2D2D30">
                 <!-- 机器视觉习惯用深灰色底看图 -->
-
                 <!-- RenderOptions.BitmapScalingMode="NearestNeighbor" -->
                 <!-- 作用：当图片被无限放大时，显示为一个一个的方块像素，绝对不会被模糊化！对查像素非常重要 -->
                 <Image x:Name="imgDisplay" Stretch="None"

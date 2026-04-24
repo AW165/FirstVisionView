@@ -31,7 +31,7 @@ namespace FirstVisionView.ViewModels
         private int _topZIndex = 0;
         public AdjustViewModel()
         {
-            AllCards.CollectionChanged += AllWires_CollectionChanged;
+            AllWires.CollectionChanged += AllWires_CollectionChanged;
         }
         private void AllWires_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
