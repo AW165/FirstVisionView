@@ -17,12 +17,5 @@ namespace FirstVisionView.ParamenterUILibary.ParameterModel
         public Dictionary<string,ParameterDataType> OutParameter { get;} = new();
         public ObservableCollection<BaseParameterItem> ParameterList { get; } = new();
     }
-    //右键菜单参数
-    public partial class AddParameter : ObservableObject
-    {
-        public ObservableCollection<AddBaseMenuParameter> AddParameterList { get; } = new();
-
-    }
-
 }
 
