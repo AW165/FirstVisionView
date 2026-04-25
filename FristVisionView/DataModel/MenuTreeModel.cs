@@ -10,7 +10,7 @@ namespace FirstVisionView.DataModel
     /// <summary>
     /// 中转类，用来转存反射的内容，提供给xaml来绑定，下面存储为大类类名，且Xaml的HierarchicalDataTemplate要求必须提供层级结构
     /// </summary>
-    public class MenuTreeModel
+    public class MenuCategory
     {
         public string CategoryName{ get; set; }//存储大类类名
         public ObservableCollection<MenuOperator> SubOperator { get; set; } = new();//把MenuOperator作为MenuTreeModel的子集暴露给Xaml来绑定
