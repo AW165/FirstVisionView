@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -25,6 +26,7 @@ namespace FirstVisionView.ViewModels
         [ObservableProperty] private bool _addPopup = false;
         [ObservableProperty] private bool _cap = false;
         [ObservableProperty] private ObservableObject? _currentEditVM = null;
+        public  static Dictionary<string,int> SerialNumber=new();
         public bool CanRename => (AllCards.Count(c => c.IsSelected) == 1);
         // 用来记录刚才右键点击的位置
         public System.Drawing.PointF CurrentMousePoint { get; set; }
@@ -69,30 +71,44 @@ namespace FirstVisionView.ViewModels
             double spawnX = CurrentMousePoint.X;
             double spawnY = CurrentMousePoint.Y;
        
-        // 找到空位
-        while (AllCards.Any(c => Math.Abs(c.X - spawnX) < 10 && Math.Abs(c.Y - spawnY) < 10))
-        {
-            spawnX += 30; // X 向右偏
-            spawnY += 30; // Y 向下偏
-        }
-
-        
-            // 3. 找到空位新建卡片并赋坐标
-            CardDataModel newCard = new CardDataModel()
+            // 找到空位
+            while (AllCards.Any(c => Math.Abs(c.X - spawnX) < 10 && Math.Abs(c.Y - spawnY) < 10))
             {
-               // CardName = ParameterCardName(CardType) ,
-                X = spawnX,
-                Y = spawnY,
-                IsEnable = true,
-               // ParameterVM = ParameterCardModel(CardType)//
-                // ... 其他属性
-            };
+                spawnX += 30; // X 向右偏
+                spawnY += 30; // Y 向下偏
+            }
 
-        AllCards.Add(newCard);
         
-        // 关闭菜单
-        AddPopup = false; 
-    }
+                // 3. 找到空位新建卡片并赋坐标
+                CardDataModel newCard = new CardDataModel()
+                {
+                    CardName = ParameterCardName(CardType) ,
+                    X = spawnX,
+                    Y = spawnY,
+                    IsEnable = true,
+                    ParameterVM = OperatorFactory.CreateOperator(CardType)//
+                    // ... 其他属性
+                };
+
+            AllCards.Add(newCard);
+        
+            // 关闭菜单
+            AddPopup = false; 
+        }
+        public String ParameterCardName(string CardName)
+        {
+            if (SerialNumber.TryGetValue(CardName, out var SerialNum))
+            {
+                CardName = CardName + SerialNum.ToString();
+                SerialNumber[CardName] = SerialNum+1;
+            }
+            else
+            {
+                CardName = CardName + "1";
+                SerialNumber[CardName] = 1;
+            }
+                return CardName;
+        }
 
         [RelayCommand]
         private void DeleteCards()
