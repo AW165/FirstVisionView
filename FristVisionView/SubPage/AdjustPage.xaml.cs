@@ -155,12 +155,11 @@ namespace FirstVisionView
             _IsDragging = false;//取消拖拽状态
             if (vm == null) return;
             var cardList = vm.AllCards.Where(c => c.IsSelected).ToList();//判断有无卡片被选中，有则弹出删除菜单，否则弹出添加菜单
-            var wiredList = vm.AllWires.Where(c => c.IsSelected).ToList();//判断有无卡片被选中，有则弹出删除菜单，否则弹出添加菜单
+            var wiredList = vm.AllWires.Where(c => c.IsSelected).ToList();//判断有无线段被选中，有则弹出删除菜单，否则弹出添加菜单
             if (cardList.Count == 0 && wiredList.Count == 0)
             {
                 Point logicalPos = e.GetPosition(ParamentCanvas);
                 vm.CurrentMousePoint = new System.Drawing.PointF((float)logicalPos.X, (float)logicalPos.Y); // 假设你在 ViewModel 里用 PointF 或者 WPF的Point 存它
-                vm.AddPopup = true;
                 return;
             }
             else vm.DelePopup = true;

@@ -6,11 +6,28 @@
              xmlns:local="clr-namespace:FirstVisionView"
              xmlns:toolcard ="clr-namespace:FirstVisionView.Card"
              xmlns:vm ="clr-namespace:FirstVisionView.ViewModels"
+             xmlns:core="clr-namespace:FirstVisionView.Core"
+             xmlns:dataModel="clr-namespace:FirstVisionView.DataModel"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1600"
              d:DataContext="{d:DesignData Type=vm:AdjustViewModel}"
              DataContext="{Binding AdjustVM}"
              Background="#F5F5F5">
+    <UserControl.Resources>
+        <core:BindingProxy x:Key="VMProxy" Data="{Binding}"/>
+        <DataTemplate DataType="{x:Type dataModel:MenuOperator}">
+            <TextBlock Text="{Binding DispalyName}" Margin="10,5"/>
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type dataModel:MenuCategory}" ItemsSource="{Binding SubOperator}">
+            <TextBlock Text="{Binding CategoryName}"/>
+            <HierarchicalDataTemplate.ItemContainerStyle>
+                <Style TargetType="MenuItem">
+                    <Setter Property="Command" Value="{Binding Data.AddCardCommand,Source={StaticResource VMProxy}}"/>
+                    <Setter Property="CommandParameter" Value="{Binding ValidatesOnDataErrors.ParameterType,Source={StaticResource VMProxy}}"/>
+                </Style>
+            </HierarchicalDataTemplate.ItemContainerStyle>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
     <!-- 给一个底色区分 -->
     <Grid>
         <Grid.ColumnDefinitions> 
@@ -125,16 +142,6 @@
             </Border>
             <!--缩放百分比-->
             <TextBlock x:Name="LeftZoomLevelText" Text="100%" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,20,10,25" Foreground="Gray" IsHitTestVisible="False"/>
-            <Popup x:Name="AddCard" AllowsTransparency="True"  Panel.ZIndex="10" IsOpen="{Binding AddPopup, Mode=TwoWay}" StaysOpen="False" Placement="Mouse">
-                <Border Padding="15">
-                    <Border Width="Auto" MinHeight="150" MinWidth="100" CornerRadius="18" Background="White" Style="{StaticResource BorderStyle}">
-                        <StackPanel>
-                            <ItemsControl ItemsSource="{Binding AddParameterList}"/>
-                            <Button Content="二值化" Width="100" CommandParameter="Binaryzation" Command="{Binding AddCardCommand}" Style="{StaticResource MenuButtonStyle}"/>
-                        </StackPanel>
-                    </Border>
-                </Border>
-            </Popup>
             <Popup x:Name="DeleteCard" AllowsTransparency="True"  IsOpen="{Binding DelePopup, Mode=TwoWay}" Panel.ZIndex="10" StaysOpen="False" Placement="Mouse">
                 <Border Padding="15">
                     <Border Width="100" MinHeight="27" CornerRadius="10" Background="White" Style="{StaticResource BorderStyle}">
@@ -177,6 +184,9 @@
                 </Border.Style>
             </Border>
             <Border d:Visibility="Visible" d:Opacity="100" x:Name="ParameterCard" Panel.ZIndex="100" Background="#ffffff" MaxHeight="600" MaxWidth="600" CornerRadius="70" >
+                <Border.ContextMenu>
+                    <ContextMenu ItemsSource="{Binding OperatorMenuTree}"/>
+                </Border.ContextMenu>
                 <Border.RenderTransform>
                     <ScaleTransform ScaleX="1" ScaleY="1" CenterX="200" CenterY="300"/>
                 </Border.RenderTransform>

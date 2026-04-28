@@ -18,7 +18,7 @@ namespace FirstVisionView.Core
             //获取当前exe里面所有的类型
             Type[] allType = Assembly.GetExecutingAssembly().GetTypes();
             //筛选出贴了视觉标签的类，并分组
-            var GroupedOpnrators = allType.Where(t => t.GetCustomAttribute<VisionOperatorAttribute>()! == null)
+            var GroupedOpnrators = allType.Where(t => t.GetCustomAttribute<VisionOperatorAttribute>()! != null)
                 .GroupBy(t => t.GetCustomAttribute<VisionOperatorAttribute>()!.Category);
             //循环这个组的成员，每个成员都有一个标志（DisPlayName,ParaType,Category）
             foreach (var group in GroupedOpnrators)

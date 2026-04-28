@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FirstVisionView.Card;
+using FirstVisionView.Core;
 using FirstVisionView.DataModel;
 using FirstVisionView.ParameterUILibary.Core;
 using FirstVisionView.ParameterUILibary.ParameterModel;
@@ -23,9 +24,10 @@ namespace FirstVisionView.ViewModels
         [ObservableProperty] private ObservableCollection<WireDataModel> _allWires = new();
         [ObservableProperty] private ObservableCollection<CardDataModel> _allCards = new();
         [ObservableProperty] private bool _delePopup = false;
-        [ObservableProperty] private bool _addPopup = false;
         [ObservableProperty] private bool _cap = false;
         [ObservableProperty] private ObservableObject? _currentEditVM = null;
+        //引用目录树的数据，暴露给xaml绑定
+        public ObservableCollection<MenuCategory> OperatorMenuTree => OperatorRegistry.GlobalMenuTree;
         public  static Dictionary<string,int> SerialNumber=new();
         public bool CanRename => (AllCards.Count(c => c.IsSelected) == 1);
         // 用来记录刚才右键点击的位置
@@ -91,9 +93,6 @@ namespace FirstVisionView.ViewModels
                 };
 
             AllCards.Add(newCard);
-        
-            // 关闭菜单
-            AddPopup = false; 
         }
         public String ParameterCardName(string CardName)
         {
