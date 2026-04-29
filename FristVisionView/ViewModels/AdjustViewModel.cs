@@ -67,7 +67,7 @@ namespace FirstVisionView.ViewModels
         /// </summary>
         /// <param name="CardType"></param>
         [RelayCommand]
-        private void AddCard(string CardType)
+        private void AddCard(MenuOperator SubOperator)
         {
             // 1. 获取鼠标点击的初始期待坐标
             double spawnX = CurrentMousePoint.X;
@@ -84,11 +84,11 @@ namespace FirstVisionView.ViewModels
                 // 3. 找到空位新建卡片并赋坐标
                 CardDataModel newCard = new CardDataModel()
                 {
-                    CardName = ParameterCardName(CardType) ,
+                    CardName = ParameterCardName(SubOperator.DispalyName) ,
                     X = spawnX,
                     Y = spawnY,
                     IsEnable = true,
-                    ParameterVM = OperatorFactory.CreateOperator(CardType)//
+                    ParameterVM = OperatorFactory.CreateOperator(SubOperator.ParameterType)//
                     // ... 其他属性
                 };
 
@@ -98,13 +98,15 @@ namespace FirstVisionView.ViewModels
         {
             if (SerialNumber.TryGetValue(CardName, out var SerialNum))
             {
-                CardName = CardName + SerialNum.ToString();
-                SerialNumber[CardName] = SerialNum+1;
+                SerialNumber[CardName] = SerialNum + 1;
+                CardName = CardName + SerialNumber[CardName].ToString();
+                
             }
             else
             {
-                CardName = CardName + "1";
                 SerialNumber[CardName] = 1;
+                CardName = CardName + "1";
+                
             }
                 return CardName;
         }

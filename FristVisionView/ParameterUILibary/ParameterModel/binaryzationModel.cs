@@ -11,6 +11,7 @@ using FirstVisionView.ParameterUILibary.Core;
 namespace FirstVisionView.ParameterUILibary.ParameterModel
 {
     //二值化算子参数
+    [VisionOperator ("图像处理","二值化","BinaryzationModel")]
     public partial class BinaryzationModel : BaseParameter
     {
         public BinaryzationModel()

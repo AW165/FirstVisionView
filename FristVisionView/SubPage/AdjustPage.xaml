@@ -23,7 +23,7 @@
             <HierarchicalDataTemplate.ItemContainerStyle>
                 <Style TargetType="MenuItem">
                     <Setter Property="Command" Value="{Binding Data.AddCardCommand,Source={StaticResource VMProxy}}"/>
-                    <Setter Property="CommandParameter" Value="{Binding ValidatesOnDataErrors.ParameterType,Source={StaticResource VMProxy}}"/>
+                    <Setter Property="CommandParameter" Value="{Binding}"/>
                 </Style>
             </HierarchicalDataTemplate.ItemContainerStyle>
         </HierarchicalDataTemplate>
@@ -48,8 +48,12 @@
                     PreviewMouseRightButtonDown="CanvasRightDown"
                     PreviewMouseMove="Canvas_PreviewMouseMove"
                     PreviewMouseRightButtonUp="Canvas_PreviewMouseRightButtonUp">
+                <Border.ContextMenu>
+                    <ContextMenu ItemsSource="{Binding OperatorMenuTree}"/>
+                </Border.ContextMenu>
                 <Grid>
                     <Border x:Name="GridBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
+                        
                         <Border.Background>
                             <DrawingBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
                                 <DrawingBrush.Transform>
@@ -184,9 +188,7 @@
                 </Border.Style>
             </Border>
             <Border d:Visibility="Visible" d:Opacity="100" x:Name="ParameterCard" Panel.ZIndex="100" Background="#ffffff" MaxHeight="600" MaxWidth="600" CornerRadius="70" >
-                <Border.ContextMenu>
-                    <ContextMenu ItemsSource="{Binding OperatorMenuTree}"/>
-                </Border.ContextMenu>
+                
                 <Border.RenderTransform>
                     <ScaleTransform ScaleX="1" ScaleY="1" CenterX="200" CenterY="300"/>
                 </Border.RenderTransform>

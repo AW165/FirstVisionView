@@ -38,4 +38,9 @@ namespace FirstVisionView.ParameterUILibary.Core
         [ObservableProperty] private ObservableCollection<string> _options = new();
         [ObservableProperty] private string _selectedValue="";
     }
+    public partial class TextBoxParameterItem : BaseParameterItem
+    {
+        [ObservableProperty] private ParameterDataType _accptType;
+        [ObservableProperty] private int _value;
+    }
 }
