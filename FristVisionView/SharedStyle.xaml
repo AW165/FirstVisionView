@@ -30,19 +30,19 @@
         </Setter>
     </Style>
     <!--卡片式菜单下的按钮，透明圆角版-->
-        <Style x:Key="MenuButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="20,10"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Board"
+    <Style x:Key="MenuButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="20,10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Board"
                                 Background="{TemplateBinding Background}"  
                                 BorderBrush="{TemplateBinding BorderBrush}"  
                                 BorderThickness="{TemplateBinding BorderThickness}"  
@@ -53,37 +53,37 @@
                                 VerticalAlignment="Center">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                        <ControlTemplate.Triggers>
+                    <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Board" Property="Background" Value="#FF9A9191"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Board" Property="Background" Value="#FF464343"/>
-                            </Trigger>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Board" Property="Background" Value="#FF464343"/>
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Board" Property="Background" Value="#FF9A9191"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!--普通按钮圆角版-->
-        <Style x:Key="ButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#FFECE8E8"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="HorizontalAlignment" Value="stretch"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="Width" Value="35"/>
-            <Setter Property="Height" Value="35"/>
-            <Setter Property="Padding" Value="0,0,0,0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--普通按钮圆角版-->
+    <Style x:Key="ButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="#FFECE8E8"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Width" Value="35"/>
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Padding" Value="0,0,0,0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Board"
                                     Background="{TemplateBinding Background}"  
@@ -100,29 +100,72 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Board" Property="Background" Value="#FF9A9191"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Board" Property="Background" Value="#FF464343"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!--圆角Border-->
-        <Style x:Key="BorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="#FFFFFF"/>
-            <Setter Property="BorderBrush" Value="#D0D0D0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="8"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Board" Property="Background" Value="#FF464343"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--继承按钮圆角版-->
+    <Style x:Key="InheritButton" TargetType="Button">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Content" Value="🔗"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Width" Value="35"/>
+        <Setter Property="Padding" Value="-1,0,0,0"/>
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Padding" Value="0,0,0,0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Board"
+                            Background="{TemplateBinding Background}"  
+                            BorderBrush="{TemplateBinding BorderBrush}"  
+                            BorderThickness="{TemplateBinding BorderThickness}"  
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}"
+                            CornerRadius="{Binding Path=(local:ButtonHelp.CornerRadius),RelativeSource={RelativeSource TemplatedParent}}"
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            Padding="{TemplateBinding Padding}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="-0.5,0,0,2" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Board" Property="Background" Value="#FF9A9191"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Board" Property="Background" Value="#FF464343"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--圆角Border-->
+    <Style x:Key="BorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#D0D0D0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Effect">
             <Setter.Value>
                 <DropShadowEffect BlurRadius="10" Color="#20000000" Opacity="0.5" ShadowDepth="1"/>
             </Setter.Value>
         </Setter>
-        </Style>
-        <!--普通下拉列表圆角版-->
-        <Style x:Key="ComboboxStyle" TargetType="ComboBox">
+    </Style>
+    <!--普通下拉列表圆角版-->
+    <Style x:Key="ComboboxStyle" TargetType="ComboBox">
         <Setter Property="Background" Value="#FFECE8E8"/>
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="BorderBrush" Value="Black"/>
@@ -226,59 +269,59 @@
             </Setter.Value>
         </Setter>
     </Style>
-        <!--滑槽按钮-->
-        <Style x:Key="TrackButton" TargetType="RepeatButton">
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="IsTabStop" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="RepeatButton">
-                        <!-- 背景透明，这样看不见但占位置 -->
-                        <Border Background="Transparent"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!--圆角滑块-->
-        <Style x:Key="PAPT_Thumb" TargetType="Thumb">
-        <Setter Property="Background" Value="White"/>
-            <!--不要指定太长，否则计算异常会被裁切-->
+    <!--滑槽按钮-->
+    <Style x:Key="TrackButton" TargetType="RepeatButton">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Thumb">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <!-- 背景透明，这样看不见但占位置 -->
+                    <Border Background="Transparent"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--圆角滑块-->
+    <Style x:Key="PAPT_Thumb" TargetType="Thumb">
+        <Setter Property="Background" Value="White"/>
+        <!--不要指定太长，否则计算异常会被裁切-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
                     <Border CornerRadius="50" Background="{TemplateBinding Background}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!--圆角滑槽-->
-        <Style x:Key="PART_Scroll" TargetType="ScrollBar">
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--圆角滑槽-->
+    <Style x:Key="PART_Scroll" TargetType="ScrollBar">
         <Setter Property="Width" Value="8"/>
         <Setter Property="MinWidth" Value="0"/>
         <Setter Property="MinHeight" Value="50"/>
-            <Setter Property="Template" >
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollBar">
-                        <Border Background="#AFF" CornerRadius="4" MinHeight="30" Padding="1" Width="{TemplateBinding Width}">
-                            <Track x:Name="PART_Track" IsDirectionReversed="True">
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton Style="{StaticResource TrackButton}"/>
-                                </Track.DecreaseRepeatButton>
-                                <Track.Thumb>
-                                    <Thumb Style="{StaticResource PAPT_Thumb}"/>
-                                </Track.Thumb>
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton Style="{StaticResource TrackButton}"/>
-                                </Track.IncreaseRepeatButton>
-                            </Track>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!--圆角ScrollViewer-->
-        <Style x:Key="PART_ScrollViwer" TargetType="ScrollViewer">
+        <Setter Property="Template" >
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <Border Background="#AFF" CornerRadius="4" MinHeight="30" Padding="1" Width="{TemplateBinding Width}">
+                        <Track x:Name="PART_Track" IsDirectionReversed="True">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource TrackButton}"/>
+                            </Track.DecreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource PAPT_Thumb}"/>
+                            </Track.Thumb>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource TrackButton}"/>
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--圆角ScrollViewer-->
+    <Style x:Key="PART_ScrollViwer" TargetType="ScrollViewer">
         <!--不要指定宽度，直接用grid填充满，否则右侧这个滚动条会被放到中间！！！-->
         <!--要指定滑槽宽度，要么去滑槽样式改，要么修改下面滑槽内元素-->
         <Setter Property="Template">
@@ -307,7 +350,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-        <!--slider-->
+    <!--slider-->
     <Style x:Key="RoundSlider" TargetType="Slider">
 
         <Setter Property="Template">
@@ -344,5 +387,8 @@
         </Setter>
 
     </Style>
-
+    <!--TextBox-->
+    <Style x:Key="TextBoxStyle" TargetType="TextBox">
+      
+    </Style>
 </ResourceDictionary>

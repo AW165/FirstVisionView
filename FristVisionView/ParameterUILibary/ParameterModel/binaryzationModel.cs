@@ -25,8 +25,6 @@ namespace FirstVisionView.ParameterUILibary.ParameterModel
                 Name = "图像来源",
                 AcceptType = ParameterDataType.Image,
                 Options = new ObservableCollection<string> { },
-
-
             });
             this.ParameterList.Add(new ComboboxParameterItem
             {

@@ -30,11 +30,17 @@ namespace FirstVisionView.ParameterUILibary.ParameterModel
                 Options = {},
                 SelectedValue = ""
             });
-            this.ParameterList.Add(new ComboboxParameterItem()
+            this.ParameterList.Add(new TextBoxParameterItem()
             {
-                Name = "相机",
-                Options = { },
-                SelectedValue = ""
+                Name = "曝光",
+                AccptType = ParameterDataType.Integer,
+                PresentValue = 0
+            });
+            this.ParameterList.Add(new TextBoxParameterItem()
+            {
+                Name = "增益",
+                AccptType = ParameterDataType.Double,
+                PresentValue = 0
             });
         }
     }

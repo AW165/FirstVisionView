@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace FirstVisionView.ParameterUILibary.Core
@@ -36,11 +31,11 @@ namespace FirstVisionView.ParameterUILibary.Core
         [ObservableProperty] private ParameterDataType _acceptType;
         //存储Combobox的选项列表
         [ObservableProperty] private ObservableCollection<string> _options = new();
-        [ObservableProperty] private string _selectedValue="";
+        [ObservableProperty] private string _selectedValue = "";
     }
     public partial class TextBoxParameterItem : BaseParameterItem
     {
         [ObservableProperty] private ParameterDataType _accptType;
-        [ObservableProperty] private int _value;
+        [ObservableProperty] private int _presentValue;
     }
 }

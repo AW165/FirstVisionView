@@ -3,44 +3,48 @@
                     xmlns:global="clr-namespace:FirstVisionView"
                     xmlns:Core="clr-namespace:FirstVisionView.ParameterUILibary.Core">
     <DataTemplate DataType="{x:Type Core:SliderParameterItem}">
-        <Grid Margin="10,5">
+        <Grid Margin="60,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" SharedSizeGroup="ParamenterGroup"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="60"/>
             </Grid.ColumnDefinitions>
-
             <TextBlock Grid.Column="0" 
                        Text="{Binding Name}" 
                        VerticalAlignment="Center"
                        FontSize="20"
                        Foreground="Black" />
-            <Slider Grid.Column="1" 
-                    Height="25"
-                    Width="250"
-                    Minimum="{Binding Min}" 
-                    Maximum="{Binding Max}" 
-                    Value="{Binding Value}" 
-                    TickFrequency="{Binding Step}"
-                    IsSnapToTickEnabled="True"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
-                    Margin="30,0,0,0"
-                    Style="{StaticResource RoundSlider}"/>
-            <TextBox Grid.Column="2" 
-                     Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
-                     VerticalAlignment="Center" 
-                     BorderThickness="0"
-                     FontSize="20"
-                     TextAlignment="Center"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="30,0,0,0">
+                <Slider  
+                        Height="22"
+                        Width="150"
+                        Minimum="{Binding Min}" 
+                        Maximum="{Binding Max}" 
+                        Value="{Binding Value}" 
+                        TickFrequency="{Binding Step}"
+                        IsSnapToTickEnabled="True"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource RoundSlider}"/>
+                <TextBox 
+                         Width="60"
+                         Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
+                         VerticalAlignment="Center" 
+                         HorizontalAlignment="Left"
+                         BorderThickness="1"
+                         FontSize="17"
+                         TextAlignment="Center"/>
+                <Button Style="{StaticResource InheritButton}" Width="60"/>
+
+            </StackPanel>
+
         </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type Core:ComboboxParameterItem}">
-        <Grid Margin="10,5">
+        <Grid Margin="60,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" SharedSizeGroup="ParamenterGroup"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" 
@@ -55,7 +59,32 @@
                       Style="{StaticResource ComboboxStyle}" 
                       SelectedItem="{Binding SelectedValue,Mode=TwoWay}"
                       HorizontalAlignment="Left" VerticalAlignment="Center" 
+                      Padding="0,-5,0,0"
                       ItemsSource="{Binding Options}"/>
+        </Grid>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type Core:TextBoxParameterItem}">
+        <Grid Margin="60,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="ParamenterGroup"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" 
+                       Text="{Binding Name}" 
+                       VerticalAlignment="Center"
+                       FontSize="20"
+                       Foreground="Black" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBox x:Name="Input" 
+                         VerticalAlignment="Center"
+                         Margin="30,0,0,0"
+                         Height="20" 
+                         Padding="0,2,0,0"
+                         Width="150"  BorderThickness="1"
+                         BorderBrush="Black" 
+                         Text="{Binding PresentValue,Mode=TwoWay}"/>
+                <Button Style="{StaticResource InheritButton}" Grid.Column="2"  HorizontalAlignment="Left"/>
+            </StackPanel>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
