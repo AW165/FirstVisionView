@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:FirstVisionView">
+    <!--布局开关切换-->
+    <BooleanToVisibilityConverter x:Key="BoolToVis" />
     <!--ComboBoxItem-->
     <Style x:Key="ModernComboBoxItemStyle" TargetType="ComboBoxItem">
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
