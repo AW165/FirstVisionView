@@ -30,7 +30,7 @@
     </UserControl.Resources>
     <!-- 给一个底色区分 -->
     <Grid>
-        <Grid.ColumnDefinitions> 
+        <Grid.ColumnDefinitions>
             <!-- 左侧：参数卡片区域 -->
             <ColumnDefinition Width="1*"/>
             <!-- 右侧：图像显示区域 -->
@@ -53,7 +53,7 @@
                 </Border.ContextMenu>
                 <Grid>
                     <Border x:Name="GridBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
-                        
+
                         <Border.Background>
                             <DrawingBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
                                 <DrawingBrush.Transform>
@@ -188,7 +188,7 @@
                 </Border.Style>
             </Border>
             <Border d:Visibility="Visible" d:Opacity="100" x:Name="ParameterCard" Panel.ZIndex="100" Background="#ffffff" MaxHeight="600" MaxWidth="600" CornerRadius="70" >
-                
+
                 <Border.RenderTransform>
                     <ScaleTransform ScaleX="1" ScaleY="1" CenterX="200" CenterY="300"/>
                 </Border.RenderTransform>
@@ -314,24 +314,68 @@
 
             <!-- 2. 图像显示与 ROI 区域 -->
             <!-- 外层加一个 Grid 并设置 ClipToBounds，防止图像放大后跑出版面 -->
-            <Grid Grid.Row="1" ClipToBounds="True" Background="#2D2D30">
+            <Grid Grid.Row="1" ClipToBounds="True" Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
                 <!-- 机器视觉习惯用深灰色底看图 -->
                 <!-- RenderOptions.BitmapScalingMode="NearestNeighbor" -->
                 <!-- 作用：当图片被无限放大时，显示为一个一个的方块像素，绝对不会被模糊化！对查像素非常重要 -->
-                <Image x:Name="imgDisplay" Stretch="None"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"
-                       RenderOptions.EdgeMode="Aliased">
-                    <Image.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleX="1" ScaleY="1"/>
-                            <TranslateTransform X="0" Y="0"/>
-                        </TransformGroup>
-                    </Image.RenderTransform>
-                </Image>
+                <Grid ClipToBounds="True" Background="#2D2D30">
+                    <Image x:Name="imgDisplay" Source="{Binding SelectedImage.Path}" Stretch="None"
+                           Grid.Row="0"
+                           MouseMove="imgDisplay_MouseMove"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor"
+                           RenderOptions.EdgeMode="Aliased">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="{Binding ImageScaleX,Path={vm:ImageScale}}" ScaleY="{Binding ImageScaleX,Path={vm:ImageScale}}"/>
+                                <TranslateTransform X="0" Y="0"/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                    <!-- ROI 区域，依然共享 Image 的变换矩阵 -->
+                    <Canvas x:Name="ROI" Background="Transparent" Grid.Row="0" IsHitTestVisible="True" 
+                            RenderTransform="{Binding ElementName=imgDisplay, Path=RenderTransform}" />
+                </Grid>
+                
+                <Grid Grid.Row="1" Height="120" Width="auto" Visibility="{Binding IsImagesourceVisible,Converter={StaticResource BoolToVis},Mode=TwoWay}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal"  Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBlock Text="图像队列:" FontSize="16" Margin="0,10,0,0"/>
+                        <TextBlock Text="0"  FontSize="16" Margin="10,10,0,0"/>
+                        <Button Width="25" Height="25" Margin="40,0,0,0" Command="{Binding AddImageCommand}" Content="🖼️" Style="{StaticResource InheritButton}"/>
+                        <Button Width="25" Height="25" Margin="40,0,0,0" Command="{Binding AddFileCommand}" Content="📁" Style="{StaticResource InheritButton}"/>
+                        <Button Width="25" Height="25" Margin="40,0,0,0" Command="{Binding DeleteImageCommand}" Content="🗑️" Style="{StaticResource InheritButton}"/>
+                    </StackPanel>
+                    <ListBox
+                        Grid.Row="1"
+                        ItemsSource="{Binding ImageQueue}"
+                        SelectedItem="{Binding SelectedImage ,Mode=TwoWay}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                        Background="Transparent">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Width="100" Height="80">
+                                    <Image Source="{Binding Path}"/>
+                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        
+                    </ListBox>
+                </Grid>
 
-                <!-- ROI 区域，依然共享 Image 的变换矩阵 -->
-                <Canvas x:Name="ROI" Background="Transparent" IsHitTestVisible="True" 
-                        RenderTransform="{Binding ElementName=imgDisplay, Path=RenderTransform}" />
             </Grid>
         </Grid>
     </Grid>

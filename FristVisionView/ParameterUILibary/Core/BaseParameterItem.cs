@@ -6,6 +6,7 @@ namespace FirstVisionView.ParameterUILibary.Core
     public partial class BaseParameterItem : ObservableObject
     {
         [ObservableProperty] private string _name = "";
+        [ObservableProperty] private bool _isVisible = true;
     }
     public partial class SliderParameterItem : BaseParameterItem
     {

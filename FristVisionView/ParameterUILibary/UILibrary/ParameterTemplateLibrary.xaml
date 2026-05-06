@@ -3,7 +3,7 @@
                     xmlns:global="clr-namespace:FirstVisionView"
                     xmlns:Core="clr-namespace:FirstVisionView.ParameterUILibary.Core">
     <DataTemplate DataType="{x:Type Core:SliderParameterItem}">
-        <Grid Margin="60,5">
+        <Grid Margin="60,5" Visibility="{Binding IsVisible,Converter={StaticResource BoolToVis}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" SharedSizeGroup="ParamenterGroup"/>
                 <ColumnDefinition Width="*"/>
@@ -40,7 +40,7 @@
         </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type Core:ComboboxParameterItem}">
-        <Grid Margin="60,5">
+        <Grid Margin="60,5" Visibility="{Binding IsVisible,Converter={StaticResource BoolToVis}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" SharedSizeGroup="ParamenterGroup"/>
                 <ColumnDefinition Width="Auto"/>
@@ -64,7 +64,7 @@
         </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type Core:TextBoxParameterItem}">
-        <Grid Margin="60,5">
+        <Grid Margin="60,5" Visibility="{Binding IsVisible,Converter={StaticResource BoolToVis}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" SharedSizeGroup="ParamenterGroup"/>
                 <ColumnDefinition Width="*"/>

@@ -1,9 +1,6 @@
 ﻿// 引入系统基础类库，提供基础数据类型和底层运算支持
-using System;
 // 引入泛型集合库，为我们提供 Dictionary（字典）等高级数据结构
-using System.Collections.Generic;
 // 引入 LINQ 查询语言，让我们能像查数据库一样查内存里的集合（比如用 Where, Any）
-using System.Linq;
 // 引入 WPF 核心基础库，提供 Point（坐标点）、Rect（矩形）、依赖属性等基础对象
 using System.Windows;
 // 引入 WPF 控件库，提供 UserControl（用户控件）、Canvas（画布）等 UI 元素
@@ -15,6 +12,8 @@ using System.Windows.Shapes;
 using FirstVisionView.Card;
 // 引入自己的数据模型库，拿到 CardDataModel
 using FirstVisionView.DataModel;
+using FirstVisionView.ParameterUILibary.ParameterModel;
+
 // 引入自己的视图模型库，拿到AdjustViewModel
 using FirstVisionView.ViewModels;
 namespace FirstVisionView
@@ -73,7 +72,7 @@ namespace FirstVisionView
                 vm.ClearSeletionStatusCommand.Execute(null);//清除卡片高亮状态
                 vm.WireCleanStatusCommand.Execute(null);//清除线段高亮状态
             }
-                _CanvasStartPoint = e.GetPosition(ParamentCanvas);
+            _CanvasStartPoint = e.GetPosition(ParamentCanvas);
             ParamentCanvas.CaptureMouse();
         }
         //Canvas上左键松开
@@ -240,11 +239,23 @@ namespace FirstVisionView
         //Card上左键点击
         private void CardLeftDown(object sender, MouseButtonEventArgs e)
         {
-            
+
             var currentCard = sender as ToolCard;
             if (currentCard == null) return;
             var card = currentCard.DataContext as CardDataModel;
             if (card == null || vm == null || card.IsRenaming == true) return;
+            var currentCardModel = currentCard.DataContext as CardDataModel;
+            if (currentCardModel != null && currentCardModel.ParameterVM != null)
+            {
+                if (currentCardModel.ParameterVM.GetType() == typeof(ImageProvider))
+                {
+                    vm.IsImagesourceVisible = true;
+                }
+                else
+                {
+                    vm.IsImagesourceVisible = false;
+                }
+            }
             vm.WireCleanStatusCommand.Execute(null);//清除所有线段的选中状态
             e.Handled = true;//打断冒泡
             _DragStartPoint.Clear();
@@ -294,7 +305,7 @@ namespace FirstVisionView
             }
             _IsDragging = false;//设置拖拽状态结束
             _CurrentCard.ReleaseMouseCapture();
-            
+
         }
         //Card上鼠标移动
         private void CardMouseMove(object sender, MouseEventArgs e)
@@ -350,7 +361,7 @@ namespace FirstVisionView
         /// <param name="e"></param>
         private void CardDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            
+
             if (e.OriginalSource is Ellipse) return;
             e.Handled = true;
             if (_CurrentCard != null)
@@ -479,6 +490,34 @@ namespace FirstVisionView
 
         private void ItemsControl_SourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
         {
+
+        }
+
+        private void imgDisplay_MouseMove(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+            // 1. 获取鼠标在当前视口（Border）上的物理坐标
+            var border = sender as Border;
+            Point mousePos = e.GetPosition(border);
+
+            // 2. 算好新的缩放比例
+            double zoomStep = 0.1;
+            double newScale = _currentZoom + (e.Delta > 0 ? zoomStep : -zoomStep);
+            newScale = Math.Max(0.2, Math.Min(newScale, 5.0)); // 依然钳制在 0.2 到 5 之间
+            if (newScale == _currentZoom) return; // 没变就退出
+                                                  // 🌟 3. 世界级图形学矩阵补偿算法（完美鼠标居中）
+                                                  // 公式：新的偏移 = 鼠标位置 - (鼠标位置 - 旧偏移) * (新缩放 / 旧缩放)
+            double ratio = newScale / _currentZoom;
+            CanvasTranslate.X = mousePos.X - (mousePos.X - CanvasTranslate.X) * ratio;
+            CanvasTranslate.Y = mousePos.Y - (mousePos.Y - CanvasTranslate.Y) * ratio;
+            // 4. 应用新的缩放比例
+            CanvasScale.ScaleX = newScale;
+            CanvasScale.ScaleY = newScale;
+            _currentZoom = newScale;
+            if (LeftZoomLevelText != null)
+            {
+                LeftZoomLevelText.Text = $"{_currentZoom * 100:F0}%";
+            }
 
         }
 
