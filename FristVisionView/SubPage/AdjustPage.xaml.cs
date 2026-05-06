@@ -50,6 +50,7 @@ namespace FirstVisionView
         private bool _hasPanned;
         // 记录当前整个大画布的缩放倍率，默认 1.0 代表 100% 原始大小。
         private double _currentZoom = 1.0;
+        private double _imageZoom = 1.0;
         private const int DistanceThreshold = 5;// 防手抖的像素阈值：鼠标按下后移动超过 5 个像素，才被正式认定为“拖拽行为”，否则视为原地点击。
         private Point _PanStartMousePos;// 记录鼠标在屏幕上的物理坐标
         private Point _PanStartTranslate; // 记录按下时，画布原本的偏移量
@@ -493,32 +494,32 @@ namespace FirstVisionView
 
         }
 
-        private void imgDisplay_MouseMove(object sender, MouseWheelEventArgs e)
+        private void imgDisplay_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
-            // 1. 获取鼠标在当前视口（Border）上的物理坐标
-            var border = sender as Border;
-            Point mousePos = e.GetPosition(border);
+            // 1. 获取鼠标在当前视口（Grid）上的物理坐标
+            var grid = sender as Grid;
+            Point mousePos = e.GetPosition(grid);
+            double zoomStep = 0.2;
 
             // 2. 算好新的缩放比例
-            double zoomStep = 0.1;
-            double newScale = _currentZoom + (e.Delta > 0 ? zoomStep : -zoomStep);
-            newScale = Math.Max(0.2, Math.Min(newScale, 5.0)); // 依然钳制在 0.2 到 5 之间
-            if (newScale == _currentZoom) return; // 没变就退出
-                                                  // 🌟 3. 世界级图形学矩阵补偿算法（完美鼠标居中）
-                                                  // 公式：新的偏移 = 鼠标位置 - (鼠标位置 - 旧偏移) * (新缩放 / 旧缩放)
-            double ratio = newScale / _currentZoom;
-            CanvasTranslate.X = mousePos.X - (mousePos.X - CanvasTranslate.X) * ratio;
-            CanvasTranslate.Y = mousePos.Y - (mousePos.Y - CanvasTranslate.Y) * ratio;
-            // 4. 应用新的缩放比例
-            CanvasScale.ScaleX = newScale;
-            CanvasScale.ScaleY = newScale;
-            _currentZoom = newScale;
-            if (LeftZoomLevelText != null)
+            if (_imageZoom <= 4)
             {
-                LeftZoomLevelText.Text = $"{_currentZoom * 100:F0}%";
+                zoomStep = 0.2;
             }
-
+            else zoomStep = 6;
+            double newScale = _imageZoom + (e.Delta > 0 ? zoomStep : -zoomStep);
+            newScale = Math.Max(0.2, Math.Min(newScale, 80.0)); // 依然钳制在 0.2 到 70 之间
+            if (newScale == _imageZoom) return; // 没变就退出
+                                                // 🌟 3. 世界级图形学矩阵补偿算法（完美鼠标居中）
+            if (newScale >= 40) ImageBackgroundLayer.Visibility = Visibility.Visible; else ImageBackgroundLayer.Visibility = Visibility.Collapsed;                                // 公式：新的偏移 = 鼠标位置 - (鼠标位置 - 旧偏移) * (新缩放 / 旧缩放)
+            double ratio = newScale / _imageZoom;
+            ImageCanvasTranslate.X = mousePos.X - (mousePos.X - ImageCanvasTranslate.X) * ratio;
+            ImageCanvasTranslate.Y = mousePos.Y - (mousePos.Y - ImageCanvasTranslate.Y) * ratio;
+            // 4. 应用新的缩放比例
+            ImageCanvasScale.ScaleX = newScale;
+            ImageCanvasScale.ScaleY = newScale;
+            _imageZoom = newScale;
         }
 
 

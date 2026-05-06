@@ -20,7 +20,6 @@ namespace FirstVisionView.ViewModels
         public ObservableCollection<ImageModel> ImageQueue { get; } = new();
         [ObservableProperty] private ImageModel _selectedImage;
         [ObservableProperty] private bool _isImagesourceVisible = false;//图片列表是否可见
-        [ObservableProperty] private ImageScaleTransform _imageScale = new ImageScaleTransform();
         //引用目录树的数据，暴露给xaml绑定
         public ObservableCollection<MenuCategory> OperatorMenuTree => OperatorRegistry.GlobalMenuTree;
         public static Dictionary<string, int> SerialNumber = new();
@@ -292,11 +291,5 @@ namespace FirstVisionView.ViewModels
     {
         [ObservableProperty] private string _name = "";
         [ObservableProperty] private string _path = "";
-    }
-    public partial class ImageScaleTransform : ObservableObject
-    {
-        [ObservableProperty] private double _imageScaleX = 1.0;
-        [ObservableProperty] private double _imageScaleY = 1.0;
-
     }
 }
