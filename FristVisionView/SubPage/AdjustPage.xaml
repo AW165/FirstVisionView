@@ -323,7 +323,7 @@
                 <!-- RenderOptions.BitmapScalingMode="NearestNeighbor" -->
                 <!-- 作用：当图片被无限放大时，显示为一个一个的方块像素，绝对不会被模糊化！对查像素非常重要 -->
 
-                <Grid ClipToBounds="True" Background="#2D2D30"  PreviewMouseWheel="imgDisplay_MouseWheel">
+                <Grid x:Name="ImageContainer" ClipToBounds="True" Background="#2D2D30"  PreviewMouseWheel="imgDisplay_MouseWheel">
                     <Image x:Name="imgDisplay" Source="{Binding SelectedImage.Path}" Stretch="None"
                            Grid.Row="0"              
                            RenderOptions.BitmapScalingMode="NearestNeighbor"

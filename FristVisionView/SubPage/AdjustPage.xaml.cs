@@ -511,7 +511,7 @@ namespace FirstVisionView
             double newScale = _imageZoom + (e.Delta > 0 ? zoomStep : -zoomStep);
             newScale = Math.Max(0.2, Math.Min(newScale, 80.0)); // 依然钳制在 0.2 到 70 之间
             if (newScale == _imageZoom) return; // 没变就退出
-                                                // 🌟 3. 世界级图形学矩阵补偿算法（完美鼠标居中）
+
             if (newScale >= 40) ImageBackgroundLayer.Visibility = Visibility.Visible; else ImageBackgroundLayer.Visibility = Visibility.Collapsed;                                // 公式：新的偏移 = 鼠标位置 - (鼠标位置 - 旧偏移) * (新缩放 / 旧缩放)
             double ratio = newScale / _imageZoom;
             ImageCanvasTranslate.X = mousePos.X - (mousePos.X - ImageCanvasTranslate.X) * ratio;
