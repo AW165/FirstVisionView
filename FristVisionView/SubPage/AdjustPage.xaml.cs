@@ -58,6 +58,9 @@ namespace FirstVisionView
         private string _StartPinDirection;//记录从哪个方向出来的线段
         private Point _LineStartPoint;//记录点击的坐标
         private ToolCard _LineStartCard;//记录是点击的是哪个卡片的pin
+        private bool _hasClickImage;//记录是否拖动过图片
+        private Point _OldImagePoint;//记录图片点位
+
 
         //============================Canvas事件区域======================
         //Canvas上左键点击
@@ -498,8 +501,7 @@ namespace FirstVisionView
         {
             e.Handled = true;
             // 1. 获取鼠标在当前视口（Grid）上的物理坐标
-            var grid = sender as Grid;
-            Point mousePos = e.GetPosition(grid);
+            Point mousePos = e.GetPosition(ImageContainer);
             double zoomStep = 0.2;
 
             // 2. 算好新的缩放比例
@@ -521,8 +523,52 @@ namespace FirstVisionView
             ImageCanvasScale.ScaleY = newScale;
             _imageZoom = newScale;
         }
+        //图片左键按下
+        private void ImageLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            var image = sender as Image;
+            if (image == null || vm == null) return;
+            _OldImagePoint = e.GetPosition(ImageContainer);
+            _hasClickImage = true;
+            imgDisplay.CaptureMouse();
+        }
+        //图片左键松开
+        private void ImageLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            var image = sender as Image;
+            if (image == null || vm == null) return;
+            _OldImagePoint = e.GetPosition(ImageContainer);
+            _hasClickImage = false;
+            imgDisplay.ReleaseMouseCapture();
+        }
+        //图片缩放
+        private void ImageMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_hasClickImage)
+            {
+                var image = sender as Image;
+                if (image == null || vm == null) return;
+                var currentPoint = e.GetPosition(ImageContainer);
+                var deltaX = currentPoint.X - _OldImagePoint.X;
+                var deltaY = currentPoint.Y - _OldImagePoint.Y;
+                ImageCanvasTranslate.X += deltaX;
+                ImageCanvasTranslate.Y += deltaY;
+                _OldImagePoint = currentPoint;
+            }
+        }
+        private void FullButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (vm == null) return;
+            var imgWidth = Math.Round(imgDisplay.Source.Width / 2 * ImageCanvasScale.ScaleX);
+            var imgHeight = Math.Round(imgDisplay.Source.Height / 2 * ImageCanvasScale.ScaleY);
+            var gridWidth = Math.Round(ImageContainer.ActualWidth / 2);
+            var gridHeight = Math.Round(ImageContainer.ActualHeight / 2);
 
-
+            ImageCanvasTranslate.X = gridWidth - imgWidth;
+            ImageCanvasTranslate.Y = gridHeight - imgHeight;
+        }
 
         //==============================菜单/公共事件=======================
     }

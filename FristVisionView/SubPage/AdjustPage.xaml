@@ -279,6 +279,7 @@
 
                     <Button x:Name="Enlarge" Margin="20,0,0,0" Content="➕" FontSize="20" Background="#FFFFFF" Foreground="Gray" Style="{StaticResource ButtonStyle}" />
                     <Button x:Name="Reduce" Margin="10,0,0,0" Content="➖" FontSize="20" Background="#FFFFFF" Foreground="Gray" Style="{StaticResource ButtonStyle}" />
+                    <Button x:Name="Adaption" Click="FullButtonClick" Margin="10,0,0,0" Content="Full" FontSize="20" Background="#FFFFFF" Foreground="Gray" Style="{StaticResource ButtonStyle}" />
 
                     <!-- RGB/HSV 显示区 -->
                     <Grid Margin="30,0,0,0">
@@ -324,19 +325,28 @@
                 <!-- 作用：当图片被无限放大时，显示为一个一个的方块像素，绝对不会被模糊化！对查像素非常重要 -->
 
                 <Grid x:Name="ImageContainer" ClipToBounds="True" Background="#2D2D30"  PreviewMouseWheel="imgDisplay_MouseWheel">
-                    <Image x:Name="imgDisplay" Source="{Binding SelectedImage.Path}" Stretch="None"
-                           Grid.Row="0"              
+                    
+                        <Image x:Name="imgDisplay" Source="{Binding SelectedImage.Path}" Stretch="None"
+                           Grid.Row="0"   
+                           RenderTransformOrigin="0,0"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
                            RenderOptions.BitmapScalingMode="NearestNeighbor"
+                           MouseLeftButtonDown="ImageLeftButtonDown"
+                           MouseLeftButtonUp="ImageLeftButtonUp"
+                           MouseMove="ImageMouseMove"
                            RenderOptions.EdgeMode="Aliased">
-                        <Image.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform x:Name="ImageCanvasScale" ScaleX="1.0" ScaleY="1.0"/>
-                                <TranslateTransform x:Name="ImageCanvasTranslate" X="0" Y="0"/>
-                            </TransformGroup>
-                            
-                            
-                        </Image.RenderTransform>
-                    </Image>
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="ImageCanvasScale" ScaleX="1.0" ScaleY="1.0"/>
+                                    <TranslateTransform x:Name="ImageCanvasTranslate" X="0" Y="0"/>
+                                </TransformGroup>
+
+
+                            </Image.RenderTransform>
+                        </Image>
+
+                  
                     <Border x:Name="ImageBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
                         <Border.Background>
                             <DrawingBrush TileMode="Tile" Viewport="0,0,1,1" ViewportUnits="Absolute">
@@ -358,12 +368,11 @@
                             </DrawingBrush>
                         </Border.Background>
                     </Border>
-
                     <!-- ROI 区域，依然共享 Image 的变换矩阵 -->
                     <Canvas x:Name="ROI" Background="Transparent" Grid.Row="0" IsHitTestVisible="False" 
                             RenderTransform="{Binding ElementName=imgDisplay, Path=RenderTransform}" />
                 </Grid>
-                
+
                 <Grid Grid.Row="1" Height="120" Width="auto" Visibility="{Binding IsImagesourceVisible,Converter={StaticResource BoolToVis},Mode=TwoWay}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -396,10 +405,8 @@
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-                        
                     </ListBox>
                 </Grid>
-
             </Grid>
         </Grid>
     </Grid>
