@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FirstVisionView.Core;
 using FirstVisionView.DataModel;
 using FirstVisionView.ParameterUILibary.Core;
@@ -285,11 +286,20 @@ namespace FirstVisionView.ViewModels
                 ImageQueue.Remove(SelectedImage);
             }
         }
-
+        //图片队列选中项改变时的处理函数
+        partial void OnSelectedImageChanged(ImageModel image)
+        {
+            if (image != null)
+            {
+                WeakReferenceMessenger.Default.Send("ImageSelected");
+            }
+        }
     }
+    //图片数据模型，包含图片名字和路径
     public partial class ImageModel : ObservableObject
     {
         [ObservableProperty] private string _name = "";
         [ObservableProperty] private string _path = "";
     }
+
 }

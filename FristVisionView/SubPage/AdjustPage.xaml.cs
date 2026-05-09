@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using CommunityToolkit.Mvvm.Messaging;
 using FirstVisionView.Card;
 // 引入自己的数据模型库，拿到 CardDataModel
 using FirstVisionView.DataModel;
@@ -26,6 +27,18 @@ namespace FirstVisionView
         {
             // 这是 WPF 必须调用的方法，负责把 XAML 里的 UI 元素解析并绘制到屏幕上
             InitializeComponent();
+            WeakReferenceMessenger.Default.Register<string>(this, (recipient, message) =>
+            {
+                // 核对
+                if (message == "ImageSelected")
+                {
+                    // 延时
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        SelfAdaption(); // 执行居中逻辑
+                    }), System.Windows.Threading.DispatcherPriority.Loaded);
+                }
+            });
         }
         //引用ViewModel，拿到vm的数据
         private double gridSize = 10;
@@ -560,14 +573,27 @@ namespace FirstVisionView
         }
         private void FullButtonClick(object sender, RoutedEventArgs e)
         {
-            if (vm == null) return;
-            var imgWidth = Math.Round(imgDisplay.Source.Width / 2 * ImageCanvasScale.ScaleX);
-            var imgHeight = Math.Round(imgDisplay.Source.Height / 2 * ImageCanvasScale.ScaleY);
-            var gridWidth = Math.Round(ImageContainer.ActualWidth / 2);
-            var gridHeight = Math.Round(ImageContainer.ActualHeight / 2);
+            SelfAdaption();
 
-            ImageCanvasTranslate.X = gridWidth - imgWidth;
-            ImageCanvasTranslate.Y = gridHeight - imgHeight;
+        }
+        private void SelfAdaption()
+        {
+            if (vm == null) return;
+            var imgWidth = imgDisplay.ActualWidth;
+            var imgHeight = imgDisplay.ActualHeight;
+            var gridWidth = ImageContainer.ActualWidth;
+            var gridHeight = ImageContainer.ActualHeight;
+            var coifficientX = gridWidth / imgWidth;
+            var coifficientY = gridHeight / imgHeight;
+            var ratio = Math.Min(coifficientY, coifficientX);
+            ImageCanvasScale.ScaleX = ratio;
+            ImageCanvasScale.ScaleY = ratio;
+            _imageZoom = ratio;
+            imgWidth = imgDisplay.Source.Width * ratio;
+            imgHeight = imgDisplay.Source.Height * ratio;
+            ImageCanvasTranslate.X = (gridWidth - imgWidth) / 2;
+            ImageCanvasTranslate.Y = (gridHeight - imgHeight) / 2;
+
         }
 
         //==============================菜单/公共事件=======================

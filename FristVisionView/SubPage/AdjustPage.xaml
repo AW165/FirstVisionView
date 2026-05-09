@@ -325,9 +325,10 @@
                 <!-- 作用：当图片被无限放大时，显示为一个一个的方块像素，绝对不会被模糊化！对查像素非常重要 -->
 
                 <Grid x:Name="ImageContainer" ClipToBounds="True" Background="#2D2D30"  PreviewMouseWheel="imgDisplay_MouseWheel">
-                    
+                    <Canvas>
                         <Image x:Name="imgDisplay" Source="{Binding SelectedImage.Path}" Stretch="None"
-                           Grid.Row="0"   
+                           Grid.Row="0" 
+                           
                            RenderTransformOrigin="0,0"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Left"
@@ -341,12 +342,10 @@
                                     <ScaleTransform x:Name="ImageCanvasScale" ScaleX="1.0" ScaleY="1.0"/>
                                     <TranslateTransform x:Name="ImageCanvasTranslate" X="0" Y="0"/>
                                 </TransformGroup>
-
-
                             </Image.RenderTransform>
                         </Image>
+                    </Canvas>
 
-                  
                     <Border x:Name="ImageBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
                         <Border.Background>
                             <DrawingBrush TileMode="Tile" Viewport="0,0,1,1" ViewportUnits="Absolute">
