@@ -348,7 +348,7 @@
 
                     <Border x:Name="ImageBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
                         <Border.Background>
-                            <DrawingBrush TileMode="Tile" Viewport="0,0,1,1" ViewportUnits="Absolute">
+                            <DrawingBrush x:Name="PixelBrush" TileMode="Tile" Viewbox="0,0,1,1" ViewboxUnits="Absolute" Viewport="0,0,1,1" ViewportUnits="Absolute">
                                 <DrawingBrush.Transform>
                                     <TransformGroup>
                                         <ScaleTransform ScaleX="{Binding ElementName=ImageCanvasScale, Path=ScaleX}"

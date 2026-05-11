@@ -593,6 +593,14 @@ namespace FirstVisionView
             imgHeight = imgDisplay.Source.Height * ratio;
             ImageCanvasTranslate.X = (gridWidth - imgWidth) / 2;
             ImageCanvasTranslate.Y = (gridHeight - imgHeight) / 2;
+            if (imgDisplay.Source is System.Windows.Media.Imaging.BitmapSource bitmapSource)
+            {
+                // 计算像素宽高
+                var PixelWidth = imgDisplay.Source.Width / bitmapSource.PixelWidth;
+                var PixelHeight = imgDisplay.Source.Height / bitmapSource.PixelHeight;
+                PixelBrush.Viewport = new Rect(0, 0, PixelWidth, PixelHeight);
+            }
+            else return;
 
         }
 
