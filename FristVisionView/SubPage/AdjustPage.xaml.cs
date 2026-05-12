@@ -505,11 +505,6 @@ namespace FirstVisionView
             else return FindParent<T>(parentObject);
         }
 
-        private void ItemsControl_SourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
-        {
-
-        }
-
         private void imgDisplay_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
@@ -527,10 +522,15 @@ namespace FirstVisionView
             newScale = Math.Max(0.2, Math.Min(newScale, 80.0)); // 依然钳制在 0.2 到 70 之间
             if (newScale == _imageZoom) return; // 没变就退出
 
-            if (newScale >= 40) ImageBackgroundLayer.Visibility = Visibility.Visible; else ImageBackgroundLayer.Visibility = Visibility.Collapsed;                                // 公式：新的偏移 = 鼠标位置 - (鼠标位置 - 旧偏移) * (新缩放 / 旧缩放)
+            if (newScale >= 40)
+            {
+
+                UpdateDynamicGrid();
+            }
+            else griddingCanvas.Visibility = Visibility.Collapsed;                                // 公式：新的偏移 = 鼠标位置 - (鼠标位置 - 旧偏移) * (新缩放 / 旧缩放)
             double ratio = newScale / _imageZoom;
-            ImageCanvasTranslate.X = mousePos.X - (mousePos.X - ImageCanvasTranslate.X) * ratio;
-            ImageCanvasTranslate.Y = mousePos.Y - (mousePos.Y - ImageCanvasTranslate.Y) * ratio;
+            ImageCanvasTranslate.X = Math.Round(mousePos.X - (mousePos.X - ImageCanvasTranslate.X) * ratio);
+            ImageCanvasTranslate.Y = Math.Round(mousePos.Y - (mousePos.Y - ImageCanvasTranslate.Y) * ratio);
             // 4. 应用新的缩放比例
             ImageCanvasScale.ScaleX = newScale;
             ImageCanvasScale.ScaleY = newScale;
@@ -556,7 +556,7 @@ namespace FirstVisionView
             _hasClickImage = false;
             imgDisplay.ReleaseMouseCapture();
         }
-        //图片缩放
+        //图片移动
         private void ImageMouseMove(object sender, MouseEventArgs e)
         {
             if (_hasClickImage)
@@ -566,9 +566,10 @@ namespace FirstVisionView
                 var currentPoint = e.GetPosition(ImageContainer);
                 var deltaX = currentPoint.X - _OldImagePoint.X;
                 var deltaY = currentPoint.Y - _OldImagePoint.Y;
-                ImageCanvasTranslate.X += deltaX;
-                ImageCanvasTranslate.Y += deltaY;
+                ImageCanvasTranslate.X = Math.Round(deltaX + ImageCanvasTranslate.X);
+                ImageCanvasTranslate.Y = Math.Round(deltaY + ImageCanvasTranslate.Y);
                 _OldImagePoint = currentPoint;
+                UpdateDynamicGrid();
             }
         }
         private void FullButtonClick(object sender, RoutedEventArgs e)
@@ -591,18 +592,72 @@ namespace FirstVisionView
             _imageZoom = ratio;
             imgWidth = imgDisplay.Source.Width * ratio;
             imgHeight = imgDisplay.Source.Height * ratio;
-            ImageCanvasTranslate.X = (gridWidth - imgWidth) / 2;
-            ImageCanvasTranslate.Y = (gridHeight - imgHeight) / 2;
-            if (imgDisplay.Source is System.Windows.Media.Imaging.BitmapSource bitmapSource)
-            {
-                // 计算像素宽高
-                var PixelWidth = imgDisplay.Source.Width / bitmapSource.PixelWidth;
-                var PixelHeight = imgDisplay.Source.Height / bitmapSource.PixelHeight;
-                PixelBrush.Viewport = new Rect(0, 0, PixelWidth, PixelHeight);
-            }
-            else return;
-
+            ImageCanvasTranslate.X = Math.Round((gridWidth - imgWidth) / 2);
+            ImageCanvasTranslate.Y = Math.Round((gridHeight - imgHeight) / 2);
         }
+
+        private void UpdateDynamicGrid()
+        {
+            // 1. 如果放大倍率没到 40 倍，或者没图片，直接隐藏网格，立刻结束！绝不浪费性能！
+            if (_imageZoom < 40 || imgDisplay.Source is not System.Windows.Media.Imaging.BitmapSource bitmap)
+            {
+                griddingCanvas.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            // 2. 拿到所有环境变量
+            double scale = _imageZoom;
+            double transX = ImageCanvasTranslate.X;
+            double transY = ImageCanvasTranslate.Y;
+            double viewW = ImageContainer.ActualWidth;
+            double viewH = ImageContainer.ActualHeight;
+
+            // 3. 【核心数学】：通过逆向矩阵计算，算出当前屏幕究竟看到了图片的哪个区域
+            // 公式：(视口坐标 - 偏移量) / 缩放
+            double startLogicalX = -transX / scale;
+            double startLogicalY = -transY / scale;
+            double endLogicalX = (viewW - transX) / scale;
+            double endLogicalY = (viewH - transY) / scale;
+
+            // 4. 换算逻辑尺寸到物理像素
+            double stepX = bitmap.Width / bitmap.PixelWidth;
+            double stepY = bitmap.Height / bitmap.PixelHeight;
+
+            // 5. 【裁剪算法】：算出当前屏幕内的 物理像素 索引范围，超出图片的无效区域直接截断
+            int startPixelX = Math.Max(0, (int)Math.Floor(startLogicalX / stepX));
+            int startPixelY = Math.Max(0, (int)Math.Floor(startLogicalY / stepY));
+            int endPixelX = Math.Min(bitmap.PixelWidth, (int)Math.Ceiling(endLogicalX / stepX));
+            int endPixelY = Math.Min(bitmap.PixelHeight, (int)Math.Ceiling(endLogicalY / stepY));
+
+            // 防呆：如果完全拖出了画面，直接退出
+            if (startPixelX > endPixelX || startPixelY > endPixelY) return;
+
+            // 6. 极速生成几何体！这一次，我们只画几十根线，耗时不到 0.1 毫秒！
+            StreamGeometry geometry = new StreamGeometry();
+            using (StreamGeometryContext ctx = geometry.Open())
+            {
+                // 只画视野内可见的竖线（而且长度被截断到视野范围内，绝不多画 1 像素）
+                for (int x = startPixelX; x <= endPixelX; x++)
+                {
+                    ctx.BeginFigure(new Point(x * stepX, Math.Max(0, startLogicalY)), isFilled: false, isClosed: false);
+                    ctx.LineTo(new Point(x * stepX, Math.Min(bitmap.Height, endLogicalY)), isStroked: true, isSmoothJoin: false);
+                }
+
+                // 只画视野内可见的横线
+                for (int y = startPixelY; y <= endPixelY; y++)
+                {
+                    ctx.BeginFigure(new Point(Math.Max(0, startLogicalX), y * stepY), isFilled: false, isClosed: false);
+                    ctx.LineTo(new Point(Math.Min(bitmap.Width, endLogicalX), y * stepY), isStroked: true, isSmoothJoin: false);
+                }
+            }
+
+            // 7. 冻结、丢给 UI 渲染
+            geometry.Freeze();
+            griddingCanvas.Data = geometry;
+            griddingCanvas.Visibility = Visibility.Visible;
+        }
+
+
 
         //==============================菜单/公共事件=======================
     }

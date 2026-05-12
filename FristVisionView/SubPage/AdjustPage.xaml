@@ -327,16 +327,14 @@
                 <Grid x:Name="ImageContainer" ClipToBounds="True" Background="#2D2D30"  PreviewMouseWheel="imgDisplay_MouseWheel">
                     <Canvas>
                         <Image x:Name="imgDisplay" Source="{Binding SelectedImage.Path}" Stretch="None"
-                           Grid.Row="0" 
-                           
+                           Grid.Row="0"   
                            RenderTransformOrigin="0,0"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Left"
                            RenderOptions.BitmapScalingMode="NearestNeighbor"
                            MouseLeftButtonDown="ImageLeftButtonDown"
                            MouseLeftButtonUp="ImageLeftButtonUp"
-                           MouseMove="ImageMouseMove"
-                           RenderOptions.EdgeMode="Aliased">
+                           MouseMove="ImageMouseMove">
                             <Image.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform x:Name="ImageCanvasScale" ScaleX="1.0" ScaleY="1.0"/>
@@ -344,34 +342,23 @@
                                 </TransformGroup>
                             </Image.RenderTransform>
                         </Image>
+                        <Path x:Name="griddingCanvas" 
+                              Stroke="#80D0D0D0" 
+                              StrokeThickness="0.05" 
+                              Visibility="Collapsed" 
+                              IsHitTestVisible="False"
+                              RenderOptions.EdgeMode="Aliased"
+                              RenderTransform="{Binding ElementName=imgDisplay, Path=RenderTransform}">
+                        </Path>
+                        <!-- ROI 区域，依然共享 Image 的变换矩阵 -->
+                        <Canvas x:Name="ROI" Background="Transparent" Grid.Row="0" IsHitTestVisible="False" 
+                                RenderTransform="{Binding ElementName=imgDisplay, Path=RenderTransform}" />
                     </Canvas>
 
-                    <Border x:Name="ImageBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
-                        <Border.Background>
-                            <DrawingBrush x:Name="PixelBrush" TileMode="Tile" Viewbox="0,0,1,1" ViewboxUnits="Absolute" Viewport="0,0,1,1" ViewportUnits="Absolute">
-                                <DrawingBrush.Transform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleX="{Binding ElementName=ImageCanvasScale, Path=ScaleX}"
-                                ScaleY="{Binding ElementName=ImageCanvasScale, Path=ScaleY}"/>
-                                        <TranslateTransform X="{Binding ElementName=ImageCanvasTranslate, Path=X}"
-                                Y="{Binding ElementName=ImageCanvasTranslate, Path=Y}"/>
-                                    </TransformGroup>
-                                </DrawingBrush.Transform>
-                                <DrawingBrush.Drawing>
-                                    <GeometryDrawing Geometry="M 1 0 L 0 0 0 1">
-                                        <GeometryDrawing.Pen>
-                                            <Pen Brush="#D0D0D0" Thickness="0.01" DashStyle="{x:Static DashStyles.Solid}"/>
-                                        </GeometryDrawing.Pen>
-                                    </GeometryDrawing>
-                                </DrawingBrush.Drawing>
-                            </DrawingBrush>
-                        </Border.Background>
-                    </Border>
-                    <!-- ROI 区域，依然共享 Image 的变换矩阵 -->
-                    <Canvas x:Name="ROI" Background="Transparent" Grid.Row="0" IsHitTestVisible="False" 
-                            RenderTransform="{Binding ElementName=imgDisplay, Path=RenderTransform}" />
-                </Grid>
+                    
 
+                    
+                </Grid>
                 <Grid Grid.Row="1" Height="120" Width="auto" Visibility="{Binding IsImagesourceVisible,Converter={StaticResource BoolToVis},Mode=TwoWay}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
