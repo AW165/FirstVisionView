@@ -3,10 +3,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Controls; // 必须引入反射库
-using FirstVisionView.DataModel;
-using FirstVisionView.ParameterUILibary.Core;//引入MenuTreeModel
+using VisionView.DataModel;
+using VisionView.ParameterUILibary.Core;//引入MenuTreeModel
 
-namespace FirstVisionView.Core
+namespace VisionView.Core
 {
     public static class OperatorRegistry
     {

@@ -4,12 +4,12 @@ using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FirstVisionView.Core;
-using FirstVisionView.DataModel;
-using FirstVisionView.ParameterUILibary.Core;
 using Microsoft.Win32;
+using VisionView.Core;
+using VisionView.DataModel;
+using VisionView.ParameterUILibary.Core;
 
-namespace FirstVisionView.ViewModels
+namespace VisionView.ViewModels
 {
     public partial class AdjustViewModel : ObservableObject
     {
@@ -24,6 +24,8 @@ namespace FirstVisionView.ViewModels
         //引用目录树的数据，暴露给xaml绑定
         public ObservableCollection<MenuCategory> OperatorMenuTree => OperatorRegistry.GlobalMenuTree;
         public static Dictionary<string, int> SerialNumber = new();
+        //用来存储组合框的选项
+        public ObservableCollection<string> CombBoxItems = new();
         public bool CanRename => (AllCards.Count(c => c.IsSelected) == 1);
         // 用来记录刚才右键点击的位置
         public System.Drawing.PointF CurrentMousePoint { get; set; }
@@ -285,6 +287,8 @@ namespace FirstVisionView.ViewModels
             {
                 ImageQueue.Remove(SelectedImage);
             }
+            WeakReferenceMessenger.Default.Send("ImageDelete");
+
         }
         //图片队列选中项改变时的处理函数
         partial void OnSelectedImageChanged(ImageModel image)
@@ -301,5 +305,5 @@ namespace FirstVisionView.ViewModels
         [ObservableProperty] private string _name = "";
         [ObservableProperty] private string _path = "";
     }
-
+    //
 }

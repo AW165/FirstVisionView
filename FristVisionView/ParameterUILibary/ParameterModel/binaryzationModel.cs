@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using FirstVisionView.ParamenterUILibary.ParameterModel;
-using FirstVisionView.ParameterUILibary.Core;
-namespace FirstVisionView.ParameterUILibary.ParameterModel
+using VisionView.ParamenterUILibary.ParameterModel;
+using VisionView.ParameterUILibary.Core;
+namespace VisionView.ParameterUILibary.ParameterModel
 {
     //二值化算子参数
     [VisionOperator("图像处理", "二值化", "BinaryzationModel")]

@@ -1,13 +1,13 @@
-﻿<UserControl x:Class="FirstVisionView.AdjustPage"
+﻿<UserControl x:Class="VisionView.AdjustPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:FirstVisionView"
-             xmlns:toolcard ="clr-namespace:FirstVisionView.Card"
-             xmlns:vm ="clr-namespace:FirstVisionView.ViewModels"
-             xmlns:core="clr-namespace:FirstVisionView.Core"
-             xmlns:dataModel="clr-namespace:FirstVisionView.DataModel"
+             xmlns:local="clr-namespace:VisionView"
+             xmlns:toolcard ="clr-namespace:VisionView.Card"
+             xmlns:vm ="clr-namespace:VisionView.ViewModels"
+             xmlns:core="clr-namespace:VisionView.Core"
+             xmlns:dataModel="clr-namespace:VisionView.DataModel"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1600"
              d:DataContext="{d:DesignData Type=vm:AdjustViewModel}"
@@ -298,17 +298,17 @@
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="R:" Grid.Column="0" FontSize="16" VerticalAlignment="Center"/>
-                        <Label x:Name="RValue" Content="255" Grid.Column="1" FontSize="16" VerticalAlignment="Center"/>
+                        <Label x:Name="RValue" Content="0" Grid.Column="1" FontSize="16" VerticalAlignment="Center"/>
                         <Label Content="G:" Grid.Column="2" FontSize="16" VerticalAlignment="Center"/>
-                        <Label x:Name="GValue" Content="255" Grid.Column="3" FontSize="16" VerticalAlignment="Center"/>
+                        <Label x:Name="GValue" Content="0" Grid.Column="3" FontSize="16" VerticalAlignment="Center"/>
                         <Label Content="B:" Grid.Column="4" FontSize="16" VerticalAlignment="Center"/>
-                        <Label x:Name="BValue" Content="255" Grid.Column="5" FontSize="16" VerticalAlignment="Center"/>
+                        <Label x:Name="BValue" Content="0" Grid.Column="5" FontSize="16" VerticalAlignment="Center"/>
                         <Label Content="H:" Grid.Column="6" FontSize="16" VerticalAlignment="Center"/>
-                        <Label x:Name="HValue" Content="255" Grid.Column="7" FontSize="16" VerticalAlignment="Center"/>
+                        <Label x:Name="HValue" Content="0" Grid.Column="7" FontSize="16" VerticalAlignment="Center"/>
                         <Label Content="S:" Grid.Column="8" FontSize="16" VerticalAlignment="Center"/>
-                        <Label x:Name="SValue" Content="255" Grid.Column="9" FontSize="16" VerticalAlignment="Center"/>
+                        <Label x:Name="SValue" Content="0" Grid.Column="9" FontSize="16" VerticalAlignment="Center"/>
                         <Label Content="V:" Grid.Column="10" FontSize="16" VerticalAlignment="Center"/>
-                        <Label x:Name="VValue" Content="255" Grid.Column="11" FontSize="16" VerticalAlignment="Center"/>
+                        <Label x:Name="VValue" Content="0" Grid.Column="11" FontSize="16" VerticalAlignment="Center"/>
                     </Grid>
                 </StackPanel>
             </Border>
@@ -325,39 +325,15 @@
                 <!-- 作用：当图片被无限放大时，显示为一个一个的方块像素，绝对不会被模糊化！对查像素非常重要 -->
 
                 <Grid x:Name="ImageContainer" ClipToBounds="True" Background="#2D2D30"  PreviewMouseWheel="imgDisplay_MouseWheel">
-                    <Canvas>
-                        <Image x:Name="imgDisplay" Source="{Binding SelectedImage.Path}" Stretch="None"
-                           Grid.Row="0"   
-                           RenderTransformOrigin="0,0"
-                           VerticalAlignment="Top"
-                           HorizontalAlignment="Left"
-                           RenderOptions.BitmapScalingMode="NearestNeighbor"
-                           MouseLeftButtonDown="ImageLeftButtonDown"
-                           MouseLeftButtonUp="ImageLeftButtonUp"
-                           MouseMove="ImageMouseMove">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform x:Name="ImageCanvasScale" ScaleX="1.0" ScaleY="1.0"/>
-                                    <TranslateTransform x:Name="ImageCanvasTranslate" X="0" Y="0"/>
-                                </TransformGroup>
-                            </Image.RenderTransform>
-                        </Image>
-                        <Path x:Name="griddingCanvas" 
-                              Stroke="#80D0D0D0" 
-                              StrokeThickness="0.05" 
-                              Visibility="Collapsed" 
-                              IsHitTestVisible="False"
-                              RenderOptions.EdgeMode="Aliased"
-                              RenderTransform="{Binding ElementName=imgDisplay, Path=RenderTransform}">
-                        </Path>
-                        <!-- ROI 区域，依然共享 Image 的变换矩阵 -->
-                        <Canvas x:Name="ROI" Background="Transparent" Grid.Row="0" IsHitTestVisible="False" 
-                                RenderTransform="{Binding ElementName=imgDisplay, Path=RenderTransform}" />
-                    </Canvas>
-
-                    
-
-                    
+                    <local:IndustrialImageViewer x:Name="PixelView"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch"
+                                 MouseLeftButtonDown="ImageLeftButtonDown"
+                                 MouseLeftButtonUp="ImageLeftButtonUp"
+                                 MouseMove="ImageMouseMove"/>
+                    <!-- ROI 区域，依然共享 Image 的变换矩阵 -->
+                    <Canvas x:Name="ROI" Background="Transparent" Grid.Row="0" IsHitTestVisible="False" 
+                                RenderTransform="{Binding ElementName=PixelView, Path=RenderTransform}" />
                 </Grid>
                 <Grid Grid.Row="1" Height="120" Width="auto" Visibility="{Binding IsImagesourceVisible,Converter={StaticResource BoolToVis},Mode=TwoWay}">
                     <Grid.RowDefinitions>

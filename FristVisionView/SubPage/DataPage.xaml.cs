@@ -18,7 +18,7 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.WPF;
 using SkiaSharp;
-namespace FirstVisionView
+namespace VisionView
 {
     /// <summary>
     /// _.xaml 的交互逻辑

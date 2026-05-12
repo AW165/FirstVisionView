@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FirstVisionView.ParameterUILibary.Core
+namespace VisionView.ParameterUILibary.Core
 {
     public static class OperatorFactory
     {

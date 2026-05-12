@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LiveChartsCore.Kernel;
 
-namespace FirstVisionView.DataModel
+namespace VisionView.DataModel
 {
     public  partial class WireDataModel:ObservableObject
     {

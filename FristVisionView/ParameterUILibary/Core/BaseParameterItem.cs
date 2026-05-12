@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FirstVisionView.ParameterUILibary.Core
+namespace VisionView.ParameterUILibary.Core
 {
     public partial class BaseParameterItem : ObservableObject
     {

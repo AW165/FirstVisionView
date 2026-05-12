@@ -1,7 +1,7 @@
-﻿using FirstVisionView.ParamenterUILibary.ParameterModel;
-using FirstVisionView.ParameterUILibary.Core;
+﻿using VisionView.ParamenterUILibary.ParameterModel;
+using VisionView.ParameterUILibary.Core;
 
-namespace FirstVisionView.ParameterUILibary.ParameterModel
+namespace VisionView.ParameterUILibary.ParameterModel
 {
     [VisionOperator("图像", "图像源", "ImageProvider")]
     public class ImageProvider : BaseParameter

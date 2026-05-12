@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Wpf.Ui.Controls;
-namespace FirstVisionView;
+namespace VisionView;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using FirstVisionView.ParamenterUILibary.ParameterModel;
-using FirstVisionView.ParameterUILibary.Core;
+using VisionView.ParamenterUILibary.ParameterModel;
+using VisionView.ParameterUILibary.Core;
 
-namespace FirstVisionView.DataModel
+namespace VisionView.DataModel
 {
     public partial class CardDataModel : ObservableObject
     {

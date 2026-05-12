@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Automation.Text;
 
-namespace FirstVisionView.ViewModels
+namespace VisionView.ViewModels
 {
     public partial class MainViewModels : ObservableObject
 

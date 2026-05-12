@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FirstVisionView.ParameterUILibary.Core
+namespace VisionView.ParameterUILibary.Core
 {
     [AttributeUsage(AttributeTargets.Class)]
     

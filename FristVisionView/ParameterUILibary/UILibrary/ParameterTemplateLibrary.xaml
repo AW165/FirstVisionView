@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:global="clr-namespace:FirstVisionView"
-                    xmlns:Core="clr-namespace:FirstVisionView.ParameterUILibary.Core">
+                    xmlns:global="clr-namespace:VisionView"
+                    xmlns:Core="clr-namespace:VisionView.ParameterUILibary.Core">
     <DataTemplate DataType="{x:Type Core:SliderParameterItem}">
         <Grid Margin="60,5" Visibility="{Binding IsVisible,Converter={StaticResource BoolToVis}}">
             <Grid.ColumnDefinitions>

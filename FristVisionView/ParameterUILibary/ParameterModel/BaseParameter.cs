@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using FirstVisionView.ParameterUILibary.Core;
+using VisionView.ParameterUILibary.Core;
 
-namespace FirstVisionView.ParamenterUILibary.ParameterModel
+namespace VisionView.ParamenterUILibary.ParameterModel
 {
     //卡片参数
     public partial class BaseParameter : ObservableObject

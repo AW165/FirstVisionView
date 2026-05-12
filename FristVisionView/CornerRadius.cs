@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace FirstVisionView
+namespace VisionView
 {
     public static class ButtonHelp
     {

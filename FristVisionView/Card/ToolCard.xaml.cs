@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using FirstVisionView.DataModel;
+using VisionView.DataModel;
 
-namespace FirstVisionView.Card
+namespace VisionView.Card
 {
     /// <summary>
     /// ToolCard.xaml 的交互逻辑

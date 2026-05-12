@@ -8,16 +8,17 @@ using System.Windows.Controls;
 // 引入 WPF 输入控制库，提供鼠标事件（MouseEventArgs）、键盘按键（Key）的监听能力
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CommunityToolkit.Mvvm.Messaging;
-using FirstVisionView.Card;
+using VisionView.Card;
 // 引入自己的数据模型库，拿到 CardDataModel
-using FirstVisionView.DataModel;
-using FirstVisionView.ParameterUILibary.ParameterModel;
+using VisionView.DataModel;
+using VisionView.ParameterUILibary.ParameterModel;
 
 // 引入自己的视图模型库，拿到AdjustViewModel
-using FirstVisionView.ViewModels;
-namespace FirstVisionView
+using VisionView.ViewModels;
+namespace VisionView
 {
     public partial class AdjustPage : UserControl
 
@@ -36,9 +37,18 @@ namespace FirstVisionView
                     Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         SelfAdaption(); // 执行居中逻辑
-                    }), System.Windows.Threading.DispatcherPriority.Loaded);
+                    }), System.Windows.Threading.DispatcherPriority.Loaded);//
+                }
+                // 核对
+                if (message == "ImageDelete")
+                {
+                    SelfAdaption();
                 }
             });
+
+
+
+
         }
         //引用ViewModel，拿到vm的数据
         private double gridSize = 10;
@@ -63,7 +73,6 @@ namespace FirstVisionView
         private bool _hasPanned;
         // 记录当前整个大画布的缩放倍率，默认 1.0 代表 100% 原始大小。
         private double _currentZoom = 1.0;
-        private double _imageZoom = 1.0;
         private const int DistanceThreshold = 5;// 防手抖的像素阈值：鼠标按下后移动超过 5 个像素，才被正式认定为“拖拽行为”，否则视为原地点击。
         private Point _PanStartMousePos;// 记录鼠标在屏幕上的物理坐标
         private Point _PanStartTranslate; // 记录按下时，画布原本的偏移量
@@ -71,9 +80,9 @@ namespace FirstVisionView
         private string _StartPinDirection;//记录从哪个方向出来的线段
         private Point _LineStartPoint;//记录点击的坐标
         private ToolCard _LineStartCard;//记录是点击的是哪个卡片的pin
-        private bool _hasClickImage;//记录是否拖动过图片
-        private Point _OldImagePoint;//记录图片点位
 
+        private bool _isPanningViewer = false; // 是否正在拖拽画布
+        private Point _lastPanMousePos;        // 上一帧鼠标的物理位置
 
         //============================Canvas事件区域======================
         //Canvas上左键点击
@@ -508,68 +517,117 @@ namespace FirstVisionView
         private void imgDisplay_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
-            // 1. 获取鼠标在当前视口（Grid）上的物理坐标
-            Point mousePos = e.GetPosition(ImageContainer);
-            double zoomStep = 0.2;
 
-            // 2. 算好新的缩放比例
-            if (_imageZoom <= 4)
-            {
-                zoomStep = 0.2;
-            }
-            else zoomStep = 6;
-            double newScale = _imageZoom + (e.Delta > 0 ? zoomStep : -zoomStep);
-            newScale = Math.Max(0.2, Math.Min(newScale, 80.0)); // 依然钳制在 0.2 到 70 之间
-            if (newScale == _imageZoom) return; // 没变就退出
+            // 1. 获取鼠标在屏幕上的物理坐标（狙击镜当前的十字准星位置）
+            Point mousePos = e.GetPosition(PixelView);
 
-            if (newScale >= 40)
-            {
+            // 2. 算新的放大倍数
+            double currentZoom = PixelView.Zoom;
+            double zoomStep = currentZoom < 4 ? 0.2 : 2.0; // 放大后加速缩放，手感更好
+            double newZoom = currentZoom + (e.Delta > 0 ? zoomStep : -zoomStep);
 
-                UpdateDynamicGrid();
-            }
-            else griddingCanvas.Visibility = Visibility.Collapsed;                                // 公式：新的偏移 = 鼠标位置 - (鼠标位置 - 旧偏移) * (新缩放 / 旧缩放)
-            double ratio = newScale / _imageZoom;
-            ImageCanvasTranslate.X = Math.Round(mousePos.X - (mousePos.X - ImageCanvasTranslate.X) * ratio);
-            ImageCanvasTranslate.Y = Math.Round(mousePos.Y - (mousePos.Y - ImageCanvasTranslate.Y) * ratio);
-            // 4. 应用新的缩放比例
-            ImageCanvasScale.ScaleX = newScale;
-            ImageCanvasScale.ScaleY = newScale;
-            _imageZoom = newScale;
+            // 限制放大倍率（0.1倍 到 80倍）
+            newZoom = Math.Max(0.1, Math.Min(newZoom, 80.0));
+            if (newZoom == currentZoom) return;
+
+            // 3. 🌟 【世界级图形学算法：如何让鼠标指哪打哪？】
+            // 公式：新偏移 = 鼠标位置 - (鼠标位置 - 老偏移) * (新缩放 / 老缩放)
+            double ratio = newZoom / currentZoom;
+            double newOffsetX = mousePos.X - (mousePos.X - PixelView.OffsetX) * ratio;
+            double newOffsetY = mousePos.Y - (mousePos.Y - PixelView.OffsetY) * ratio;
+
+            // 4. 通知施工队更新
+            PixelView.UpdateTransform(newZoom, newOffsetX, newOffsetY);
+
+            // 如果你有左下角的文字提示，顺手更新一下
+            // LeftZoomLevelText.Text = $"{newZoom * 100:F0}%";
         }
         //图片左键按下
         private void ImageLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            var image = sender as Image;
-            if (image == null || vm == null) return;
-            _OldImagePoint = e.GetPosition(ImageContainer);
-            _hasClickImage = true;
-            imgDisplay.CaptureMouse();
+            _isPanningViewer = true;
+            _lastPanMousePos = e.GetPosition(ImageContainer); // 记录抓取点
+            PixelView.CaptureMouse(); // 锁死鼠标，哪怕拖到窗口外面也能响应
         }
         //图片左键松开
         private void ImageLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            var image = sender as Image;
-            if (image == null || vm == null) return;
-            _OldImagePoint = e.GetPosition(ImageContainer);
-            _hasClickImage = false;
-            imgDisplay.ReleaseMouseCapture();
+            _isPanningViewer = false;
+            PixelView.ReleaseMouseCapture();
         }
         //图片移动
         private void ImageMouseMove(object sender, MouseEventArgs e)
         {
-            if (_hasClickImage)
+            e.Handled = true;
+            Point currentMousePos = e.GetPosition(ImageContainer);
+
+            // 动作 A：如果在拖拽画布
+            if (_isPanningViewer)
             {
-                var image = sender as Image;
-                if (image == null || vm == null) return;
-                var currentPoint = e.GetPosition(ImageContainer);
-                var deltaX = currentPoint.X - _OldImagePoint.X;
-                var deltaY = currentPoint.Y - _OldImagePoint.Y;
-                ImageCanvasTranslate.X = Math.Round(deltaX + ImageCanvasTranslate.X);
-                ImageCanvasTranslate.Y = Math.Round(deltaY + ImageCanvasTranslate.Y);
-                _OldImagePoint = currentPoint;
-                UpdateDynamicGrid();
+                // 算出鼠标物理上挪动了几个像素
+                double deltaX = currentMousePos.X - _lastPanMousePos.X;
+                double deltaY = currentMousePos.Y - _lastPanMousePos.Y;
+
+                // 直接加给底层的 Offset！
+                double newOffsetX = PixelView.OffsetX + deltaX;
+                double newOffsetY = PixelView.OffsetY + deltaY;
+
+                PixelView.UpdateTransform(PixelView.Zoom, newOffsetX, newOffsetY);
+                _lastPanMousePos = currentMousePos;
+            }
+
+
+            // 直接传鼠标物理坐标
+            if (PixelView.TryGetPixelAt(e.GetPosition(PixelView), out byte r, out byte g, out byte b))
+            {
+                // 瞬间更新你的 UI 面板
+                if (RValue != null) RValue.Content = r.ToString();
+                if (GValue != null) GValue.Content = g.ToString();
+                if (BValue != null) BValue.Content = b.ToString();
+                var rValue = r / 255.0;
+                var gValue = g / 255.0;
+                var bValue = b / 255.0;
+                var CMax = Math.Max(rValue, Math.Max(gValue, bValue));
+                var CMin = Math.Min(rValue, Math.Min(gValue, bValue));
+                var delta = CMax - CMin;
+                double h = 0;
+                double s = 0;
+                double v = CMax; // 明度 V 直接就是 CMax
+
+                // 算色相 H 
+                if (delta == 0)
+                {
+                    h = 0;
+                }
+                else if (CMax == rValue)
+                {
+                    h = 60 * (((gValue - bValue) / delta) % 6);
+                }
+                else if (CMax == gValue)
+                {
+                    h = 60 * (((bValue - rValue) / delta) + 2);
+                }
+                else if (CMax == bValue)
+                {
+                    h = 60 * (((rValue - gValue) / delta) + 4);
+                }
+
+                // 修正负数角度
+                if (h < 0) h += 360;
+
+                // 算饱和度 S
+                if (CMax != 0)
+                {
+                    s = delta / CMax;
+                }
+
+                //  H、S、V 是无限循环小数 直接四舍五入到整数，显示在 UI 上
+                if (HValue != null) HValue.Content = $"{Math.Round(h)}°";
+                if (SValue != null) SValue.Content = $"{Math.Round(s * 100)}%";
+                if (VValue != null) VValue.Content = $"{Math.Round(v * 100)}%";
+
             }
         }
         private void FullButtonClick(object sender, RoutedEventArgs e)
@@ -577,85 +635,60 @@ namespace FirstVisionView
             SelfAdaption();
 
         }
+        // 导师补习班：这个方法会在图片刚加载完成，或者点击“Full”按钮时触发。
         private void SelfAdaption()
         {
-            if (vm == null) return;
-            var imgWidth = imgDisplay.ActualWidth;
-            var imgHeight = imgDisplay.ActualHeight;
-            var gridWidth = ImageContainer.ActualWidth;
-            var gridHeight = ImageContainer.ActualHeight;
-            var coifficientX = gridWidth / imgWidth;
-            var coifficientY = gridHeight / imgHeight;
-            var ratio = Math.Min(coifficientY, coifficientX);
-            ImageCanvasScale.ScaleX = ratio;
-            ImageCanvasScale.ScaleY = ratio;
-            _imageZoom = ratio;
-            imgWidth = imgDisplay.Source.Width * ratio;
-            imgHeight = imgDisplay.Source.Height * ratio;
-            ImageCanvasTranslate.X = Math.Round((gridWidth - imgWidth) / 2);
-            ImageCanvasTranslate.Y = Math.Round((gridHeight - imgHeight) / 2);
-        }
-
-        private void UpdateDynamicGrid()
-        {
-            // 1. 如果放大倍率没到 40 倍，或者没图片，直接隐藏网格，立刻结束！绝不浪费性能！
-            if (_imageZoom < 40 || imgDisplay.Source is not System.Windows.Media.Imaging.BitmapSource bitmap)
+            // 1. 安全检查
+            if (vm == null || vm.SelectedImage == null || string.IsNullOrEmpty(vm.SelectedImage.Path))
             {
-                griddingCanvas.Visibility = Visibility.Collapsed;
+                PixelView.SetSource(null);//
+                RValue.Content = 0;
+                GValue.Content = 0;
+                BValue.Content = 0;
+                HValue.Content = 0;
+                SValue.Content = 0;
+                VValue.Content = 0;
                 return;
             }
 
-            // 2. 拿到所有环境变量
-            double scale = _imageZoom;
-            double transX = ImageCanvasTranslate.X;
-            double transY = ImageCanvasTranslate.Y;
+            // 🌟 2. 遗漏的最核心拼图：把路径变成真实的图片，并强行注入给底层显卡！
+            try
+            {
+                // 从硬盘路径读取图片文件
+                BitmapImage bitmap = new BitmapImage(new Uri(vm.SelectedImage.Path));
+                // 将图片交给我们手写的顶级渲染器，瞬间完成 5000 万像素的抽血和冻结！
+                PixelView.SetSource(bitmap);//
+            }
+            catch
+            {
+                return; // 防止图片路径错误导致软件崩溃
+            }
+
+            if (!PixelView.HasImage) return;
+
+            // 3. 获取物理屏幕有多大
             double viewW = ImageContainer.ActualWidth;
             double viewH = ImageContainer.ActualHeight;
 
-            // 3. 【核心数学】：通过逆向矩阵计算，算出当前屏幕究竟看到了图片的哪个区域
-            // 公式：(视口坐标 - 偏移量) / 缩放
-            double startLogicalX = -transX / scale;
-            double startLogicalY = -transY / scale;
-            double endLogicalX = (viewW - transX) / scale;
-            double endLogicalY = (viewH - transY) / scale;
+            // 4. 从我们的视网膜里获取绝对真实的物理像素尺寸
+            double imgPixelW = PixelView.ImageWidth;
+            double imgPixelH = PixelView.ImageHeight;
 
-            // 4. 换算逻辑尺寸到物理像素
-            double stepX = bitmap.Width / bitmap.PixelWidth;
-            double stepY = bitmap.Height / bitmap.PixelHeight;
+            if (viewW == 0 || imgPixelW == 0) return;
 
-            // 5. 【裁剪算法】：算出当前屏幕内的 物理像素 索引范围，超出图片的无效区域直接截断
-            int startPixelX = Math.Max(0, (int)Math.Floor(startLogicalX / stepX));
-            int startPixelY = Math.Max(0, (int)Math.Floor(startLogicalY / stepY));
-            int endPixelX = Math.Min(bitmap.PixelWidth, (int)Math.Ceiling(endLogicalX / stepX));
-            int endPixelY = Math.Min(bitmap.PixelHeight, (int)Math.Ceiling(endLogicalY / stepY));
+            // 5. 算出正好能把全图塞进屏幕的缩放比例
+            double ratioX = viewW / imgPixelW;
+            double ratioY = viewH / imgPixelH;
+            double fitZoom = Math.Min(ratioX, ratioY);
 
-            // 防呆：如果完全拖出了画面，直接退出
-            if (startPixelX > endPixelX || startPixelY > endPixelY) return;
+            // 6. 算出为了居中，左上角需要偏移多少屏幕像素
+            double newOffsetX = (viewW - (imgPixelW * fitZoom)) / 2.0;
+            double newOffsetY = (viewH - (imgPixelH * fitZoom)) / 2.0;
 
-            // 6. 极速生成几何体！这一次，我们只画几十根线，耗时不到 0.1 毫秒！
-            StreamGeometry geometry = new StreamGeometry();
-            using (StreamGeometryContext ctx = geometry.Open())
-            {
-                // 只画视野内可见的竖线（而且长度被截断到视野范围内，绝不多画 1 像素）
-                for (int x = startPixelX; x <= endPixelX; x++)
-                {
-                    ctx.BeginFigure(new Point(x * stepX, Math.Max(0, startLogicalY)), isFilled: false, isClosed: false);
-                    ctx.LineTo(new Point(x * stepX, Math.Min(bitmap.Height, endLogicalY)), isStroked: true, isSmoothJoin: false);
-                }
-
-                // 只画视野内可见的横线
-                for (int y = startPixelY; y <= endPixelY; y++)
-                {
-                    ctx.BeginFigure(new Point(Math.Max(0, startLogicalX), y * stepY), isFilled: false, isClosed: false);
-                    ctx.LineTo(new Point(Math.Min(bitmap.Width, endLogicalX), y * stepY), isStroked: true, isSmoothJoin: false);
-                }
-            }
-
-            // 7. 冻结、丢给 UI 渲染
-            geometry.Freeze();
-            griddingCanvas.Data = geometry;
-            griddingCanvas.Visibility = Visibility.Visible;
+            // 7. 呼叫底层施工队：按这个参数重新切片！
+            PixelView.UpdateTransform(fitZoom, newOffsetX, newOffsetY);
         }
+
 
 
 

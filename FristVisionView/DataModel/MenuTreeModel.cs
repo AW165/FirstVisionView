@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FirstVisionView.DataModel
+namespace VisionView.DataModel
 {
     /// <summary>
     /// 中转类，用来转存反射的内容，提供给xaml来绑定，下面存储为大类类名，且Xaml的HierarchicalDataTemplate要求必须提供层级结构

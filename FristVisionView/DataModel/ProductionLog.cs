@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FreeSql.DataAnnotations;
 
-namespace FirstVisionView.DataModel
+namespace VisionView.DataModel
 {
     /// <summary>
     /// 生产记录

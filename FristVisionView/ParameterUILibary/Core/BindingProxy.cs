@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace FirstVisionView.Core
+namespace VisionView.Core
 {
     // 【设问】：为什么要继承？难道我们要冻结什么东西吗？
     // 【认领】：Freezable 是 WPF 框架留下的一个“合法后门”。它最初是设计给画刷（Brush）用的，为了让同一个红色画刷能同时被 100 个不同的按钮使用。

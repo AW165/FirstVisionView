@@ -1,12 +1,12 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
-using FirstVisionView.Core;
+using VisionView.Core;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using SkiaSharp;
 
-namespace FirstVisionView;
+namespace VisionView;
 
 /// <summary>
 /// Interaction logic for App.xaml
