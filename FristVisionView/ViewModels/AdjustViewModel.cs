@@ -13,7 +13,7 @@ namespace VisionView.ViewModels
 {
     public partial class AdjustViewModel : ObservableObject
     {
-        [ObservableProperty] private ObservableCollection<WireDataModel> _allWires = new();
+        [ObservableProperty] private ObservableCollection<DAG> _allWires = new();
         [ObservableProperty] private ObservableCollection<CardDataModel> _allCards = new();
         [ObservableProperty] private bool _delePopup = false;
         [ObservableProperty] private bool _cap = false;
@@ -38,7 +38,7 @@ namespace VisionView.ViewModels
         {
             if (e.NewItems != null)
             {
-                foreach (WireDataModel wire in e.NewItems)
+                foreach (DAG wire in e.NewItems)
                 {
                     if (!wire.TargetCard.UpstreamCards.Contains(wire.SourceCard))
                     {
@@ -51,7 +51,7 @@ namespace VisionView.ViewModels
             }
             if (e.OldItems != null)
             {
-                foreach (WireDataModel wire in e.OldItems)
+                foreach (DAG wire in e.OldItems)
                 {
                     // 断开连线时，关系并重新刷新
                     wire.TargetCard.UpstreamCards.Remove(wire.SourceCard);
@@ -196,13 +196,13 @@ namespace VisionView.ViewModels
         }
 
         [RelayCommand]
-        private void WireAddStatus(WireDataModel? wire = null)
+        private void WireAddStatus(DAG? wire = null)
         {
             if (wire == null) return;
             wire.IsSelected = true;
         }
         [RelayCommand]
-        private void WireCleanStatus(WireDataModel? wire = null)
+        private void WireCleanStatus(DAG? wire = null)
         {
             if (wire == null)
             {
@@ -305,5 +305,5 @@ namespace VisionView.ViewModels
         [ObservableProperty] private string _name = "";
         [ObservableProperty] private string _path = "";
     }
-    //
+    
 }

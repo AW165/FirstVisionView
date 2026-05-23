@@ -152,7 +152,7 @@ namespace VisionView
                         var startCard = _LineStartCard.DataContext as CardDataModel;//转换成M，为创建wireM做准备
                         if (startCard == null) return;
                         //  6. 生成一根永久的实体连线数据！
-                        WireDataModel newWire = new WireDataModel()
+                        DAG newWire = new DAG()
                         {
                             StartPoint = _LineStartPoint,//从哪个点开始的
                             EndPoint = absoluteEndPoint,//到哪个点结束
@@ -490,7 +490,7 @@ namespace VisionView
             e.Handled = true;
             var path = sender as Path;
             if (path == null) return;
-            var wire = path.DataContext as WireDataModel;
+            var wire = path.DataContext as DAG;
             if (wire == null || vm == null) return;
             vm.ClearSeletionStatusCommand.Execute(null);
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)

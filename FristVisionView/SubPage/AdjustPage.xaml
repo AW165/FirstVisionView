@@ -53,7 +53,6 @@
                 </Border.ContextMenu>
                 <Grid>
                     <Border x:Name="GridBackgroundLayer" Visibility="Collapsed" IsHitTestVisible="False">
-
                         <Border.Background>
                             <DrawingBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
                                 <DrawingBrush.Transform>
@@ -84,30 +83,7 @@
                                 <TranslateTransform x:Name="CanvasTranslate" X="0" Y="0"/>
                             </TransformGroup>
                         </Canvas.RenderTransform>
-                        <ItemsControl ItemsSource="{Binding AllWires}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas Background="Transparent"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Path StrokeThickness="3" Data="{Binding PathData}" MouseLeftButtonDown="WireLeftButtonDown">
-                                        <Path.Style>
-                                            <Style TargetType="Path">
-                                                <Setter Property="Stroke" Value="Gray"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected}" Value="true">
-                                                        <Setter Property="Stroke" Value="DodgerBlue"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Path.Style>
-                                    </Path>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
 
-                        </ItemsControl>
                         <ItemsControl ItemsSource="{Binding AllCards}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -139,7 +115,6 @@
                               IsHitTestVisible="False"
                               Visibility="Collapsed"
                               Panel.ZIndex="10000">
-
                         </Path>
                     </Canvas>
                 </Grid>

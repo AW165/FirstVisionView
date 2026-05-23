@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Net;
 using System.Windows;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using LiveChartsCore.Kernel;
 
 namespace VisionView.DataModel
 {
-    public  partial class WireDataModel:ObservableObject
+    public partial class WireDataModel : ObservableObject
     {
 
         [ObservableProperty] private Point _startPoint;//开始点
