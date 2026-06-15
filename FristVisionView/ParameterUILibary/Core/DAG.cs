@@ -1,9 +1,16 @@
 ﻿using VisionView.DataModel;
 
-namespace VisionView.ViewModels
+namespace VisionView.ParameterUILibary.Core
 {
     public static class DAG
     {
+        /// <summary>
+        /// 传入源卡片，目标卡片，所有已连接线段，返回检查结果，ture代表回环，false代表无回环
+        /// </summary>
+        /// <param name="SourceCard"></param>
+        /// <param name="TargetCard"></param>
+        /// <param name="allWires"></param>
+        /// <returns></returns>
         public static bool IsCycle(CardDataModel SourceCard, CardDataModel TargetCard, IEnumerable<WireDataModel> allWires)
         {
             if (SourceCard.CardID == TargetCard.CardID)

@@ -14,9 +14,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using VisionView.Card;
 // 引入自己的数据模型库，拿到 CardDataModel
 using VisionView.DataModel;
+using VisionView.ParameterUILibary.Core;
 using VisionView.ParameterUILibary.ParameterModel;
-
-// 引入自己的视图模型库，拿到AdjustViewModel
+// 引入自己的模型库，拿到AdjustViewModel
 using VisionView.ViewModels;
 namespace VisionView
 {
@@ -136,8 +136,8 @@ namespace VisionView
                 // 如果扎到了，而且扎到的是一个叫 Ellipse 的圆孔
                 if (targetPin != null)
                 {
-                    string targetPinName = targetPin.Name;
-                    ToolCard targetCard = FindParent<ToolCard>(targetPin);
+                    string targetPinName = targetPin.Name;//得到圆孔的名称
+                    ToolCard targetCard = FindParent<ToolCard>(targetPin);//寻找圆孔所在的卡片
                     // 防呆设计：不能自己连自己，也不能连到没名字的孔上
                     if (string.IsNullOrEmpty(targetPinName) || dropPoint == _LineStartPoint) return;
                     // 4. 获取目标孔所在的卡片
@@ -151,8 +151,9 @@ namespace VisionView
                         Point absoluteEndPoint = targetPin.TransformToAncestor(ParamentCanvas).Transform(targetPinCenter);
                         var startCard = _LineStartCard.DataContext as CardDataModel;//转换成M，为创建wireM做准备
                         if (startCard == null) return;
+                        if (DAG.IsCycle(startCard, targetCardData, vm.AllWires)) return;//此处DAG检测，禁止回连和死循环
                         //  6. 生成一根永久的实体连线数据！
-                        DAG newWire = new DAG()
+                        WireDataModel newWire = new()
                         {
                             StartPoint = _LineStartPoint,//从哪个点开始的
                             EndPoint = absoluteEndPoint,//到哪个点结束
@@ -459,7 +460,7 @@ namespace VisionView
                 double newScale = _currentZoom + (e.Delta > 0 ? zoomStep : -zoomStep);
                 newScale = Math.Max(0.2, Math.Min(newScale, 5.0)); // 依然钳制在 0.2 到 5 之间
                 if (newScale == _currentZoom) return; // 没变就退出
-                // 🌟 3. 世界级图形学矩阵补偿算法（完美鼠标居中）
+
                 // 公式：新的偏移 = 鼠标位置 - (鼠标位置 - 旧偏移) * (新缩放 / 旧缩放)
                 double ratio = newScale / _currentZoom;
                 CanvasTranslate.X = mousePos.X - (mousePos.X - CanvasTranslate.X) * ratio;
@@ -490,7 +491,7 @@ namespace VisionView
             e.Handled = true;
             var path = sender as Path;
             if (path == null) return;
-            var wire = path.DataContext as DAG;
+            var wire = path.DataContext as WireDataModel;
             if (wire == null || vm == null) return;
             vm.ClearSeletionStatusCommand.Execute(null);
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
@@ -530,7 +531,7 @@ namespace VisionView
             newZoom = Math.Max(0.1, Math.Min(newZoom, 80.0));
             if (newZoom == currentZoom) return;
 
-            // 3. 🌟 【世界级图形学算法：如何让鼠标指哪打哪？】
+
             // 公式：新偏移 = 鼠标位置 - (鼠标位置 - 老偏移) * (新缩放 / 老缩放)
             double ratio = newZoom / currentZoom;
             double newOffsetX = mousePos.X - (mousePos.X - PixelView.OffsetX) * ratio;
@@ -651,12 +652,12 @@ namespace VisionView
                 return;
             }
 
-            // 🌟 2. 遗漏的最核心拼图：把路径变成真实的图片，并强行注入给底层显卡！
+
             try
             {
                 // 从硬盘路径读取图片文件
                 BitmapImage bitmap = new BitmapImage(new Uri(vm.SelectedImage.Path));
-                // 将图片交给我们手写的顶级渲染器，瞬间完成 5000 万像素的抽血和冻结！
+                // 将图片交给渲染器，完成 5000 万像素的抽取和冻结
                 PixelView.SetSource(bitmap);//
             }
             catch

@@ -13,7 +13,7 @@ namespace VisionView.ViewModels
 {
     public partial class AdjustViewModel : ObservableObject
     {
-        [ObservableProperty] private ObservableCollection<DAG> _allWires = new();
+        [ObservableProperty] private ObservableCollection<WireDataModel> _allWires = new();
         [ObservableProperty] private ObservableCollection<CardDataModel> _allCards = new();
         [ObservableProperty] private bool _delePopup = false;
         [ObservableProperty] private bool _cap = false;
@@ -38,7 +38,7 @@ namespace VisionView.ViewModels
         {
             if (e.NewItems != null)
             {
-                foreach (DAG wire in e.NewItems)
+                foreach (WireDataModel wire in e.NewItems)
                 {
                     if (!wire.TargetCard.UpstreamCards.Contains(wire.SourceCard))
                     {
@@ -51,7 +51,7 @@ namespace VisionView.ViewModels
             }
             if (e.OldItems != null)
             {
-                foreach (DAG wire in e.OldItems)
+                foreach (WireDataModel wire in e.OldItems)
                 {
                     // 断开连线时，关系并重新刷新
                     wire.TargetCard.UpstreamCards.Remove(wire.SourceCard);
@@ -63,6 +63,7 @@ namespace VisionView.ViewModels
         /// 新建卡片，设置卡片的名字，
         /// </summary>
         /// <param name="CardType"></param>
+        //添加卡片名称
         [RelayCommand]
         private void AddCard(MenuOperator SubOperator)
         {
@@ -91,6 +92,7 @@ namespace VisionView.ViewModels
 
             AllCards.Add(newCard);
         }
+        //卡片名字生成
         public String ParameterCardName(string CardName)
         {
             if (SerialNumber.TryGetValue(CardName, out var SerialNum))
@@ -107,7 +109,7 @@ namespace VisionView.ViewModels
             }
             return CardName;
         }
-
+        //删除卡片
         [RelayCommand]
         private void DeleteCards()
         {
@@ -142,7 +144,7 @@ namespace VisionView.ViewModels
             }
             DelePopup = false;//关闭删除菜单
         }
-
+        //清空卡片选择状态
         [RelayCommand]
         private void ClearSeletionStatus(CardDataModel? card = null)
 
@@ -162,6 +164,7 @@ namespace VisionView.ViewModels
 
             return;
         }
+        //卡片选择状态
         [RelayCommand]
         private void AddSeletionStatus(CardDataModel? card = null)
 
@@ -186,6 +189,7 @@ namespace VisionView.ViewModels
             OnPropertyChanged(nameof(CanRename));
 
         }
+        //卡片重命名
         [RelayCommand]
         private void CardRename()
         {
@@ -194,15 +198,16 @@ namespace VisionView.ViewModels
             card.IsRenaming = true;
             DelePopup = false;
         }
-
+        //添加线段选择状态
         [RelayCommand]
-        private void WireAddStatus(DAG? wire = null)
+        private void WireAddStatus(WireDataModel? wire = null)
         {
             if (wire == null) return;
             wire.IsSelected = true;
         }
+        //清除线段选择状态
         [RelayCommand]
-        private void WireCleanStatus(DAG? wire = null)
+        private void WireCleanStatus(WireDataModel? wire = null)
         {
             if (wire == null)
             {
@@ -248,6 +253,7 @@ namespace VisionView.ViewModels
                 }
             }
         }
+        //添加文件夹
         [RelayCommand]
         private void AddFile()
         {
@@ -305,5 +311,5 @@ namespace VisionView.ViewModels
         [ObservableProperty] private string _name = "";
         [ObservableProperty] private string _path = "";
     }
-    
+
 }
