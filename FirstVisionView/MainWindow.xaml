@@ -26,6 +26,7 @@
             <Button x:Name="File" Content="文件" CommandParameter="File" Command="{Binding SwitchOpenPopupCommand}" Width="75" Height="23" Margin="10,10,0,10"   BorderBrush="{x:Null}" Background="{x:Null}" FontSize="16" Style="{StaticResource ButtonStyle}"/>
             <Button x:Name="Tools" Content="工具" CommandParameter="Tool" Command="{Binding SwitchOpenPopupCommand}" Width="75" Height="23" Margin="30,10,0,10" BorderBrush="{x:Null}" Background="{x:Null}" FontSize="16" Style="{StaticResource ButtonStyle}"/>
             <Button x:Name="View" Content="视图" CommandParameter="View" Command="{Binding SwitchOpenPopupCommand}" Width="75" Height="23" Margin="30,10,0,10" BorderBrush="{x:Null}" Background="{x:Null}" FontSize="16" Style="{StaticResource ButtonStyle}"/>
+            
         </StackPanel>
         <!--左侧面板-->
         <Grid Grid.Row="1">

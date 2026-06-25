@@ -12,7 +12,7 @@ namespace VisionView.ParameterUILibary.ParameterModel
             var ImageSoure = (new ComboboxParameterItem
             {
                 Name = "图像来源",
-                Options = { "Local", "Camrea" },
+                Options = { new InputOptionModel { DisplayName = "Local" }, new InputOptionModel { DisplayName = "Camrea" } },
                 SelectedValue = "Local"
             });
 
@@ -41,7 +41,7 @@ namespace VisionView.ParameterUILibary.ParameterModel
             this.ParameterList.Add(new ComboboxParameterItem
             {
                 Name = "像素格式",
-                Options = { "MONO8", "RGB24" },
+                Options = { new InputOptionModel { DisplayName = "MONO8" }, new InputOptionModel { DisplayName = "RGB24" } },
                 SelectedValue = "MONO8"
             });
 

@@ -57,10 +57,13 @@
                       global:ComboboxHelp.CornerRadius="10" 
                       Margin="30,0,0,0" Height="25" Width="150"  
                       Style="{StaticResource ComboboxStyle}" 
-                      SelectedItem="{Binding SelectedValue,Mode=TwoWay}"
+                      ItemsSource="{Binding Options}"
+                      SelectedValue="{Binding SelectedValue,Mode=TwoWay}"
                       HorizontalAlignment="Left" VerticalAlignment="Center" 
                       Padding="0,-5,0,0"
-                      ItemsSource="{Binding Options}"/>
+                      DisplayMemberPath="DisplayName"
+                      SelectedValuePath="RealId"
+                      />
         </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type Core:TextBoxParameterItem}">

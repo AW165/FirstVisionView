@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisionView"
+             xmlns:uiControl="clr-namespace:VisionView.UIControls"
              xmlns:toolcard ="clr-namespace:VisionView.Card"
              xmlns:vm ="clr-namespace:VisionView.ViewModels"
              xmlns:core="clr-namespace:VisionView.Core"
@@ -83,7 +84,9 @@
                                 <TranslateTransform x:Name="CanvasTranslate" X="0" Y="0"/>
                             </TransformGroup>
                         </Canvas.RenderTransform>
-
+                        <uiControl:LightWireCanvas Width="{Binding ActualWidth, ElementName=ParamentCanvas}" 
+                                                   Height="{Binding ActualHeight, ElementName=ParamentCanvas}" 
+                                                   WiresSource="{Binding AllWires}"/>
                         <ItemsControl ItemsSource="{Binding AllCards}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -107,6 +110,7 @@
                                 </Style>
                             </ItemsControl.ItemContainerStyle>
                         </ItemsControl>
+                        
                         <Rectangle x:Name="SelectionBox" Panel.ZIndex="9999" Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="4 2" Fill="#330078D7" IsHitTestVisible="False" Visibility="Collapsed"/>
                         <Path x:Name="GhostLine"
                               Stroke="DodgerBlue"

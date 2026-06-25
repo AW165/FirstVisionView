@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using VisionView.DataModel;
@@ -26,6 +28,55 @@ namespace VisionView.UIControls // 导师提示：注意这里的命名空间
         private static void OnWiresSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((LightWireCanvas)d).InvalidateVisual();
+            var canvas = (LightWireCanvas)d;
+            // 防呆设计：如果拆除旧信箱，必须把上面的报警线全部剪断，否则会导致内存泄漏 (Memory Leak)！
+            if (e.OldValue is INotifyCollectionChanged oldCollection)
+            {
+                oldCollection.CollectionChanged -= canvas.OnCollectionChanged;
+                // 把旧信箱里每一封信身上的追踪器也拆了
+                foreach (var item in (IEnumerable<WireDataModel>)e.OldValue)
+                {
+                    item.PropertyChanged -= canvas.OnWirePropertyChanged;
+                }
+            }
+            // 安装新信箱的报警线
+            if (e.NewValue is INotifyCollectionChanged newCollection)
+            {
+                newCollection.CollectionChanged += canvas.OnCollectionChanged;
+                // 给新信箱里现存的信件挨个装上追踪器
+                foreach (var item in (IEnumerable<WireDataModel>)e.NewValue)
+                {
+                    item.PropertyChanged += canvas.OnWirePropertyChanged;
+                }
+            }
+
+            canvas.InvalidateVisual(); // 强制画一笔
+        }
+        // 2. 信箱里多了一封信（连新线）或少了一封信（删除线）时的处理逻辑
+        private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            // 有新线装上属性变动
+            if (e.NewItems != null)
+            {
+                foreach (WireDataModel newItem in e.NewItems)
+                    newItem.PropertyChanged += OnWirePropertyChanged;
+            }
+
+            // 有线被删了释放内存
+            if (e.OldItems != null)
+            {
+                foreach (WireDataModel oldItem in e.OldItems)
+                    oldItem.PropertyChanged -= OnWirePropertyChanged;
+            }
+
+            this.InvalidateVisual(); // 集合变了重画
+        }
+
+        // 3.卡片被拖动导致 PathData 变了，或被选中了
+        private void OnWirePropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            // 如果是 PathData（坐标改变）或 IsSelected（颜色改变），直接重画
+            this.InvalidateVisual();
         }
 
         private readonly Pen _defaultPen;
@@ -49,7 +100,7 @@ namespace VisionView.UIControls // 导师提示：注意这里的命名空间
         }
 
         // ==========================================
-        // 核心动作一：老画师无情作画 (极速渲染)
+        // 渲染
         // ==========================================
         protected override void OnRender(DrawingContext dc)
         {
@@ -71,7 +122,7 @@ namespace VisionView.UIControls // 导师提示：注意这里的命名空间
         }
 
         // ==========================================
-        // 核心动作二：隔空点穴 (数学射线 HitTest)
+        // 数学射线 HitTest
         // ==========================================
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -89,7 +140,7 @@ namespace VisionView.UIControls // 导师提示：注意这里的命名空间
 
                 Geometry geo = Geometry.Parse(wire.PathData);
 
-                // 物理隐喻：用 15 像素的隐形刷子扫一下这条线，看鼠标在不在刷子扫过的痕迹里
+                // 用 15 像素的隐形刷子扫一下这条线，看鼠标在不在刷子扫过的痕迹里
                 if (geo.StrokeContains(_hitTestPen, mousePos))
                 {
                     clickedWire = wire;
@@ -108,7 +159,7 @@ namespace VisionView.UIControls // 导师提示：注意这里的命名空间
                 // 点亮这根线
                 clickedWire.IsSelected = true;
 
-                // 呼叫老画师重新画一遍
+                // 重新画一遍
                 this.InvalidateVisual();
             }
             else

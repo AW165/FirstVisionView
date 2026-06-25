@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace VisionView.ParameterUILibary.Core
 {
+    /// <summary>
+    /// 建立算子卡片，通过注册机制（Register 方法）把每种算子类型和对应的参数模型生产方法绑定在一起，UI 只需要调用 CreateOperator 方法并传入卡片类型，就能瞬间得到一个全新的参数模型实例，极大地简化了算子卡片的创建流程和维护成本。
+    /// </summary>
     public static class OperatorFactory
     {
         // 核心工厂字典：Key 是 CardType(如 "Binaryzation")，Value 是一个生产委托(帮你 new 对象)

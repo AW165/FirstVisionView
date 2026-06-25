@@ -27,23 +27,37 @@ namespace VisionView.DataModel
         private string _cardType = "Default";
         [ObservableProperty]
         private bool _isEnable;
-        public ObservableCollection<CardDataModel> UpstreamCards { get; } = new();
-        public List<(string key, ParameterDataType Type)> GetAllUpstreamCard()
+        [ObservableProperty]
+        private RunStatus _runStatus = RunStatus.Idle;//当前卡片有无执行完成
+        [ObservableProperty]
+        private int _runProgress = 0;//当前卡片的执行进度
+        public ObservableCollection<CardDataModel> UpstreamCards { get; } = new();//存储上游卡片的集合
+        /// <summary>
+        /// 索引所有上游卡片的输出参数，返回一个列表，包含每个参数的完整路径（父卡片ID.参数Key）和参数类型
+        /// </summary>
+        /// <returns></returns>
+        public List<InputOptionModel> GetAllUpstreamCard()
         {
-            var results = new List<(string key, ParameterDataType Type)>();
+            var CardMsg = new List<InputOptionModel>();
             foreach (var parent in UpstreamCards)
             {
                 if (parent.ParameterVM is BaseParameter parentParam)
                 {
                     foreach (var card in parentParam.OutParameter)
                     {
-                        results.Add(($"{parent.CardID}.{card.Key})", card.Value));
+                        CardMsg.Add((new InputOptionModel
+                        {
+                            RealId = $"{parent.CardID}.{card.Key}",
+                            DisplayName = $"{parent.CardName}.{card.Key}",
+                            Type = card.Value
+                        }));
                     }
                     // 2. 递归：让父节点去要它上面的节点输出，一起加进来
-                    results.AddRange(parent.GetAllUpstreamCard());
+                    CardMsg.AddRange(parent.GetAllUpstreamCard());
                 }
             }
-            return results.Distinct().ToList();
+            return CardMsg.DistinctBy(X => X.RealId).ToList();
+
         }
         /// <summary>
         /// 刷新本卡片的所有下拉框（只装填类型匹配的密钥）
@@ -63,7 +77,7 @@ namespace VisionView.DataModel
             {
                 var validKeys = availableData
                                 .Where(d => d.Type == param.AcceptType)
-                                .Select(d => d.key)
+                                .Select(d => d)
                                 .ToList();
                 //清空旧的下拉列表
                 param.Options.Clear();
@@ -73,9 +87,19 @@ namespace VisionView.DataModel
                     param.Options.Add(key);
                 }
                 //如果现在选择的选项不在当前的列表里，则选取第一个进行填充
-                if (!param.Options.Contains(param.SelectedValue))
+                if (!param.Options.Any(o => o.RealId == param.SelectedValue))
                 {
-                    param.SelectedValue = param.Options.FirstOrDefault() ?? "";
+                    var firstOpt = param.Options.FirstOrDefault();
+                    if (firstOpt == null)
+                    {
+                        param.SelectedValue = "";
+                    }
+                    else
+                    {
+                        param.SelectedValue = firstOpt.DisplayName;
+                    }
+
+
                 }
             }
         }

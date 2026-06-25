@@ -34,6 +34,11 @@ namespace VisionView.ViewModels
         {
             AllWires.CollectionChanged += AllWires_CollectionChanged;
         }
+        /// <summary>
+        /// 刷新连线集合的变化，更新卡片的上游关系和输入选项
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AllWires_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
@@ -60,6 +65,14 @@ namespace VisionView.ViewModels
             }
         }
         /// <summary>
+        /// 计算卡片的执行进度
+        /// </summary>
+        /// <param name="card"></param>
+        private void figureRunProgeress(CardDataModel card)
+        {
+
+        }
+        /// <summary>
         /// 新建卡片，设置卡片的名字，
         /// </summary>
         /// <param name="CardType"></param>
@@ -77,8 +90,6 @@ namespace VisionView.ViewModels
                 spawnX += 30; // X 向右偏
                 spawnY += 30; // Y 向下偏
             }
-
-
             // 3. 找到空位新建卡片并赋坐标
             CardDataModel newCard = new CardDataModel()
             {
@@ -99,7 +110,6 @@ namespace VisionView.ViewModels
             {
                 SerialNumber[CardName] = SerialNum + 1;
                 CardName = CardName + SerialNumber[CardName].ToString();
-
             }
             else
             {
