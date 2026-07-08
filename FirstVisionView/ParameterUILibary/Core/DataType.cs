@@ -21,6 +21,10 @@
         Fail,       // 失败
         Error       // 错误
     }
+    /// <summary>
+    /// 一个输入选项模型类，用于表示参数的输入选项。它包含三个属性：RealId（真实ID）、DisplayName（显示名称）和Type（参数数据类型）。
+    /// 该类还重写了ToString方法，以便在需要显示选项名称时返回DisplayName。
+    /// </summary>
     public class InputOptionModel
     {
         public string RealId { get; set; }
@@ -31,6 +35,9 @@
             return DisplayName;
         }
     }
+    /// <summary>
+    /// 每个卡片的依赖关系类，存储该卡片依赖的其他卡片ID列表和依赖数量
+    /// </summary>
     public class RelyOnCard
     {
         public List<string> RelyOnCardId { get; set; } = new List<string>();

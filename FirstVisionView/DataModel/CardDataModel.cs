@@ -35,7 +35,7 @@ namespace VisionView.DataModel
         /// <summary>
         /// 索引所有上游卡片的输出参数，返回一个列表，包含每个参数的完整路径（父卡片ID.参数Key）和参数类型
         /// </summary>
-        /// <returns></returns>
+        /// <returns>包含每个参数的完整路径（父卡片ID.参数Key）和参数类型</returns>
         public List<InputOptionModel> GetAllUpstreamCard()
         {
             var CardMsg = new List<InputOptionModel>();
@@ -57,49 +57,34 @@ namespace VisionView.DataModel
                 }
             }
             return CardMsg.DistinctBy(X => X.RealId).ToList();
-
         }
         /// <summary>
         /// 刷新本卡片的所有下拉框（只装填类型匹配的密钥）
         /// </summary>
         public void RefreshInputOptions()
         {
-            // 检查当前是否是空值或类型一致
+            // 检查当前是否是空值或类型是否基于BaseParameter构建的，如果不是则直接返回
             if (this.ParameterVM is not BaseParameter currentParam)
             {
                 return; // 如果自己还没有被赋值 ParameterVM，或者类型不对，直接放弃刷新
             }
             //调用递归获取之前线上所有的数据结果
             var availableData = GetAllUpstreamCard();
-
             // 此时使用转换后的 currentParam 去获取 ParameterList下面的Options
-            foreach (var param in currentParam.ParameterList.OfType<ComboboxParameterItem>())
+            foreach (var param in currentParam.ParameterList)
             {
+                //类型过滤，只保留类型匹配的选项，组装成list
                 var validKeys = availableData
                                 .Where(d => d.Type == param.AcceptType)
                                 .Select(d => d)
                                 .ToList();
                 //清空旧的下拉列表
                 param.Options.Clear();
+                //把list的值添加到popup列表中
                 foreach (var key in validKeys)
                 {
                     //添加每个选项到列表
                     param.Options.Add(key);
-                }
-                //如果现在选择的选项不在当前的列表里，则选取第一个进行填充
-                if (!param.Options.Any(o => o.RealId == param.SelectedValue))
-                {
-                    var firstOpt = param.Options.FirstOrDefault();
-                    if (firstOpt == null)
-                    {
-                        param.SelectedValue = "";
-                    }
-                    else
-                    {
-                        param.SelectedValue = firstOpt.DisplayName;
-                    }
-
-
                 }
             }
         }

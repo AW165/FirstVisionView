@@ -16,6 +16,7 @@ namespace VisionView.ViewModels
         [ObservableProperty] private ObservableCollection<WireDataModel> _allWires = new();
         [ObservableProperty] private ObservableCollection<CardDataModel> _allCards = new();
         [ObservableProperty] private bool _delePopup = false;
+        [ObservableProperty] private bool _parameterPopupStatus = false;
         [ObservableProperty] private bool _cap = false;
         [ObservableProperty] private ObservableObject? _currentEditVM = null;
         public ObservableCollection<ImageModel> ImageQueue { get; } = new();
@@ -291,6 +292,11 @@ namespace VisionView.ViewModels
 
         }
         //删除图片队列
+        [RelayCommand]
+        private void SetParameterPopup()
+        {
+            _parameterPopupStatus = true;
+        }
         [RelayCommand]
         private void DeleteImage()
         {

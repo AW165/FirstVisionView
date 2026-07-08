@@ -86,7 +86,7 @@
                          Width="150"  BorderThickness="1"
                          BorderBrush="Black" 
                          Text="{Binding PresentValue,Mode=TwoWay}"/>
-                <Button Style="{StaticResource InheritButton}" Grid.Column="2"  HorizontalAlignment="Left"/>
+                <Button Style="{StaticResource InheritButton}" Grid.Column="2"   HorizontalAlignment="Left"/>
             </StackPanel>
         </Grid>
     </DataTemplate>

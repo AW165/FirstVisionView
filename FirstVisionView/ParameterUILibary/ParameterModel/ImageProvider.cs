@@ -12,7 +12,7 @@ namespace VisionView.ParameterUILibary.ParameterModel
             var ImageSoure = (new ComboboxParameterItem
             {
                 Name = "图像来源",
-                Options = { new InputOptionModel { DisplayName = "Local" }, new InputOptionModel { DisplayName = "Camrea" } },
+                Options = { new InputOptionModel { DisplayName = "Local" }, new InputOptionModel { DisplayName = "Camera" } },
                 SelectedValue = "Local"
             });
 
@@ -27,14 +27,14 @@ namespace VisionView.ParameterUILibary.ParameterModel
             var Exposure = (new TextBoxParameterItem()
             {
                 Name = "曝光",
-                AccptType = ParameterDataType.Integer,
+                AcceptType = ParameterDataType.Integer,
                 PresentValue = 0,
                 IsVisible = false
             });
             var Gian = (new TextBoxParameterItem()
             {
                 Name = "增益",
-                AccptType = ParameterDataType.Double,
+                AcceptType = ParameterDataType.Integer,
                 PresentValue = 0,
                 IsVisible = false
             });

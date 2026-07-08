@@ -234,6 +234,17 @@
                             <ItemsControl Grid.IsSharedSizeScope="True" Padding="80,5,40,10" DataContext="{Binding CurrentEditVM}" ItemsSource="{Binding ParameterList}"/>
                         </StackPanel>
                     </ScrollViewer>
+                    <Popup x:Name="ParameterPopup" d:Visibility="Visible" Panel.ZIndex="9"  
+                           Placement="Bottom"
+                           IsOpen="{Binding ParameterPopupStatus,Mode=TwoWay}"
+                            AllowsTransparency="True"
+                            StaysOpen="False">
+                        <Border BorderThickness="1" Background="#FFFF00" Width="200" Height="400"  local:ButtonHelp.CornerRadius="13" Style="{StaticResource ButtonStyle}" CornerRadius="20">
+                                <StackPanel>
+                                    <ItemsControl ItemsSource="{Binding Options}"/>
+                                </StackPanel>
+                            </Border>
+                    </Popup>
                     <Button Grid.Row="2" d:Visibility="Visible" Grid.Column="1"  x:Name="Accept" Margin="0,0,0,10" local:ButtonHelp.CornerRadius="13" Content="确认" Command="{Binding ParameterClickCommand}" Height="35" Width="100" Style="{StaticResource ButtonStyle}" />
                     <Button Grid.Row="2" d:Visibility="Visible" Grid.Column="0" x:Name="Cancel"  Margin="0,0,0,10" local:ButtonHelp.CornerRadius="13" Content="取消" Command="{Binding ParameterClickCommand}" Height="35" Width="100" Style="{StaticResource ButtonStyle}" />
                 </Grid>
