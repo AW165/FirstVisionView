@@ -690,6 +690,18 @@ namespace VisionView
             PixelView.UpdateTransform(fitZoom, newOffsetX, newOffsetY);
         }
 
+        private void ParameterClick(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null || vm == null) return;
+            if (button.Content.ToString() == "🔗")
+            {
+                e.Handled = true;
+                vm.ParameterPopupStatus = !vm.ParameterPopupStatus;
+                ParameterPopup.DataContext = button.DataContext;
+            }
+        }
+
 
 
 

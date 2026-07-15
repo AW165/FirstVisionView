@@ -293,11 +293,6 @@ namespace VisionView.ViewModels
         }
         //删除图片队列
         [RelayCommand]
-        private void SetParameterPopup()
-        {
-            _parameterPopupStatus = true;
-        }
-        [RelayCommand]
         private void DeleteImage()
         {
             if (SelectedImage == null)

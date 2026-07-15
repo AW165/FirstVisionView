@@ -49,6 +49,11 @@ namespace VisionView.ParameterUILibary.ParameterModel
                 AcceptType = ParameterDataType.Position,
                 Options = new ObservableCollection<InputOptionModel> { },
             });
+            this.ParameterList.Add(new TextBoxParameterItem
+            {
+                Name = "位置修正X",
+
+            });
         }
     }
 

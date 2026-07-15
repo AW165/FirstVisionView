@@ -229,23 +229,34 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock DataContext="{Binding CurrentEditVM}" FontSize="30" Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan ="2"/>
+                    <!--放置控件-->
                     <ScrollViewer d:Visibility="Visible" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2" Grid.Row="1">
                         <StackPanel>
-                            <ItemsControl Grid.IsSharedSizeScope="True" Padding="80,5,40,10" DataContext="{Binding CurrentEditVM}" ItemsSource="{Binding ParameterList}"/>
+                            <ItemsControl ButtonBase.Click="ParameterClick" Grid.IsSharedSizeScope="True" Padding="80,5,40,10" DataContext="{Binding CurrentEditVM}" ItemsSource="{Binding ParameterList}"/>
                         </StackPanel>
                     </ScrollViewer>
-                    <Popup x:Name="ParameterPopup" d:Visibility="Visible" Panel.ZIndex="9"  
+                    <!--数据继承popup-->
+                    <Popup x:Name="ParameterPopup" Width="200" Height="400"  d:Visibility="Visible" Panel.ZIndex="9"  
                            Placement="Bottom"
                            IsOpen="{Binding ParameterPopupStatus,Mode=TwoWay}"
                             AllowsTransparency="True"
                             StaysOpen="False">
-                        <Border BorderThickness="1" Background="#FFFF00" Width="200" Height="400"  local:ButtonHelp.CornerRadius="13" Style="{StaticResource ButtonStyle}" CornerRadius="20">
-                                <StackPanel>
-                                    <ItemsControl ItemsSource="{Binding Options}"/>
-                                </StackPanel>
+                        <Border BorderThickness="1" Background="#FFFF00"  local:ButtonHelp.CornerRadius="13" CornerRadius="20">
+                                <StackPanel >
+                                <!--打印继承项目-->
+                                <ItemsControl ItemsSource="{Binding Options}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding DisplayName}" Command="{Binding Data.ParameterPopupClickCommand,Source={StaticResource VMProxy}}" CommandParameter="{Binding RealId}" Style="{StaticResource MenuButtonStyle}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
                             </Border>
                     </Popup>
+                    <!--确认按钮-->
                     <Button Grid.Row="2" d:Visibility="Visible" Grid.Column="1"  x:Name="Accept" Margin="0,0,0,10" local:ButtonHelp.CornerRadius="13" Content="确认" Command="{Binding ParameterClickCommand}" Height="35" Width="100" Style="{StaticResource ButtonStyle}" />
+                    <!--取消按钮-->
                     <Button Grid.Row="2" d:Visibility="Visible" Grid.Column="0" x:Name="Cancel"  Margin="0,0,0,10" local:ButtonHelp.CornerRadius="13" Content="取消" Command="{Binding ParameterClickCommand}" Height="35" Width="100" Style="{StaticResource ButtonStyle}" />
                 </Grid>
             </Border>
