@@ -236,7 +236,7 @@
                         </StackPanel>
                     </ScrollViewer>
                     <!--数据继承popup-->
-                    <Popup x:Name="ParameterPopup" Width="200" Height="400"  d:Visibility="Visible" Panel.ZIndex="9"  
+                    <Popup x:Name="ParameterPopup"  Width="200" Height="400"  d:Visibility="Visible" Panel.ZIndex="9"  
                            Placement="Bottom"
                            IsOpen="{Binding ParameterPopupStatus,Mode=TwoWay}"
                             AllowsTransparency="True"
@@ -244,7 +244,7 @@
                         <Border BorderThickness="1" Background="#FFFF00"  local:ButtonHelp.CornerRadius="13" CornerRadius="20">
                                 <StackPanel >
                                 <!--打印继承项目-->
-                                <ItemsControl ItemsSource="{Binding Options}">
+                                <ItemsControl x:Name="ParameterItems" DataContext="{x:Null}" ItemsSource="{Binding Options}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Button Content="{Binding DisplayName}" Command="{Binding Data.ParameterPopupClickCommand,Source={StaticResource VMProxy}}" CommandParameter="{Binding RealId}" Style="{StaticResource MenuButtonStyle}"/>

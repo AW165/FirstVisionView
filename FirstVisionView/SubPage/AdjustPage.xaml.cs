@@ -692,15 +692,16 @@ namespace VisionView
 
         private void ParameterClick(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
+            var button = e.OriginalSource as Button;
             if (button == null || vm == null) return;
-            if (button.Content.ToString() == "🔗")
+            if (button.Tag != null && button.Tag.ToString() == "LinkBtn")
             {
                 e.Handled = true;
                 vm.ParameterPopupStatus = !vm.ParameterPopupStatus;
-                ParameterPopup.DataContext = button.DataContext;
+                ParameterItems.DataContext = button.DataContext;
             }
         }
+
 
 
 

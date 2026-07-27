@@ -125,9 +125,9 @@
         <Setter Property="Padding" Value="-1,0,0,0"/>
         <Setter Property="Height" Value="35"/>
         <Setter Property="Padding" Value="0,0,0,0"/>
+        <Setter Property="Tag" Value="LinkBtn"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="Command" Value="{Binding SetParameterPopup}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
