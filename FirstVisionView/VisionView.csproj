@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <MVSInstallDir Condition="'$(MVSInstallDir)' == ''">C:\Program Files (x86)\MVS</MVSInstallDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +16,13 @@
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.1.0-dev-798" />
     <PackageReference Include="MiniExcel" Version="2.0.0-preview.4" />
     <PackageReference Include="WPF-UI" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MvCameraControl.Net">
+      <HintPath>$(MVSInstallDir)\Development\DotNet\AnyCpu\MvCameraControl.Net.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
   </ItemGroup>
 
 </Project>

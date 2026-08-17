@@ -13,7 +13,6 @@ namespace VisionView.HardWare
     }
     public interface ICameraDriver
     {
-
         string DriverName { get; }
         //相机信息合集
         List<CameraInfo> SearchCameras();

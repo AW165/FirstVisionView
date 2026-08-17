@@ -7,11 +7,11 @@
         //相机信息合集
         public List<CameraInfo> SearchCameras()
         {
-            return new List<CameraInfo>();
+            return HikCamera.EnumerateCameras();
         }
         public ICamera CreateCamera(CameraInfo Info)
         {
-            return null;
+            return new HikCamera(Info);
         }
 
     }

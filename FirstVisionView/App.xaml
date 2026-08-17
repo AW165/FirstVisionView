@@ -10,7 +10,7 @@
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
                 <ResourceDictionary Source="/SharedStyle.xaml"/>
-                <ResourceDictionary Source="/ParameterUILibary/UILibrary/ParameterTemplateLibrary.xaml"/>
+                <ResourceDictionary Source="/Parameter/UILibrary/ParameterTemplateLibrary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
