@@ -640,7 +640,7 @@ namespace VisionView
         private void SelfAdaption()
         {
             // 1. 安全检查
-            if (vm == null || vm.SelectedImage == null || string.IsNullOrEmpty(vm.SelectedImage.Path))
+            if (vm == null || vm.SelectedImage == null)
             {
                 PixelView.SetSource(null);//
                 RValue.Content = 0;
@@ -652,18 +652,23 @@ namespace VisionView
                 return;
             }
 
-
-            try
+            BitmapSource? source = vm.SelectedImage.Bitmap;
+            if (source == null)
             {
-                // 从硬盘路径读取图片文件
-                BitmapImage bitmap = new BitmapImage(new Uri(vm.SelectedImage.Path));
-                // 将图片交给渲染器，完成 5000 万像素的抽取和冻结
-                PixelView.SetSource(bitmap);//
+                source = vm.SelectedImage.DisplaySource;
             }
-            catch
+            if (source == null)
             {
-                return; // 防止图片路径错误导致软件崩溃
+                PixelView.SetSource(null);
+                RValue.Content = 0;
+                GValue.Content = 0;
+                BValue.Content = 0;
+                HValue.Content = 0;
+                SValue.Content = 0;
+                VValue.Content = 0;
+                return;
             }
+            PixelView.SetSource(source);
 
             if (!PixelView.HasImage) return;
 

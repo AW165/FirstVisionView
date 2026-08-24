@@ -4,9 +4,13 @@ using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using VisionView.Core;
 using VisionView.DataModel;
+using VisionView.HardWare;
 using VisionView.ParameterUILibary.Core;
 
 namespace VisionView.ViewModels
@@ -34,6 +38,36 @@ namespace VisionView.ViewModels
         public AdjustViewModel()
         {
             AllWires.CollectionChanged += AllWires_CollectionChanged;
+            WeakReferenceMessenger.Default.Register<CameraGrabMessage>(this, (r, message) =>
+                _ = CaptureCameraFrameAsync(message.Camera));
+        }
+        private async Task CaptureCameraFrameAsync(CameraInfo cameraInfo)
+        {
+            try
+            {
+                BitmapSource? frame = await Task.Run(() =>
+                {
+                    using var camera = new HikCamera(cameraInfo);
+                    camera.Open();
+                    return camera.GrabOne();
+                });
+                if (frame == null) return;
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var image = new ImageModel
+                    {
+                        Name = string.IsNullOrWhiteSpace(cameraInfo.Name) ? cameraInfo.Model : cameraInfo.Name,
+                        Bitmap = frame
+                    };
+                    ImageQueue.Add(image);
+                    SelectedImage = image;
+                });
+            }
+            catch
+            {
+                // 相机被占用或取图失败时，保持当前预览不变
+            }
         }
         /// <summary>
         /// 刷新连线集合的变化，更新卡片的上游关系和输入选项
@@ -308,9 +342,9 @@ namespace VisionView.ViewModels
 
         }
         //图片队列选中项改变时的处理函数
-        partial void OnSelectedImageChanged(ImageModel image)
+        partial void OnSelectedImageChanged(ImageModel value)
         {
-            if (image != null)
+            if (value != null)
             {
                 WeakReferenceMessenger.Default.Send("ImageSelected");
             }
@@ -321,6 +355,40 @@ namespace VisionView.ViewModels
     {
         [ObservableProperty] private string _name = "";
         [ObservableProperty] private string _path = "";
+        [ObservableProperty] private BitmapSource? _bitmap;
+
+        public BitmapSource? DisplaySource => Bitmap ?? LoadFileSource();
+
+        private BitmapSource? _fileSource;
+        private BitmapSource? LoadFileSource()
+        {
+            if (string.IsNullOrWhiteSpace(Path)) return null;
+            if (_fileSource != null) return _fileSource;
+
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.UriSource = new Uri(Path, UriKind.Absolute);
+                bitmap.EndInit();
+                bitmap.Freeze();
+                _fileSource = bitmap;
+                return bitmap;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        partial void OnBitmapChanged(BitmapSource? value) => OnPropertyChanged(nameof(DisplaySource));
+
+        partial void OnPathChanged(string value)
+        {
+            _fileSource = null;
+            OnPropertyChanged(nameof(DisplaySource));
+        }
     }
 
 }
